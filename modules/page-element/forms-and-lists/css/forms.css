@@ -1,0 +1,19 @@
+
+.sitebuilder-form-table td:first-child {
+	vertical-align: baseline;
+	padding-top: 0.5em;
+}
+
+	.sitebuilder-form-table tbody tr:last-child td {
+		text-align: center;
+	}
+
+.sitebuilder-form-table fieldset {
+	border: none;
+	padding: 0;
+}
+
+	.sitebuilder-form-table fieldset > *:not(:last-child) {
+		display: block;
+		margin-bottom: 0.5em;
+	}

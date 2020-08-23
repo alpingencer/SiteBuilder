@@ -1,2 +1,2 @@
 # sitebuilder
-SiteBuilder is a page management and html auto-generation framework for PHP.
+SiteBuilder is a page management and HTML auto-generation framework for PHP written by Alpin Gencer.
