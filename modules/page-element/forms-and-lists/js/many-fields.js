@@ -48,6 +48,10 @@ $('.sitebuilder-fieldset-adder').click(function() {
 		
 		// DOM manipulation
 		clonedField.insertBefore($(this));
+		
+		// Slide down new fieldset
+		clonedField.slideUp(0);
+		clonedField.slideDown(200);
 	}
 	
 	// Enable and disable 'fieldset-adder' and 'fieldset-remover'
@@ -73,8 +77,16 @@ $('.sitebuilder-fieldset-remover').click(function() {
 	
 	// If there are more than min, remove last one
 	if($(this).siblings('fieldset:not(.sitebuilder-template-fieldset)').length > minFields) {
-		// Dom manipulation
-		$(this).siblings('fieldset:last-of-type').remove();
+		// Get last fieldset
+		var removedField = $(this).siblings('fieldset:last-of-type');
+		
+		// Slide up removed fieldset
+		removedField.slideUp(200, function() {
+			// Remove fieldset on animation finish
+			// DOM manipulation
+			removedField.remove();
+		});
+		
 	}
 	
 	// Enable and disable 'fieldset-adder' and 'fieldset-remover'
