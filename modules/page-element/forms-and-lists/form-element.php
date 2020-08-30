@@ -2,6 +2,8 @@
 
 namespace SiteBuilder\PageElement;
 
+use ErrorException;
+
 class FormElement extends PageElement {
 	public $html;
 	private $fieldsets;
@@ -15,7 +17,10 @@ class FormElement extends PageElement {
 
 	public function __construct() {
 		$dependencies = array(
-				new Dependency(__SITEBUILDER_CSS_DEPENDENCY, 'forms-and-lists/css/forms.css')
+				new Dependency(__SITEBUILDER_CSS_DEPENDENCY, 'forms-and-lists/css/forms.css'),
+				new Dependency(__SITEBUILDER_JS_DEPENDENCY, 'javascript-widgets/external-resources/jquery/jquery-3.5.1.min.js'),
+				new Dependency(__SITEBUILDER_JS_DEPENDENCY, 'forms-and-lists/js/many-fields.js', 'defer'),
+				new Dependency(__SITEBUILDER_CSS_DEPENDENCY, 'forms-and-lists/css/many-fields.css')
 		);
 		parent::__construct($dependencies);
 		$this->html = '';
@@ -89,6 +94,8 @@ class FormElement extends PageElement {
 
 class FormFieldset {
 	private $prompt;
+	private $isManyField;
+	private $minNumFields, $maxNumFields;
 	private $fields;
 
 	public static function newInstance(string $prompt): self {
@@ -97,11 +104,36 @@ class FormFieldset {
 
 	public function __construct(string $prompt) {
 		$this->prompt = $prompt;
+		$this->isManyField = false;
+		$this->minNumFields = 0;
+		$this->maxNumFields = 0;
 		$this->fields = array();
 	}
 
 	public function getPrompt(): string {
 		return $this->prompt;
+	}
+
+	public function setIsManyField(bool $isManyField, int $minNumFields = 0, int $maxNumFields = 0): self {
+		if($minNumFields < 0) throw new ErrorException('$minNumFields must not be negative!');
+		if($maxNumFields !== 0 && $maxNumFields < $minNumFields) throw new ErrorException('$maxNumFields must not be smaller than $minNumFields!');
+
+		$this->isManyField = $isManyField;
+		$this->minNumFields = $minNumFields;
+		$this->maxNumFields = $maxNumFields;
+		return $this;
+	}
+
+	public function isManyField(): bool {
+		return $this->isManyField;
+	}
+
+	public function getMinNumFields(): int {
+		return $this->minNumFields;
+	}
+
+	public function getMaxNumFields(): int {
+		return $this->maxNumFields;
 	}
 
 	public function addField(FormField $field): self {

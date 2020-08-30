@@ -34,7 +34,18 @@ class FormAndListSystem extends SiteBuilderSystem {
 
 				// Generate fieldset html
 				foreach($element->getFieldsets() as $fieldset) {
-					$element->html .= '<tr><td>' . $fieldset->getPrompt() . ':</td><td><fieldset>';
+					$element->html .= '<tr><td>' . $fieldset->getPrompt() . ':</td>';
+
+					if($fieldset->isManyField()) {
+						$minNumFields = ($fieldset->getMinNumFields() !== 0) ? ' data-min-fields="' . $fieldset->getMinNumFields() . '"' : '';
+						$maxNumFields = ($fieldset->getMaxNumFields() !== 0) ? ' data-max-fields="' . $fieldset->getMaxNumFields() . '"' : '';
+
+						$element->html .= '<td class="sitebuilder-many-fields"' . $minNumFields . $maxNumFields . '>';
+						$element->html .= '<fieldset class="sitebuilder-template-fieldset">';
+					} else {
+						$element->html .= '<td>';
+						$element->html .= '<fieldset>';
+					}
 
 					foreach($fieldset->getFields() as $field) {
 						$element->html .= $field->getInnerHTML();
@@ -47,7 +58,7 @@ class FormAndListSystem extends SiteBuilderSystem {
 				$element->html .= '<tr>';
 
 				if($element->getShowDelete()) {
-					$element->html .= '<td"><input class="sitebuilder-form-button" type="submit" name="__SiteBuilder_DeleteForm" value="' . $element->getDeleteText() . '"></td>';
+					$element->html .= '<td><input class="sitebuilder-form-button" type="submit" name="__SiteBuilder_DeleteForm" value="' . $element->getDeleteText() . '"></td>';
 					$element->html .= '<td>';
 				} else {
 					$element->html .= '<td colspan="2">';
@@ -74,7 +85,9 @@ class FormAndListSystem extends SiteBuilderSystem {
 				$tableID = $element->getTableID();
 
 				// Set table classes
-				$tableClasses = array('sitebuilder-list-table');
+				$tableClasses = array(
+						'sitebuilder-list-table'
+				);
 				if(!empty($element->getRowOnClickRef())) {
 					array_push($tableClasses, 'sitebuilder-hover-table');
 				}
