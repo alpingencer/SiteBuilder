@@ -36,7 +36,7 @@ abstract class SiteBuilderComponent {
 	 * it is best practice to respect the following:</strong>
 	 * <ol>
 	 * <li>
-	 * Along with the constructor, create a public static newInstance() function.
+	 * Along with the constructor, create a public static newInstance(): self function.
 	 * This way, each component will have two ways to instantiate it:
 	 * new SiteBuilderComponent and SiteBuilderComponent::newInstance()
 	 * </li>

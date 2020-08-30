@@ -28,6 +28,10 @@ abstract class SiteBuilderSystem {
 	 */
 	private $priority;
 
+	public static function newInstance(SiteBuilderFamily $family, int $priority = 0) {
+		return new self($family, $priority);
+	}
+
 	/**
 	 * Constructor for the system
 	 *

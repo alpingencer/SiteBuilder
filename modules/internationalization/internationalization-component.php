@@ -9,30 +9,15 @@ class InternationalizationComponent extends SiteBuilderComponent {
 	private $langColumnName, $identifierColumnName;
 	private $locales;
 
+	public static function newInstance(): self {
+		return new self();
+	}
+
 	public function __construct() {
 		$this->locales = array();
 		$this->tokenTableName = '';
 		$this->langColumnName = '';
 		$this->identifierColumnName = 'IDENTIFIER';
-	}
-
-	public static function newInstance(): self {
-		return new self();
-	}
-
-	public function setLocale(int $localeType, string $locale): self {
-		$this->locales[$localeType] = $locale;
-		return $this;
-	}
-
-	public function getLocale(int $localeType): string {
-		if(isset($this->locales[$localeType])) {
-			return $this->locales[$localeType];
-		} else if(isset($this->locales[LC_ALL])) {
-			return $this->locales[LC_ALL];
-		} else {
-			return 'en';
-		}
 	}
 
 	public function setTokenTableName(string $tableName): self {
@@ -60,6 +45,21 @@ class InternationalizationComponent extends SiteBuilderComponent {
 
 	public function getIdentifierColumnName(): string {
 		return $this->identifierColumnName;
+	}
+
+	public function setLocale(int $localeType, string $locale): self {
+		$this->locales[$localeType] = $locale;
+		return $this;
+	}
+
+	public function getLocale(int $localeType): string {
+		if(isset($this->locales[$localeType])) {
+			return $this->locales[$localeType];
+		} else if(isset($this->locales[LC_ALL])) {
+			return $this->locales[LC_ALL];
+		} else {
+			return 'en';
+		}
 	}
 
 }

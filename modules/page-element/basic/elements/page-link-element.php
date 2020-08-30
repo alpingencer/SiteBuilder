@@ -3,28 +3,59 @@
 namespace SiteBuilder\PageElement;
 
 class PageLinkElement extends PageElement {
-	private $linkPath;
-	private $hrefPrefix;
+	private $linkHierarchyPath;
+	private $hrefSuffix;
 	private $innerHTML;
 
-	public function __construct(string $linkPath) {
+	public static function newInstance(string $linkHierarchyPath): self {
+		return new self($linkHierarchyPath);
+	}
+
+	public function __construct(string $linkHierarchyPath) {
 		parent::__construct(array());
-		$this->linkPath = $linkPath;
-		$this->hrefPrefix = '';
+		$this->linkHierarchyPath = $linkHierarchyPath;
+		$this->hrefSuffix = '';
 		$this->innerHTML = '';
 	}
 
-	public static function newInstance(string $linkPath): self {
-		return new self($linkPath);
+	public function getContent(): string {
+		$sb = $GLOBALS['__SiteBuilderCore'];
+		$currentPageHierarchyPath = $sb->getCurrentPage()->getHierarchyPath();
+
+		// Normalize path
+		if(substr($this->linkHierarchyPath, 0, 1) === '/') {
+			$pageHierarchyPath = $this->linkHierarchyPath;
+		} else {
+			$dirname = dirname($currentPageHierarchyPath);
+			if($dirname === '.') {
+				$pageHierarchyPath = $this->linkHierarchyPath;
+			} else {
+				$pageHierarchyPath = $dirname . "/" . $this->linkHierarchyPath;
+			}
+		}
+
+		if(empty($this->innerHTML) && isset($sb->getPageInHierarchy($pageHierarchyPath)['title'])) {
+			$innerHTML = $sb->getPageInHierarchy($pageHierarchyPath)['title'];
+		} else {
+			$innerHTML = $this->innerHTML;
+		}
+
+		$href = '/?p=' . $pageHierarchyPath . $this->hrefSuffix;
+
+		return '<a href="' . $href . '">' . $innerHTML . '</a>';
+	}
+
+	public function getLinkHierarchyPath(): string {
+		return $this->linkHierarchyPath;
 	}
 
 	public function setHrefSuffix(string $hrefSuffix): self {
-		$this->hrefPrefix = $hrefSuffix;
+		$this->hrefSuffix = $hrefSuffix;
 		return $this;
 	}
 
 	public function getHrefSuffix(): string {
-		return $this->hrefPrefix;
+		return $this->hrefSuffix;
 	}
 
 	public function setInnerHTML(string $innerHTML): self {
@@ -34,33 +65,6 @@ class PageLinkElement extends PageElement {
 
 	public function getInnerHTML(): string {
 		return $this->innerHTML;
-	}
-
-	public function getContent(): string {
-		$sb = $GLOBALS['SiteBuilder_Core'];
-		$currentPagePath = $sb->page->getPath();
-
-		// Normalize href
-		if(substr($this->linkPath, 0, 1) === '/') {
-			$href = $this->linkPath;
-		} else {
-			$dirname = dirname($currentPagePath);
-			if($dirname === '.') {
-				$href = $this->linkPath;
-			} else {
-				$href = $dirname . "/" . $this->linkPath;
-			}
-		}
-
-		if(empty($this->innerHTML) && isset($sb->getPageInHierarchy($href)['title'])) {
-			$innerHTML = $sb->getPageInHierarchy($href)['title'];
-		} else {
-			$innerHTML = $this->innerHTML;
-		}
-
-		$href = $this->hrefPrefix . $href;
-
-		return '<a href="' . $href . '">' . $innerHTML . '</a>';
 	}
 
 }

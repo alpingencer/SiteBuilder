@@ -15,13 +15,13 @@ abstract class AuthenticationSystem extends SiteBuilderSystem {
 	public function proccess(SiteBuilderPage $page): void {
 		session_start();
 
-		if($page->hasComponents(AuthorizationComponent::class)) {
+		if($page->hasComponent(AuthorizationComponent::class)) {
 			$component = $page->getComponent(AuthorizationComponent::class);
 			$userID = $this->getUserID();
 			$userLevel = $this->getUserLevel($userID);
 			$pageLevel = $this->getPageLevel($page);
 
-			$_SESSION['SiteBuilder_User_ID'] = $this->getUserID();
+			$_SESSION['__SiteBuilder_UserID'] = $this->getUserID();
 
 			if($userLevel < $pageLevel) {
 				// Clear page content
@@ -33,42 +33,42 @@ abstract class AuthenticationSystem extends SiteBuilderSystem {
 					// Show login page
 					header('Location:' . $component->getRedirectURL(), true, 303);
 				} else {
-					if(!empty($component->getForbiddenURL())) {
-						// Show custom 403 forbidden
-						header('Location:' . $component->getForbiddenURL(), true, 303);
-						die();
-					} else {
-						// Show default 403 forbidden
+					$sb = $GLOBALS['__SiteBuilderCore'];
+					if(empty($sb->getForbiddenHierarchyPath())) {
+						// Show default 403 page
 						http_response_code(403);
 						$page->head .= '<title>403 Forbidden access</title>';
 						$page->body .= '<h1>403 Forbidden access</h1><p>You do not have permission to view this file.</p>';
+					} else {
+						// Show custom 403 page
+						header('Location:/?p=' . $sb->getForbiddenHierarchyPath(), true, 303);
 					}
 				}
 			}
 		}
 
-		if($page->hasComponents(AuthenticationElement::class)) {
+		if($page->hasComponent(AuthenticationElement::class)) {
 			$component = $page->getComponent(AuthenticationElement::class);
 
-			// TODO: Make required 'SiteBuilder_LoginRequest' and 'SiteBuilder_LogoutRequest' $_POST variables more obvious
+			// TODO: Make required '__SiteBuilder_LoginRequest' and '__SiteBuilder_LogoutRequest' $_POST variables more obvious
 
-			if(isset($_POST['SiteBuilder_LoginRequest'])) {
+			if(isset($_POST['__SiteBuilder_LoginRequest'])) {
 				$userID = $this->proccessLogin($page);
 				if($userID !== false) {
-					$_SESSION['SiteBuilder_User_IsLoggedIn'] = true;
-					$_SESSION['SiteBuilder_User_ID'] = $userID;
+					$_SESSION['__SiteBuilder_UserIsLoggedIn'] = true;
+					$_SESSION['__SiteBuilder_UserID'] = $userID;
 				}
 			}
 
-			if(isset($_POST['SiteBuilder_LogoutRequest'])) {
+			if(isset($_POST['__SiteBuilder_LogoutRequest'])) {
 				$success = $this->proccessLogout($page);
 				if($success) {
-					$_SESSION['SiteBuilder_User_IsLoggedIn'] = false;
-					unset($_SESSION['SiteBuilder_User_ID']);
+					$_SESSION['__SiteBuilder_UserIsLoggedIn'] = false;
+					unset($_SESSION['__SiteBuilder_UserID']);
 				}
 			}
 
-			if(!isset($_SESSION['SiteBuilder_User_IsLoggedIn']) || $_SESSION['SiteBuilder_User_IsLoggedIn'] === false) {
+			if(!isset($_SESSION['__SiteBuilder_UserIsLoggedIn']) || $_SESSION['__SiteBuilder_UserIsLoggedIn'] === false) {
 				// User isn't logged in
 				$component->html = $this->generateLoginHTML($component);
 			} else {
@@ -79,8 +79,8 @@ abstract class AuthenticationSystem extends SiteBuilderSystem {
 	}
 
 	public function getUserID() {
-		if(isset($_SESSION['SiteBuilder_User_ID'])) {
-			return $_SESSION['SiteBuilder_User_ID'];
+		if(isset($_SESSION['__SiteBuilder_UserID'])) {
+			return $_SESSION['__SiteBuilder_UserID'];
 		} else {
 			return false;
 		}

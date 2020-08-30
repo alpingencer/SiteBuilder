@@ -17,16 +17,16 @@ class FormAndListSystem extends SiteBuilderSystem {
 		$database = $page->getComponent(DatabaseComponent::class);
 
 		// Forms
-		if($page->hasComponents(FormElement::class)) {
+		if($page->hasComponent(FormElement::class)) {
 			$elements = $page->getComponents(FormElement::class);
 			foreach($elements as $element) {
 				// Delete form
-				if(isset($_POST['SiteBuilder_DeleteForm'])) {
+				if(isset($_POST['__SiteBuilder_DeleteForm'])) {
 					$element->getDeleteFunction()();
 				}
 
 				// Proccess form
-				if(isset($_POST['SiteBuilder_SubmitForm'])) {
+				if(isset($_POST['__SiteBuilder_SubmitForm'])) {
 					$element->getProccessFunction()();
 				}
 
@@ -47,12 +47,12 @@ class FormAndListSystem extends SiteBuilderSystem {
 				$element->html .= '<tr>';
 
 				if($element->getShowDelete()) {
-					$element->html .= '<td><input class="sitebuilder-form-button" type="submit" name="SiteBuilder_DeleteForm" value="' . $element->getDeleteText() . '"></td>';
+					$element->html .= '<td"><input class="sitebuilder-form-button" type="submit" name="__SiteBuilder_DeleteForm" value="' . $element->getDeleteText() . '"></td>';
 					$element->html .= '<td>';
 				} else {
-					$element->html .= '<td class="sitebuilder-form-button-td" colspan="2">';
+					$element->html .= '<td colspan="2">';
 				}
-				$element->html .= '<input class="sitebuilder-form-button" type="submit" name="SiteBuilder_SubmitForm" value="' . $element->getSubmitText() . '">';
+				$element->html .= '<input class="sitebuilder-form-button" type="submit" name="__SiteBuilder_SubmitForm" value="' . $element->getSubmitText() . '">';
 
 				$element->html .= '</td></tr>';
 				$element->html .= '</table></form>';
@@ -60,7 +60,7 @@ class FormAndListSystem extends SiteBuilderSystem {
 		}
 
 		// Lists
-		if($page->hasComponents(ListElement::class)) {
+		if($page->hasComponent(ListElement::class)) {
 			$elements = $page->getComponents(ListElement::class);
 			foreach($elements as $element) {
 				// Query database
@@ -126,7 +126,7 @@ class FormAndListSystem extends SiteBuilderSystem {
 
 				// Remove the list element and add a sortable table widget in its place
 				$page->removeComponent($element);
-				$page->addComponent(SortableTableWidget::newInstance($columns, $element->getPriority())->setRows($rows)->setTableID($tableID)->setTableClasses($tableClasses));
+				$page->addComponent(SortableTableWidget::newInstance($columns)->setPriority($element->getPriority())->setTableID($tableID)->setTableClasses($tableClasses)->setRows($rows));
 			}
 		}
 	}

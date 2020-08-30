@@ -126,9 +126,9 @@ class PDODatabaseComponent extends DatabaseComponent {
 	public function log(string $query, string $type) {
 		$date = date('Y-m-d H:i:s');
 
-		if(isset($_SESSION['SiteBuilder_User_ID'])) {
+		if(isset($_SESSION['__SiteBuilder_UserID'])) {
 			// somebody is logged in
-			$id = $_SESSION['SiteBuilder_User_ID'];
+			$id = $_SESSION['__SiteBuilder_UserID'];
 		} else {
 			// nobody is logged in
 			$id = 0;

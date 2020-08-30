@@ -6,48 +6,20 @@ class SortableTableWidget extends JavascriptWidget {
 	private $tableID, $tableClasses;
 	private $columns, $rows;
 
+	public static function newInstance(array $columns): self {
+		return new self($columns);
+	}
+
 	public function __construct(array $columns) {
 		$dependencies = array(
-				new Dependency(SITEBUILDER_JS_DEPENDENCY, 'javascript-widgets/widgets/sortable-table/sortable-table.js', 'defer'),
-				new Dependency(SITEBUILDER_CSS_DEPENDENCY, 'javascript-widgets/widgets/sortable-table/sortable-table.css')
+				new Dependency(__SITEBUILDER_JS_DEPENDENCY, 'javascript-widgets/widgets/sortable-table/sortable-table.js', 'defer'),
+				new Dependency(__SITEBUILDER_CSS_DEPENDENCY, 'javascript-widgets/widgets/sortable-table/sortable-table.css')
 		);
 		parent::__construct($dependencies);
 		$this->columns = $columns;
 		$this->rows = array();
 		$this->tableID = '';
 		$this->tableClasses = array();
-	}
-
-	public static function newInstance(array $columns): self {
-		return new self($columns);
-	}
-
-	public function addRow(SortableTableRow $row): self {
-		array_push($this->rows, $row);
-		return $this;
-	}
-
-	public function setRows(array $rows): self {
-		$this->rows = $rows;
-		return $this;
-	}
-
-	public function setTableID(string $tableID): self {
-		$this->tableID = $tableID;
-		return $this;
-	}
-
-	public function getTableID(): string {
-		return $this->tableID;
-	}
-
-	public function setTableClasses(array $tableClasses): self {
-		$this->tableClasses = $tableClasses;
-		return $this;
-	}
-
-	public function getTableClasses(): array {
-		return $this->tableClasses;
 	}
 
 	public function getContent(): string {
@@ -95,19 +67,47 @@ class SortableTableWidget extends JavascriptWidget {
 		return $html;
 	}
 
+	public function addRow(SortableTableRow $row): self {
+		array_push($this->rows, $row);
+		return $this;
+	}
+
+	public function setRows(array $rows): self {
+		$this->rows = $rows;
+		return $this;
+	}
+
+	public function setTableID(string $tableID): self {
+		$this->tableID = $tableID;
+		return $this;
+	}
+
+	public function getTableID(): string {
+		return $this->tableID;
+	}
+
+	public function setTableClasses(array $tableClasses): self {
+		$this->tableClasses = $tableClasses;
+		return $this;
+	}
+
+	public function getTableClasses(): array {
+		return $this->tableClasses;
+	}
+
 }
 
 class SortableTableRow {
 	private $onClick;
 	private $cells;
 
+	public static function newInstance(): self {
+		return new self();
+	}
+
 	public function __construct() {
 		$this->onClick = '';
 		$this->cells = array();
-	}
-
-	public static function newInstance(): self {
-		return new self();
 	}
 
 	public function setOnClick(string $onClick): self {
@@ -138,12 +138,12 @@ class SortableTableRow {
 class SortableTableCell {
 	private $innerHTML;
 
-	public function __construct(string $innerHTML) {
-		$this->innerHTML = $innerHTML;
-	}
-
 	public function newInstance(string $innerHTML): self {
 		return new self($innerHTML);
+	}
+
+	public function __construct(string $innerHTML) {
+		$this->innerHTML = $innerHTML;
 	}
 
 	public function getInnerHTML(): string {

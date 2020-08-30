@@ -5,50 +5,8 @@ namespace SiteBuilder\PageElement;
 class AccordionNavigationMenuWidget extends JavascriptWidget {
 	private $showRoot;
 
-	public function __construct() {
-		$dependencies = array(
-				new Dependency(SITEBUILDER_JS_DEPENDENCY, 'javascript-widgets/external-resources/jquery/jquery-3.5.1.min.js'),
-				new Dependency(SITEBUILDER_JS_DEPENDENCY, 'javascript-widgets/widgets/accordion-nav-menu/accordion-nav-menu.js', 'defer')
-		);
-		parent::__construct($dependencies);
-		$this->showRoot = true;
-	}
-
 	public static function newInstance(): self {
 		return new self();
-	}
-
-	public function getPages(): array {
-		return $this->pages;
-	}
-
-	public function setShowRoot(bool $showRoot): self {
-		$this->showRoot = $showRoot;
-		return $this;
-	}
-
-	public function getShowRoot(): bool {
-		return $this->showRoot;
-	}
-
-	public function getContent(): string {
-		$sb = $GLOBALS['SiteBuilder_Core'];
-		$sb->setPageAttributeInHierarchy($sb->page->getPath(), 'active', true);
-		$pages = $sb->getPageHierarchy();
-
-		$html = '<nav class="sitebuilder-accordion-nav"><ul>';
-
-		if($this->showRoot) {
-			$html .= self::generateHTMLFromArray($pages);
-		} else {
-			foreach($pages['children'] as $child) {
-				$html .= self::generateHTMLFromArray($child);
-			}
-		}
-
-		$html .= '</ul></nav>';
-
-		return $html;
 	}
 
 	public static function generateHTMLFromArray(array $array): string {
@@ -83,6 +41,44 @@ class AccordionNavigationMenuWidget extends JavascriptWidget {
 		}
 
 		return $html;
+	}
+
+	public function __construct() {
+		$dependencies = array(
+				new Dependency(__SITEBUILDER_JS_DEPENDENCY, 'javascript-widgets/external-resources/jquery/jquery-3.5.1.min.js'),
+				new Dependency(__SITEBUILDER_JS_DEPENDENCY, 'javascript-widgets/widgets/accordion-nav-menu/accordion-nav-menu.js', 'defer')
+		);
+		parent::__construct($dependencies);
+		$this->showRoot = true;
+	}
+
+	public function getContent(): string {
+		$sb = $GLOBALS['__SiteBuilderCore'];
+		$sb->getPageInHierarchy($sb->getCurrentPage()->getHierarchyPath())['active'] = true;
+		$pageHierarchy = $sb->getPageHierarchy();
+
+		$html = '<nav class="sitebuilder-accordion-nav"><ul>';
+
+		if($this->showRoot) {
+			$html .= self::generateHTMLFromArray($pageHierarchy);
+		} else {
+			foreach($pageHierarchy['children'] as $child) {
+				$html .= self::generateHTMLFromArray($child);
+			}
+		}
+
+		$html .= '</ul></nav>';
+
+		return $html;
+	}
+
+	public function setShowRoot(bool $showRoot): self {
+		$this->showRoot = $showRoot;
+		return $this;
+	}
+
+	public function getShowRoot(): bool {
+		return $this->showRoot;
 	}
 
 }

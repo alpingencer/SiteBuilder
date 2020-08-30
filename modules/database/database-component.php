@@ -7,6 +7,10 @@ use SiteBuilder\SiteBuilderComponent;
 abstract class DatabaseComponent extends SiteBuilderComponent implements Database {
 	private $server, $name, $user, $password;
 
+	public static function newInstance(string $server, string $name, string $user, string $password): self {
+		return new static($server, $name, $user, $password);
+	}
+
 	public function __construct(string $server, string $name, string $user, string $password) {
 		$this->server = $server;
 		$this->name = $name;
@@ -14,10 +18,6 @@ abstract class DatabaseComponent extends SiteBuilderComponent implements Databas
 		$this->password = $password;
 
 		$this->connect();
-	}
-
-	public static function newInstance(string $server, string $name, string $user, string $password): self {
-		return new static($server, $name, $user, $password);
 	}
 
 	public function getServer(): string {

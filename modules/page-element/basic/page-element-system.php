@@ -50,9 +50,7 @@ class PageElementSystem extends SiteBuilderSystem {
 
 		// Add dependencies to page
 		foreach($addedDependencies as $dependency) {
-			$normalizedPath = Dependency::getNormalizedPath($GLOBALS['SiteBuilder_Core']->getRootPath(), $dependency->getSource());
-			$html = Dependency::getHTML($dependency->getType(), $normalizedPath, $dependency->getParams());
-			$page->head .= $html;
+			$page->head .= $dependency->getHTML();
 		}
 	}
 

@@ -6,17 +6,21 @@ class CarouselWidget extends JavascriptWidget {
 	private $imgSources, $altTexts;
 	private $flickityOptions;
 
+	public static function newInstance(): self {
+		return new self();
+	}
+
 	public function __construct() {
 		$dependencies = array(
 				/* flickity */
-				new Dependency(SITEBUILDER_JS_DEPENDENCY, 'javascript-widgets/external-resources/flickity/flickity.pkgd.min.js'),
-				new Dependency(SITEBUILDER_CSS_DEPENDENCY, 'javascript-widgets/external-resources/flickity/flickity.min.css'),
-				new Dependency(SITEBUILDER_JS_DEPENDENCY, 'javascript-widgets/external-resources/flickity/fullscreen.js'),
-				new Dependency(SITEBUILDER_CSS_DEPENDENCY, 'javascript-widgets/external-resources/flickity/fullscreen.css'),
-				new Dependency(SITEBUILDER_JS_DEPENDENCY, 'javascript-widgets/external-resources/flickity/bg-lazyload.js'),
-				new Dependency(SITEBUILDER_JS_DEPENDENCY, 'javascript-widgets/external-resources/flickity/hash.js'),
+				new Dependency(__SITEBUILDER_JS_DEPENDENCY, 'javascript-widgets/external-resources/flickity/flickity.pkgd.min.js'),
+				new Dependency(__SITEBUILDER_CSS_DEPENDENCY, 'javascript-widgets/external-resources/flickity/flickity.min.css'),
+				new Dependency(__SITEBUILDER_JS_DEPENDENCY, 'javascript-widgets/external-resources/flickity/fullscreen.js'),
+				new Dependency(__SITEBUILDER_CSS_DEPENDENCY, 'javascript-widgets/external-resources/flickity/fullscreen.css'),
+				new Dependency(__SITEBUILDER_JS_DEPENDENCY, 'javascript-widgets/external-resources/flickity/bg-lazyload.js'),
+				new Dependency(__SITEBUILDER_JS_DEPENDENCY, 'javascript-widgets/external-resources/flickity/hash.js'),
 
-				new Dependency(SITEBUILDER_CSS_DEPENDENCY, 'javascript-widgets/widgets/carousel/carousel.css')
+				new Dependency(__SITEBUILDER_CSS_DEPENDENCY, 'javascript-widgets/widgets/carousel/carousel.css')
 		);
 		parent::__construct($dependencies);
 
@@ -34,8 +38,22 @@ class CarouselWidget extends JavascriptWidget {
 		);
 	}
 
-	public static function newInstance(): self {
-		return new self();
+	public function getContent(): string {
+		$html = '<div class="sitebuilder-carousel" data-flickity=\'' . json_encode($this->flickityOptions) . '\'>';
+
+		foreach($this->imgSources as $index => $imgSource) {
+			if(empty($this->altTexts[$index])) {
+				$altText = 'Image ' . ($index + 1);
+			} else {
+				$altText = $this->altTexts[$index];
+			}
+
+			$html .= '<img class="sitebuilder-carousel-cell" alt="' . $altText . '" src="' . $imgSource . '">';
+		}
+
+		$html .= '</div>';
+
+		return $html;
 	}
 
 	public function addImg(string $imgSource, string $altText = ''): self {
@@ -61,26 +79,8 @@ class CarouselWidget extends JavascriptWidget {
 		return $this->flickityOptions['option'];
 	}
 
-	public function getFlickityOptions(): array {
+	public function getAllFlickityOptions(): array {
 		return $this->flickityOptions;
-	}
-
-	public function getContent(): string {
-		$html = '<div class="sitebuilder-carousel" data-flickity=\'' . json_encode($this->flickityOptions) . '\'>';
-
-		foreach($this->imgSources as $index => $imgSource) {
-			if(empty($this->altTexts[$index])) {
-				$altText = 'Image ' . ($index + 1);
-			} else {
-				$altText = $this->altTexts[$index];
-			}
-
-			$html .= '<img class="sitebuilder-carousel-cell" alt="' . $altText . '" src="' . $imgSource . '">';
-		}
-
-		$html .= '</div>';
-
-		return $html;
 	}
 
 }

@@ -6,303 +6,18 @@ use Exception;
 use SplObjectStorage;
 use SiteBuilder\PageElement\StaticHTMLElement;
 
-/**
- * The class storing the current page of the framework.
- * Add a page instance to the SiteBuilderCore to proccess and display it.
- * Add SiteBuilderComponents to this page to specify what should be displayed.
- *
- * @author Alpin Gencer
- * @namespace SiteBuilder
- * @see SiteBuilderCore
- * @see SiteBuilderComponent
- */
 class SiteBuilderPage {
-	/**
-	 * The components added to this page
-	 *
-	 * @var SplObjectStorage
-	 */
-	private $components;
-	/**
-	 * The stringified head and body contents of the page
-	 *
-	 * @var string $head
-	 * @var string $body
-	 */
-	public $head, $body;
-	/**
-	 * The path in the page hierarchy of this page
-	 *
-	 * @var string
-	 */
-	private $path;
-	/**
-	 * The html lang attribute to set
-	 *
-	 * @var string $lang
-	 */
+	public $head;
+	public $body;
 	private $lang;
-	/**
-	 * Wether or not to pre-format the output
-	 *
-	 * @var bool
-	 */
+	private $hierarchyPath;
 	private $prettyPrint;
+	private $components;
 
-	/**
-	 * Constructor for the page
-	 */
-	public function __construct(string $path) {
-		$this->components = new SplObjectStorage();
-		$this->head = '';
-		$this->body = '';
-		$this->path = $path;
-		$this->lang = '';
-		$this->prettyPrint = true;
+	public static function newInstance(string $hierarchyPath): self {
+		return new self($hierarchyPath);
 	}
 
-	/**
-	 * Add a component to this page
-	 *
-	 * @param SiteBuilderComponent $component The component to be added
-	 * @return self Returns itself to chain other functions
-	 */
-	public function addComponent(SiteBuilderComponent $component): self {
-		$this->components->attach($component);
-		return $this;
-	}
-
-	/**
-	 * Add all given components to this page
-	 *
-	 * @param SiteBuilderComponent ...$components The components to be added
-	 * @return self Returns itself to chain other functions
-	 */
-	public function addAllComponents(SiteBuilderComponent ...$components): self {
-		foreach($components as $component) {
-			$this->addComponent($component);
-		}
-
-		return $this;
-	}
-
-	/**
-	 * Remove a component from this page
-	 *
-	 * @param SiteBuilderComponent $component The component to be removed
-	 * @return self Returns itself to chain other functions
-	 */
-	public function removeComponent(SiteBuilderComponent $component): self {
-		// Check if the component has been added to the page
-		if(!$this->components->contains($component)) {
-			// Create a new exception to get the call trace
-			$e = new Exception();
-
-			// Trigger a PHP notice and print the call trace
-			trigger_error("The given component was not found!\nStack trace:\n" . $e->getTraceAsString(), E_USER_NOTICE);
-		} else {
-			$this->components->detach($component);
-		}
-
-		return $this;
-	}
-
-	/**
-	 * Remove all the given components from this page
-	 *
-	 * @param SiteBuilderComponent ...$components The components to be removed
-	 * @return self Returns itself to chain other functions
-	 */
-	public function removeAllComponents(SiteBuilderComponent ...$components): self {
-		foreach($components as $component) {
-			$this->removeComponent($component);
-		}
-
-		return $this;
-	}
-
-	/**
-	 * Remove all the components added to this page
-	 *
-	 * @return self Returns itself to chain other functions
-	 */
-	public function clearComponents(): self {
-		$this->components->removeAll($this->components);
-
-		return $this;
-	}
-
-	/**
-	 * Check if the page has at least 1 of each given given class.
-	 * This is a shorthand for $page->matchesFamily(SiteBuilderFamily::newInstance()->requireAll(...$classes))
-	 *
-	 * @param string ...$classes The class names to be checked
-	 * @return boolean The boolean result
-	 * @see SiteBuilderPage::matchesFamily(SiteBuilderFamily $family)
-	 */
-	public function hasComponents(string ...$classes): bool {
-		return $this->matchesFamily(SiteBuilderFamily::newInstance()->requireAll(...$classes));
-	}
-
-	/**
-	 * Get the first component added to this page by its class name
-	 *
-	 * @param string $className The class name to be searched for
-	 * @return SiteBuilderComponent|NULL The component if one is found, null otherwise
-	 */
-	public function getComponent(string $className) {
-		$components = $this->getComponents($className);
-
-		if(is_null($components)) {
-			return null;
-		} else {
-			return $components->current();
-		}
-	}
-
-	/**
-	 * Get all components added to this page.
-	 * Optionally filter by a set of given class names.
-	 *
-	 * @param string ...$classNamesFilter The class names to be searched for
-	 *        Note the given class name can also be the name of the parent class of the component.
-	 * @return SplObjectStorage|NULL The components if any are found, null otherwise
-	 */
-	public function getComponents(string ...$classNamesFilter) {
-		if(empty($classNamesFilter)) {
-			// If no filter was specified, return all components
-			$ret = $this->components;
-		} else {
-			$ret = new SplObjectStorage();
-
-			// Check if component class is in given set
-			foreach($this->components as $component) {
-				foreach($classNamesFilter as $className) {
-					if(get_class($component) === $className || is_subclass_of($component, $className)) {
-						$ret->attach($component);
-					}
-				}
-			}
-		}
-
-		// If no componenents were found, return null
-		// Otherwise return the SplObjectStorage
-		if($ret->count() === 0) {
-			return null;
-		} else {
-			return $ret;
-		}
-	}
-
-	/**
-	 * Convenience function for outputting static HTML into the page.
-	 * This is the same as $page->addComponent(StaticHTMLElement::newInstance($html)->setPriority($priority))
-	 *
-	 * @param string $html The html to be outputted
-	 * @param int $priority The priority of the StaticHTMLElement to create
-	 * @return self Returns itself for chaining other functions
-	 * @see StaticHTMLElement
-	 */
-	public function echoHTML(string $html, int $priority = 0): self {
-		$this->addComponent(StaticHTMLElement::newInstance($html)->setPriority($priority));
-		return $this;
-	}
-
-	/**
-	 * Check if this page matches a given family
-	 *
-	 * @param SiteBuilderFamily $family The family to be checked against
-	 * @return bool The boolean result
-	 */
-	public function matchesFamily(SiteBuilderFamily $family): bool {
-		return $family->matches($this->components);
-	}
-
-	/**
-	 * Getter for $path
-	 *
-	 * @return string
-	 */
-	public function getPath(): string {
-		return $this->path;
-	}
-
-	/**
-	 * Setter for $lang
-	 *
-	 * @param string $lang
-	 * @return self Returns itself to chain other functions
-	 */
-	public function setLang(string $lang): self {
-		$this->lang = $lang;
-		return $this;
-	}
-
-	/**
-	 * Getter for $lang
-	 *
-	 * @return string
-	 */
-	public function getLang(): string {
-		return $this->lang;
-	}
-
-	/**
-	 * Setter for $prettyPrint
-	 *
-	 * @param bool $prettyPrint
-	 * @return self Returns itself to chain other functions
-	 */
-	public function setPrettyPrint(bool $prettyPrint): self {
-		$this->prettyPrint = $prettyPrint;
-		return $this;
-	}
-
-	/**
-	 * Getter for $prettyPrint
-	 *
-	 * @return bool
-	 */
-	public function getPrettyPrint(): bool {
-		return $this->prettyPrint;
-	}
-
-	/**
-	 * Get the content to be outputted to the browser
-	 * To 'prettify' the output, set $page->setPrettyPrint(true)
-	 *
-	 * @return string The generated HTML
-	 */
-	public function getHTML(): string {
-		$content = '<!DOCTYPE html>';
-		if(empty($this->lang)) {
-			$content .= '<html>';
-		} else {
-			$content .= '<html lang="' . $this->lang . '">';
-		}
-		$content .= '<head>' . $this->head . '</head>';
-		$content .= '<body>' . $this->body . '</body>';
-		$content .= '</html>';
-
-		if($this->prettyPrint) {
-			$content = SiteBuilderPage::prettifyHTML($content);
-		}
-
-		return $content;
-	}
-
-	/**
-	 * Will result in HTML that has:
-	 * <ul>
-	 * <li>Indentation based on "levels"</li>
-	 * <li>Line breaks after non-empty block level elements</li>
-	 * <li>Inline and self-closing elements are not affected</li>
-	 * </ul>
-	 *
-	 * @param string $content The content to be indented
-	 * @param string $tab The tab character to be used
-	 * @return string The indented content
-	 */
 	public static function prettifyHTML(string $content, string $tab = "\t"): string {
 		/* Code taken and modified from: https://stackoverflow.com/a/61990936 */
 
@@ -363,7 +78,149 @@ class SiteBuilderPage {
 		// remove all whitespace between empty tags
 		$result = preg_replace('/(<)(\S*)(.*>)[\n\s]*(<\/\g2>)/', "$1$2$3$4", $result);
 
+		// strip whitespace from beginning and end
+		$result = rtrim($result);
+
 		return $result;
+	}
+
+	public function __construct(string $hierarchyPath) {
+		$this->head = '';
+		$this->body = '';
+		$this->hierarchyPath = $hierarchyPath;
+		$this->prettyPrint = true;
+		$this->components = new SplObjectStorage();
+	}
+
+	public function setLang(string $lang): self {
+		$this->lang = $lang;
+		return $this;
+	}
+
+	public function getLang(): string {
+		return $this->lang;
+	}
+
+	public function getHierarchyPath(): string {
+		return $this->hierarchyPath;
+	}
+
+	public function setPrettyPrint(bool $prettyPrint): self {
+		$this->prettyPrint = $prettyPrint;
+		return $this;
+	}
+
+	public function getPrettyPrint(): bool {
+		return $this->prettyPrint;
+	}
+
+	public function addComponent(SiteBuilderComponent $component): self {
+		$this->components->attach($component);
+		return $this;
+	}
+
+	public function addAllComponents(SiteBuilderComponent ...$components): self {
+		foreach($components as $component) {
+			$this->addComponent($component);
+		}
+
+		return $this;
+	}
+
+	public function removeComponent(SiteBuilderComponent $component): self {
+		// Check if the component has been added to the page
+		if(!$this->components->contains($component)) {
+			$e = new Exception();
+			trigger_error("The given component was not found!\nStack trace:\n" . $e->getTraceAsString(), E_USER_NOTICE);
+		} else {
+			$this->components->detach($component);
+		}
+
+		return $this;
+	}
+
+	public function removeAllComponents(SiteBuilderComponent ...$components): self {
+		foreach($components as $component) {
+			$this->removeComponent($component);
+		}
+
+		return $this;
+	}
+
+	public function clearComponents(): self {
+		$this->components->removeAll($this->components);
+
+		return $this;
+	}
+
+	public function getComponent(string $className) {
+		foreach($this->components as $component) {
+			if(get_class($component) === $className || is_subclass_of($component, $className)) {
+				return $component;
+			}
+		}
+
+		// No component with given class name found, return null
+		return null;
+	}
+
+	public function getComponents(string $className) {
+		$ret = new SplObjectStorage();
+
+		foreach($this->components as $component) {
+			if(get_class($component) === $className || is_subclass_of($component, $className)) {
+				$ret->attach($component);
+			}
+		}
+
+		if($ret->count() === 0) {
+			return null;
+		} else {
+			return $ret;
+		}
+	}
+
+	public function getAllComponents(): SplObjectStorage {
+		return $this->components;
+	}
+
+	public function hasComponent(string $className): bool {
+		$component = $this->getComponent($className);
+
+		if(is_null($component)) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	public function echoHTML(string $html, int $priority = 0): self {
+		$this->addComponent(StaticHTMLElement::newInstance($html)->setPriority($priority));
+		return $this;
+	}
+
+	public function matchesFamily(SiteBuilderFamily $family) {
+		return $family->matches($this->components);
+	}
+
+	public function getHTML(): string {
+		$content = '<!DOCTYPE html>';
+
+		if(isset($this->lang)) {
+			$content .= '<html lang="' . $this->lang . '">';
+		} else {
+			$content .= '<html>';
+		}
+
+		$content .= '<head>' . $this->head . '</head>';
+		$content .= '<body>' . $this->body . '</body>';
+		$content .= '</html>';
+
+		if($this->prettyPrint) {
+			$content = self::prettifyHTML($content);
+		}
+
+		return $content;
 	}
 
 }

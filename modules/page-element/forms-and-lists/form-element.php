@@ -9,9 +9,13 @@ class FormElement extends PageElement {
 	private $showDelete;
 	private $proccessFunction, $deleteFunction;
 
+	public static function newInstance(): self {
+		return new self();
+	}
+
 	public function __construct() {
 		$dependencies = array(
-				new Dependency(SITEBUILDER_CSS_DEPENDENCY, 'forms-and-lists/css/forms.css')
+				new Dependency(__SITEBUILDER_CSS_DEPENDENCY, 'forms-and-lists/css/forms.css')
 		);
 		parent::__construct($dependencies);
 		$this->html = '';
@@ -21,10 +25,6 @@ class FormElement extends PageElement {
 		$this->showDelete = true;
 		$this->proccessFunction = function () {};
 		$this->deleteFunction = function () {};
-	}
-
-	public static function newInstance(): self {
-		return new self();
 	}
 
 	public function getContent(): string {
@@ -91,13 +91,13 @@ class FormFieldset {
 	private $prompt;
 	private $fields;
 
+	public static function newInstance(string $prompt): self {
+		return new self($prompt);
+	}
+
 	public function __construct(string $prompt) {
 		$this->prompt = $prompt;
 		$this->fields = array();
-	}
-
-	public static function newInstance(string $prompt): self {
-		return new self($prompt);
 	}
 
 	public function getPrompt(): string {
@@ -123,12 +123,12 @@ class FormFieldset {
 class FormField {
 	private $innerHTML;
 
-	public function __construct(string $innerHTML) {
-		$this->innerHTML = $innerHTML;
+	public static function newInstance(string $innerHTML): self {
+		return new self($innerHTML);
 	}
 
-	public static function newInstance(string $innerHTML) {
-		return new self($innerHTML);
+	public function __construct(string $innerHTML) {
+		$this->innerHTML = $innerHTML;
 	}
 
 	public function getInnerHTML(): string {

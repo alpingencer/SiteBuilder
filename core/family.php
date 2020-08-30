@@ -25,24 +25,24 @@ class SiteBuilderFamily {
 	private $all, $one, $none;
 
 	/**
-	 * Private constructor for SiteBuilderFamily.
-	 * To get an instance of this class, use SiteBuilderFamily::newInstance().
-	 *
-	 * @see SiteBuilderFamily::newInstance()
-	 */
-	private function __construct() {
-		$this->all = array();
-		$this->one = array();
-		$this->none = array();
-	}
-
-	/**
 	 * Return an instance of SiteBuilderFamily
 	 *
 	 * @return self The instantiated instance
 	 */
 	public static function newInstance(): self {
 		return new self();
+	}
+
+	/**
+	 * Constructor for SiteBuilderFamily.
+	 * To get an instance of this class with chainable functions, use SiteBuilderFamily::newInstance().
+	 *
+	 * @see SiteBuilderFamily::newInstance()
+	 */
+	public function __construct() {
+		$this->all = array();
+		$this->one = array();
+		$this->none = array();
 	}
 
 	/**
@@ -78,7 +78,7 @@ class SiteBuilderFamily {
 	 *
 	 * @param string ...$classes The class names to exclude
 	 * @return self Returns itself to chain other functions
-	 * @see SiteBuilderFamily::requireOne(string ...$classes)
+	 * @see SiteBuilderFamily::requireAll(string ...$classes)
 	 * @see SiteBuilderFamily::requireOne(string ...$classes)
 	 * @see SiteBuilderFamily::matches(SplObjectStorage $components)
 	 */

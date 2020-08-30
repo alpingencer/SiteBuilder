@@ -12,27 +12,6 @@ use IntlDateFormatter;
 
 class InternationalizationSystem extends SiteBuilderSystem {
 
-	public function __construct(int $priority = 0) {
-		parent::__construct(SiteBuilderFamily::newInstance()->requireAll(InternationalizationComponent::class), $priority);
-	}
-
-	public function proccess(SiteBuilderPage $page): void {
-		$internationalizationComponent = $page->getComponent(InternationalizationComponent::class);
-		if($page->hasComponents(DatabaseComponent::class)) {
-			$database = $page->getComponent(DatabaseComponent::class);
-		}
-
-		// Get tokens
-		if(isset($database)) {
-			InternationalizationSystem::replaceContentWithTokens($page->head, $internationalizationComponent, $database);
-			InternationalizationSystem::replaceContentWithTokens($page->body, $internationalizationComponent, $database);
-		}
-
-		// Get dates
-		InternationalizationSystem::replaceContentWithDates($page->head, $internationalizationComponent);
-		InternationalizationSystem::replaceContentWithDates($page->body, $internationalizationComponent);
-	}
-
 	public static function replaceContentWithTokens(string &$content, InternationalizationComponent $component, Database $database): void {
 		// Replace TOKEN([token]) by token ID or tag
 		// [token] must contain only word characters (a-z, A-Z, 0-9, _) or -
@@ -68,6 +47,27 @@ class InternationalizationSystem extends SiteBuilderSystem {
 			$formatter = new IntlDateFormatter($component->getLocale(LC_TIME), IntlDateFormatter::LONG, IntlDateFormatter::NONE);
 			return $formatter->format($dateTime);
 		}, $content);
+	}
+
+	public function __construct(int $priority = 0) {
+		parent::__construct(SiteBuilderFamily::newInstance()->requireAll(InternationalizationComponent::class), $priority);
+	}
+
+	public function proccess(SiteBuilderPage $page): void {
+		$internationalizationComponent = $page->getComponent(InternationalizationComponent::class);
+		if($page->hasComponent(DatabaseComponent::class)) {
+			$database = $page->getComponent(DatabaseComponent::class);
+		}
+
+		// Get tokens
+		if(isset($database)) {
+			InternationalizationSystem::replaceContentWithTokens($page->head, $internationalizationComponent, $database);
+			InternationalizationSystem::replaceContentWithTokens($page->body, $internationalizationComponent, $database);
+		}
+
+		// Get dates
+		InternationalizationSystem::replaceContentWithDates($page->head, $internationalizationComponent);
+		InternationalizationSystem::replaceContentWithDates($page->body, $internationalizationComponent);
 	}
 
 }

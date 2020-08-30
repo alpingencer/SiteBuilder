@@ -8,6 +8,10 @@ class ListElement extends PageElement {
 	private $columnNames, $columnDatabaseNames;
 	private $sdefaultSort, $queryCriteria, $rowOnClickRef;
 
+	public static function newInstance(string $tableDatabaseName): self {
+		return new self($tableDatabaseName);
+	}
+
 	public function __construct(string $tableDatabaseName) {
 		parent::__construct(array());
 		$this->tableID = '';
@@ -22,8 +26,8 @@ class ListElement extends PageElement {
 		$this->rowOnClickRef = '';
 	}
 
-	public static function newInstance(string $tableDatabaseName): self {
-		return new self($tableDatabaseName);
+	public function getContent(): string {
+		return '';
 	}
 
 	public function addColumn(string $columnName, string $databaseName): self {
@@ -109,10 +113,6 @@ class ListElement extends PageElement {
 
 	public function getRowOnClickRef(): string {
 		return $this->rowOnClickRef;
-	}
-
-	public function getContent(): string {
-		return '';
 	}
 
 }
