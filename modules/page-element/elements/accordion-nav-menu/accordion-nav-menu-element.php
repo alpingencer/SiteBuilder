@@ -2,7 +2,7 @@
 
 namespace SiteBuilder\PageElement;
 
-class AccordionNavigationMenuWidget extends JavascriptWidget {
+class AccordionNavigationMenuElement extends PageElement {
 	private $showRoot;
 
 	public static function newInstance(): self {
@@ -44,12 +44,15 @@ class AccordionNavigationMenuWidget extends JavascriptWidget {
 	}
 
 	public function __construct() {
-		$dependencies = array(
-				new Dependency(__SITEBUILDER_JS_DEPENDENCY, 'javascript-widgets/external-resources/jquery/jquery-3.5.1.min.js'),
-				new Dependency(__SITEBUILDER_JS_DEPENDENCY, 'javascript-widgets/widgets/accordion-nav-menu/accordion-nav-menu.js', 'defer')
-		);
-		parent::__construct($dependencies);
+		parent::__construct();
 		$this->showRoot = true;
+	}
+
+	public function getDependencies(): array {
+		return array(
+				new Dependency(__SITEBUILDER_JS_DEPENDENCY, 'jquery/jquery-3.5.1.min.js'),
+				new Dependency(__SITEBUILDER_JS_DEPENDENCY, 'elements/accordion-nav-menu/accordion-nav-menu.js', 'defer')
+		);
 	}
 
 	public function getContent(): string {

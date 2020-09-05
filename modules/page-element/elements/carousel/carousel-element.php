@@ -2,7 +2,7 @@
 
 namespace SiteBuilder\PageElement;
 
-class CarouselWidget extends JavascriptWidget {
+class CarouselElement extends PageElement {
 	private $imgSources, $altTexts;
 	private $flickityOptions;
 
@@ -11,22 +11,9 @@ class CarouselWidget extends JavascriptWidget {
 	}
 
 	public function __construct() {
-		$dependencies = array(
-				/* flickity */
-				new Dependency(__SITEBUILDER_JS_DEPENDENCY, 'javascript-widgets/external-resources/flickity/flickity.pkgd.min.js'),
-				new Dependency(__SITEBUILDER_CSS_DEPENDENCY, 'javascript-widgets/external-resources/flickity/flickity.min.css'),
-				new Dependency(__SITEBUILDER_JS_DEPENDENCY, 'javascript-widgets/external-resources/flickity/fullscreen.js'),
-				new Dependency(__SITEBUILDER_CSS_DEPENDENCY, 'javascript-widgets/external-resources/flickity/fullscreen.css'),
-				new Dependency(__SITEBUILDER_JS_DEPENDENCY, 'javascript-widgets/external-resources/flickity/bg-lazyload.js'),
-				new Dependency(__SITEBUILDER_JS_DEPENDENCY, 'javascript-widgets/external-resources/flickity/hash.js'),
-
-				new Dependency(__SITEBUILDER_CSS_DEPENDENCY, 'javascript-widgets/widgets/carousel/carousel.css')
-		);
-		parent::__construct($dependencies);
-
+		parent::__construct();
 		$this->imgSources = array();
 		$this->altTexts = array();
-
 		$this->flickityOptions = array(
 				"freeScroll" => false,
 				"wrapAround" => true,
@@ -36,6 +23,21 @@ class CarouselWidget extends JavascriptWidget {
 				"imagesLoaded" => true,
 				"setGallerySize" => false
 		);
+	}
+
+	public function getDependencies(): array {
+		$coreDependencies = array(
+				new Dependency(__SITEBUILDER_CSS_DEPENDENCY, 'elements/carousel/carousel.css')
+		);
+		$flickityDependencies = array(
+				new Dependency(__SITEBUILDER_JS_DEPENDENCY, 'flickity/flickity.pkgd.min.js'),
+				new Dependency(__SITEBUILDER_CSS_DEPENDENCY, 'flickity/flickity.min.css'),
+				new Dependency(__SITEBUILDER_JS_DEPENDENCY, 'flickity/fullscreen.js'),
+				new Dependency(__SITEBUILDER_CSS_DEPENDENCY, 'flickity/fullscreen.css'),
+				new Dependency(__SITEBUILDER_JS_DEPENDENCY, 'flickity/bg-lazyload.js'),
+				new Dependency(__SITEBUILDER_JS_DEPENDENCY, 'flickity/hash.js')
+		);
+		return array_merge($flickityDependencies, $coreDependencies);
 	}
 
 	public function getContent(): string {

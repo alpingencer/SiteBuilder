@@ -1,0 +1,40 @@
+
+.sitebuilder-searchable-select--container {
+	text-align: left;
+	cursor: pointer;
+}
+
+	.sitebuilder-searchable-select--arrow {
+		float: right;
+	}
+	
+	.sitebuilder-searchable-select--dropdown {
+		background-color: #fff;
+		position: absolute;
+		display: block;
+		border: 1px solid gray;
+		border-radius: 4px;
+	}
+	
+		.sitebuilder-searchable-select--dropdown * {
+			width: 100%;
+			box-sizing: border-box;
+		}
+		
+		.sitebuilder-searchable-select--searchbox-wrapper {
+			padding: 0.5em;
+		}
+		
+		.sitebuilder-searchable-select--dropdown ul {
+			max-height: 250px;
+			overflox-x: hidden;
+			overflow-y: auto;
+			list-style-type: none;
+			padding: 0;
+			margin: 0;
+			text-align: left;
+		}
+		
+			.sitebuilder-searchable-select--dropdown li {
+				padding-left: 0.5em;
+			}

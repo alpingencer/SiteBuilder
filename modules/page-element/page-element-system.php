@@ -31,27 +31,26 @@ class PageElementSystem extends SiteBuilderSystem {
 		}
 
 		// Dependencies
-		// Get rid of duplicate dependencies
-		$addedDependencies = array();
-		$addedDependencySources = array();
+		// Add all dependencies
+		$dependencies = array();
 		foreach($elementsArray as $element) {
-			foreach($element->getDependencies() as $dependency) {
-				if(in_array($dependency->getSource(), $addedDependencySources, true)) continue;
-
-				array_push($addedDependencySources, $dependency->getSource());
-				array_push($addedDependencies, $dependency);
-			}
+			$dependencies = array_merge($dependencies, $element->getDependencies());
 		}
 
+		// Get rid of duplicate dependencies
+		Dependency::removeDuplicates($dependencies);
+
 		// Sort dependencies by type
-		usort($addedDependencies, function (Dependency $d1, Dependency $d2) {
+		usort($dependencies, function (Dependency $d1, Dependency $d2) {
 			return $d1->getType() <=> $d2->getType();
 		});
 
 		// Add dependencies to page
-		foreach($addedDependencies as $dependency) {
+		$page->head .= '<!-- SiteBuilder Generated Dependencies -->';
+		foreach($dependencies as $dependency) {
 			$page->head .= $dependency->getHTML();
 		}
+		$page->head .= '<!-- End SiteBuilder Generated Dependencies -->';
 	}
 
 }

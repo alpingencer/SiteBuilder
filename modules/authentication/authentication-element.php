@@ -12,8 +12,12 @@ class AuthenticationElement extends PageElement {
 	}
 
 	public function __construct() {
-		parent::__construct(array());
+		parent::__construct();
 		$this->html = '';
+	}
+
+	public function getDependencies(): array {
+		return array();
 	}
 
 	public function getContent(): string {

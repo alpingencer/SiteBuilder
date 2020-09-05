@@ -12,10 +12,14 @@ class PageLinkElement extends PageElement {
 	}
 
 	public function __construct(string $linkHierarchyPath) {
-		parent::__construct(array());
+		parent::__construct();
 		$this->linkHierarchyPath = $linkHierarchyPath;
 		$this->hrefSuffix = '';
 		$this->innerHTML = '';
+	}
+
+	public function getDependencies(): array {
+		return array();
 	}
 
 	public function getContent(): string {

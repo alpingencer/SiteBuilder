@@ -2,7 +2,7 @@
 
 namespace SiteBuilder\PageElement;
 
-class SortableTableWidget extends JavascriptWidget {
+class SortableTableElement extends PageElement {
 	private $tableID, $tableClasses;
 	private $columns, $rows;
 
@@ -11,15 +11,18 @@ class SortableTableWidget extends JavascriptWidget {
 	}
 
 	public function __construct(array $columns) {
-		$dependencies = array(
-				new Dependency(__SITEBUILDER_JS_DEPENDENCY, 'javascript-widgets/widgets/sortable-table/sortable-table.js', 'defer'),
-				new Dependency(__SITEBUILDER_CSS_DEPENDENCY, 'javascript-widgets/widgets/sortable-table/sortable-table.css')
-		);
-		parent::__construct($dependencies);
+		parent::__construct();
 		$this->columns = $columns;
 		$this->rows = array();
 		$this->tableID = '';
 		$this->tableClasses = array();
+	}
+
+	public function getDependencies(): array {
+		return array(
+				new Dependency(__SITEBUILDER_JS_DEPENDENCY, 'elements/sortable-table/sortable-table.js', 'defer'),
+				new Dependency(__SITEBUILDER_CSS_DEPENDENCY, 'elements/sortable-table/sortable-table.css')
+		);
 	}
 
 	public function getContent(): string {
@@ -93,61 +96,6 @@ class SortableTableWidget extends JavascriptWidget {
 
 	public function getTableClasses(): array {
 		return $this->tableClasses;
-	}
-
-}
-
-class SortableTableRow {
-	private $onClick;
-	private $cells;
-
-	public static function newInstance(): self {
-		return new self();
-	}
-
-	public function __construct() {
-		$this->onClick = '';
-		$this->cells = array();
-	}
-
-	public function setOnClick(string $onClick): self {
-		$this->onClick = $onClick;
-		return $this;
-	}
-
-	public function getOnClick(): string {
-		return $this->onClick;
-	}
-
-	public function addCell(SortableTableCell $cell): self {
-		array_push($this->cells, $cell);
-		return $this;
-	}
-
-	public function setCells(array $cells): self {
-		$this->cells = $cells;
-		return $this;
-	}
-
-	public function getCells(): array {
-		return $this->cells;
-	}
-
-}
-
-class SortableTableCell {
-	private $innerHTML;
-
-	public function newInstance(string $innerHTML): self {
-		return new self($innerHTML);
-	}
-
-	public function __construct(string $innerHTML) {
-		$this->innerHTML = $innerHTML;
-	}
-
-	public function getInnerHTML(): string {
-		return $this->innerHTML;
 	}
 
 }

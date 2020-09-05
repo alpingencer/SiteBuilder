@@ -11,7 +11,10 @@ class Dependency {
 	private $params;
 
 	public static function getNormalizedPath(string $sitebuilderDirectoryPath, string $source): string {
-		if(file_exists($_SERVER['DOCUMENT_ROOT'] . ($path = $sitebuilderDirectoryPath . 'modules/page-element/' . $source))) {
+		if(file_exists($_SERVER['DOCUMENT_ROOT'] . ($path = $sitebuilderDirectoryPath . 'modules/page-element/external-resources/' . $source))) {
+			// File in external-resources
+			return $path;
+		} else if(file_exists($_SERVER['DOCUMENT_ROOT'] . ($path = $sitebuilderDirectoryPath . 'modules/page-element/' . $source))) {
 			// File in page-element
 			return $path;
 		} else if(file_exists($_SERVER['DOCUMENT_ROOT'] . ($path = $sitebuilderDirectoryPath . $source))) {
@@ -21,6 +24,20 @@ class Dependency {
 			// File elsewhere
 			return $source;
 		}
+	}
+
+	public static function removeDuplicates(array &$dependencies): void {
+		$addedDependencies = array();
+		$addedDependencySources = array();
+
+		foreach($dependencies as $dependency) {
+			if(in_array($dependency->getSource(), $addedDependencySources, true)) continue;
+
+			array_push($addedDependencySources, $dependency->getSource());
+			array_push($addedDependencies, $dependency);
+		}
+
+		$dependencies = $addedDependencies;
 	}
 
 	public function __construct(int $type, string $source, string $params = '') {

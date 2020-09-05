@@ -10,8 +10,12 @@ class StaticHTMLElement extends PageElement {
 	}
 
 	public function __construct(string $html) {
-		parent::__construct(array());
+		parent::__construct();
 		$this->html = $html;
+	}
+
+	public function getDependencies(): array {
+		return array();
 	}
 
 	public function getContent(): string {
