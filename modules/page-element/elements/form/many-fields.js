@@ -48,10 +48,6 @@ $('.sitebuilder-fieldset-adder').click(function() {
 		
 		// DOM manipulation
 		clonedField.insertBefore($(this));
-		
-		// Slide down new fieldset
-		clonedField.slideUp(0);
-		clonedField.slideDown(200);
 	}
 	
 	// Enable and disable 'fieldset-adder' and 'fieldset-remover'
@@ -80,13 +76,8 @@ $('.sitebuilder-fieldset-remover').click(function() {
 		// Get last fieldset
 		var removedField = $(this).siblings('fieldset:last-of-type');
 		
-		// Slide up removed fieldset
-		removedField.slideUp(200, function() {
-			// Remove fieldset on animation finish
-			// DOM manipulation
-			removedField.remove();
-		});
-		
+		// DOM manipulation
+		removedField.remove();
 	}
 	
 	// Enable and disable 'fieldset-adder' and 'fieldset-remover'

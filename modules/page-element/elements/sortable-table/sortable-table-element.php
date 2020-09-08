@@ -15,7 +15,7 @@ class SortableTableElement extends PageElement {
 		$this->columns = $columns;
 		$this->rows = array();
 		$this->tableID = '';
-		$this->tableClasses = array();
+		$this->tableClasses = '';
 	}
 
 	public function getDependencies(): array {
@@ -34,7 +34,10 @@ class SortableTableElement extends PageElement {
 		}
 
 		// Set table classes
-		$classes = 'sitebuilder-sortable-table ' . implode(' ', $this->tableClasses);
+		$classes = 'sitebuilder-sortable-table';
+		if(!empty($this->tableClasses)) {
+			$classes .= ' ' . $this->tableClasses;
+		}
 
 		// Generate <thead>
 		$html = '<table' . $id . ' class="' . $classes . '"><thead><tr>';
@@ -89,7 +92,7 @@ class SortableTableElement extends PageElement {
 		return $this->tableID;
 	}
 
-	public function setTableClasses(array $tableClasses): self {
+	public function setTableClasses(string $tableClasses): self {
 		$this->tableClasses = $tableClasses;
 		return $this;
 	}

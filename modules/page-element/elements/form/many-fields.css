@@ -7,10 +7,6 @@
 	display: inline-block;
 }
 
-.sitebuilder-many-fields > fieldset:not(:last-of-type) {
-	margin-bottom: 0.5em;
-}
-
 .sitebuilder-many-fields > fieldset:last-of-type {
 	margin-right: 0.5em;
 }

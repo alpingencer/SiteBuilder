@@ -51,11 +51,9 @@ class ListElement extends PageElement {
 		$tableID = $this->tableID;
 
 		// Set table classes
-		$tableClasses = array(
-				'sitebuilder-list-table'
-		);
+		$tableClasses = 'sitebuilder-list-table';
 		if(!empty($this->rowOnClickRef)) {
-			array_push($tableClasses, 'sitebuilder-hover-table');
+			$tableClasses .= ' sitebuilder-hover-table';
 		}
 
 		// Set columns

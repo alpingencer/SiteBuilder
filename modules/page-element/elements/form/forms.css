@@ -4,7 +4,7 @@
 	padding-top: 0.5em;
 }
 
-	.sitebuilder-form-table tbody tr:last-child td {
+	.sitebuilder-form-table tr:last-child td {
 		text-align: center;
 	}
 
@@ -13,7 +13,6 @@
 	padding: 0;
 }
 
-	.sitebuilder-form-table fieldset > *:not(:last-child) {
-		display: block;
+	.sitebuilder-form-table fieldset > * {
 		margin-bottom: 0.5em;
 	}
