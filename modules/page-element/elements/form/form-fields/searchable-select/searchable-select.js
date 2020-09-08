@@ -43,6 +43,9 @@ $('.sitebuilder-searchable-select--container').click(function(e) {
 	// Remove all previous dropdown menus
 	$('.sitebuilder-searchable-select--dropdown').remove();
 	
+	// Get the container
+	var container = $(this);
+	
 	// Get select <span>
 	var select = $(this).children('.sitebuilder-searchable-select--select');
 	
@@ -82,6 +85,9 @@ $('.sitebuilder-searchable-select--container').click(function(e) {
 			
 			// Remove the dropdown
 			dropdown.remove();
+			
+			// Focus the container
+			container.focus();
 		});
 		
 		// Add '.hover' class on mouse enter
@@ -158,12 +164,37 @@ $('.sitebuilder-searchable-select--container').click(function(e) {
 	searchbox.keydown(function(e) {
 		// Get keyCode
 		var keyCode = e.keyCode || e.which;
-		var keyCodes = { arrowDown: 40, arrowUp: 38, enter: 13 };
+		var keyCodes = { arrowDown: 40, arrowUp: 38, enter: 13, escape: 27 };
 
-		// Prevent default events for enter, up and down arrow keys
-		if(keyCode == keyCodes.arrowDown || keyCode == keyCodes.arrowUp || keyCode == keyCodes.enter) {
+		// Prevent default events for enter, escape, up and down arrow keys
+		if(keyCode == keyCodes.arrowDown || keyCode == keyCodes.arrowUp || keyCode == keyCodes.enter || keyCode == keyCodes.escape) {
 			e.preventDefault();
 		}
+		
+		// Snap functions
+		var scrollAnimationSpeedMs = 80;
+		
+		var snapOptionToTop = function(option) {
+			var optionPositionRelativeToOptions = options.scrollTop() + option.position().top - options.position().top;
+			var topOfOption = optionPositionRelativeToOptions;
+			var topOfOptions = options.scrollTop();
+
+			if(topOfOption < topOfOptions) {
+				var scrollTopVal = options.scrollTop() + topOfOption - topOfOptions;
+				options.animate({ scrollTop: scrollTopVal }, scrollAnimationSpeedMs);
+			}
+		};
+		
+		var snapOptionToBottom = function(option) {
+			var optionPositionRelativeToOptions = options.scrollTop() + option.position().top - options.position().top;
+			var bottomOfOption = optionPositionRelativeToOptions + option.outerHeight();
+			var bottomOfOptions = options.scrollTop() + options.innerHeight();
+
+			if(bottomOfOption > bottomOfOptions) {
+				var scrollTopVal = options.scrollTop() + bottomOfOption - bottomOfOptions;
+				options.animate({ scrollTop: scrollTopVal }, scrollAnimationSpeedMs);
+			}
+		};
 
 		switch(keyCode) {
 			case keyCodes.arrowDown:
@@ -178,20 +209,28 @@ $('.sitebuilder-searchable-select--container').click(function(e) {
 				} else {
 					newFocus = prevFocus.nextAll('li:not(:hidden):first');
 				}
-
-				// If any <li> is now focused, scroll to it
-				// so that it's at the bottom of the dropdown
-				if(newFocus.length > 0) {
-					options.children('li.hover').removeClass('hover');
-					newFocus.addClass('hover');
-
-					var newFocusPositionRelativeToOptions = options.scrollTop() + newFocus.position().top - options.position().top;
-					var bottomOfNewFocus = newFocusPositionRelativeToOptions + newFocus.outerHeight();
-					var bottomOfOptions = options.scrollTop() + options.innerHeight();
-
-					if(bottomOfNewFocus > bottomOfOptions) {
-						options.scrollTop(options.scrollTop() + bottomOfNewFocus - bottomOfOptions);
-					}
+				
+				// If at the bottom of the drop down, wrap around to the top
+				var snapDir;
+				if(newFocus.length == 0) {
+					newFocus = options.children('li:not(:hidden):first');
+					snapDir = 'top';
+				} else {
+					snapDir = 'bottom';
+				}
+				
+				// Add or remove hover classes
+				options.children('li.hover').removeClass('hover');
+				newFocus.addClass('hover');
+				
+				// Scroll to the new option so that it's at the correct position in the dropdown
+				switch(snapDir) {
+					case 'bottom':
+						snapOptionToBottom(newFocus);
+						break;
+					case 'top':
+						snapOptionToTop(newFocus);
+						break;
 				}
 				break;
 			case keyCodes.arrowUp:
@@ -206,20 +245,27 @@ $('.sitebuilder-searchable-select--container').click(function(e) {
 				} else {
 					newFocus = prevFocus.prevAll('li:not(:hidden):first');
 				}
+				
+				// If at the top of the drop down, wrap around to the bottom
+				var snapDir;
+				if(newFocus.length == 0) {
+					newFocus = options.children('li:not(:hidden):last');
+					snapDir = 'bottom';
+				} else {
+					snapDir = 'top';
+				}
+				
+				options.children('li.hover').removeClass('hover');
+				newFocus.addClass('hover');
 
-				// If any <li> is now focused, scroll to it
-				// so that it's at the top of the dropdown
-				if(newFocus.length > 0) {
-					options.children('li.hover').removeClass('hover');
-					newFocus.addClass('hover');
-
-					var newFocusPositionRelativeToOptions = options.scrollTop() + newFocus.position().top - options.position().top;
-					var topOfNewFocus = newFocusPositionRelativeToOptions;
-					var topOfOptions = options.scrollTop();
-
-					if(topOfNewFocus < topOfOptions) {
-						options.scrollTop(options.scrollTop() + topOfNewFocus - topOfOptions);
-					}
+				// Scroll to the new option so that it's at the correct position in the dropdown
+				switch(snapDir) {
+					case 'top':
+						snapOptionToTop(newFocus);
+						break;
+					case 'bottom':
+						snapOptionToBottom(newFocus);
+						break;
 				}
 				break;
 			case keyCodes.enter:
@@ -227,18 +273,22 @@ $('.sitebuilder-searchable-select--container').click(function(e) {
 				// so that the .val() of the searchbox gets set
 				options.children('li.hover').trigger('click');
 				break;
+			case keyCodes.escape:
+				$(this).parents('.sitebuilder-searchable-select--dropdown').prev().focus();
+				$(this).parents('.sitebuilder-searchable-select--dropdown').remove();
+				break;
 		}
 	});
 });
 
-// If the container is focused without clicking it (usually by tabbing to it)
-// simulate a click when the eter key is pressed
 $('.sitebuilder-searchable-select--container').keydown(function(e) {
 	// Get keyCode
 	var keyCode = e.keyCode || e.which;
-	var keyCodes = { enter: 13 };
+	var keyCodes = { enter: 13, space: 32 };
 	
-	if(keyCode == keyCodes.enter) {
+	// If the container is focused without clicking it (usually by tabbing to it)
+	// simulate a click when the enter or space keys are pressed
+	if(keyCode == keyCodes.enter || keyCode == keyCodes.space ) {
 		e.preventDefault();
 		$(this).trigger('click');
 	}
