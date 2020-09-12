@@ -1,7 +1,7 @@
 
 /* Functions for getting 'data-min-fields' and 'data-max-fields' attributes */
 var getMinFields = function(element) {
-	minFields = element.attr('data-min-fields');
+	var minFields = element.attr('data-min-fields');
 	
 	if(minFields === undefined) {
 		minFields = 0;
@@ -11,7 +11,7 @@ var getMinFields = function(element) {
 };
 
 var getMaxFields = function(element) {
-	maxFields = element.attr('data-max-fields');
+	var maxFields = element.attr('data-max-fields');
 	
 	if(maxFields === undefined) {
 		maxFields = Infinity;

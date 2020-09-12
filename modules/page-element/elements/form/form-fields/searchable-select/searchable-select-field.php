@@ -17,7 +17,7 @@ class SearchableSelectField extends FormField {
 		$this->name = $name;
 		$this->classes = '';
 		$this->id = '';
-		$this->placeholderText = 'Type to search...';
+		$this->placeholderText = '';
 		$this->options = array();
 	}
 
@@ -34,7 +34,9 @@ class SearchableSelectField extends FormField {
 		$id = (empty($this->id)) ? '' : ' id="' . $this->id . '"';
 		$classes = 'sitebuilder-searchable-select';
 		if(!empty($this->classes)) $classes .= ' ' . $this->classes;
-		$html = '<select' . $id . ' class="' . $classes . '" name="' . $this->name . '" data-placeholder-text="' . $this->placeholderText . '">';
+		$placeholderText = (empty($this->placeholderText)) ? '' : ' data-placeholder-text="' . $this->placeholderText . '"';
+
+		$html = '<select' . $id . ' class="' . $classes . '" name="' . $this->name . '"' . $placeholderText . '>';
 
 		foreach($this->options as $option) {
 			$selected = ($option['selected']) ? ' selected="selected"' : '';
