@@ -6,6 +6,7 @@ class SearchableSelectField extends FormField {
 	private $name;
 	private $classes;
 	private $id;
+	private $placeholderText;
 	private $options;
 
 	public static function newInstance(string $name): self {
@@ -16,6 +17,7 @@ class SearchableSelectField extends FormField {
 		$this->name = $name;
 		$this->classes = '';
 		$this->id = '';
+		$this->placeholderText = 'Type to search...';
 		$this->options = array();
 	}
 
@@ -32,7 +34,7 @@ class SearchableSelectField extends FormField {
 		$id = (empty($this->id)) ? '' : ' id="' . $this->id . '"';
 		$classes = 'sitebuilder-searchable-select';
 		if(!empty($this->classes)) $classes .= ' ' . $this->classes;
-		$html = '<select' . $id . ' class="' . $classes . '" name="' . $this->name . '">';
+		$html = '<select' . $id . ' class="' . $classes . '" name="' . $this->name . '" data-placeholder-text="' . $this->placeholderText . '">';
 
 		foreach($this->options as $option) {
 			$selected = ($option['selected']) ? ' selected="selected"' : '';
@@ -64,6 +66,15 @@ class SearchableSelectField extends FormField {
 
 	public function getID(): string {
 		return $this->id;
+	}
+
+	public function setPlaceholderText(string $placeholderText): self {
+		$this->placeholderText = $placeholderText;
+		return $this;
+	}
+
+	public function getPlaceholderText(): string {
+		return $this->placeholderText;
 	}
 
 	public function addOption(string $prompt, string $value, bool $selected = false): self {

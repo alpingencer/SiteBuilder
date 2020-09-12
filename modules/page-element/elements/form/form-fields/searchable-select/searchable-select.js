@@ -47,6 +47,9 @@ $(selectSelector).each(function() {
 	textBox.width(select.actual('width'));
 	textBox.height(select.actual('height'));
 	
+	// Set searchBox placeholder text
+	searchBox.attr('placeholder', select.attr('data-placeholder-text'));
+	
 	// Set textBox text
 	var defaultOption = select.children('option[selected="selected"]');
 	if(defaultOption.length == 0) defaultOption = select.children('option:first');

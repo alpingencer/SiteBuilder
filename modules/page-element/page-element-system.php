@@ -51,7 +51,7 @@ class PageElementSystem extends SiteBuilderSystem {
 			$html .= $dependency->getHTML();
 		}
 		$html .= '<!-- End SiteBuilder Generated Dependencies -->';
-		$page->head = $html . $page->head;
+		$page->head .= $html;
 	}
 
 }
