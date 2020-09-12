@@ -46,11 +46,12 @@ class PageElementSystem extends SiteBuilderSystem {
 		});
 
 		// Add dependencies to page
-		$page->head .= '<!-- SiteBuilder Generated Dependencies -->';
+		$html = '<!-- SiteBuilder Generated Dependencies -->';
 		foreach($dependencies as $dependency) {
-			$page->head .= $dependency->getHTML();
+			$html .= $dependency->getHTML();
 		}
-		$page->head .= '<!-- End SiteBuilder Generated Dependencies -->';
+		$html .= '<!-- End SiteBuilder Generated Dependencies -->';
+		$page->head = $html . $page->head;
 	}
 
 }
