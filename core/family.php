@@ -28,6 +28,7 @@ class SiteBuilderFamily {
 	 * Return an instance of SiteBuilderFamily
 	 *
 	 * @return self The instantiated instance
+	 * @see SiteBuilderFamily::__construct()
 	 */
 	public static function newInstance(): self {
 		return new self();

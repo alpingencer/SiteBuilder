@@ -28,6 +28,12 @@ abstract class SiteBuilderSystem {
 	 */
 	private $priority;
 
+	/**
+	 * Return an instance of SiteBuilderSystem
+	 *
+	 * @return self The instantiated instance
+	 * @see SiteBuilderSystem::__construct()
+	 */
 	public static function newInstance(SiteBuilderFamily $family, int $priority = 0) {
 		return new self($family, $priority);
 	}

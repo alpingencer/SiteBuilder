@@ -6,20 +6,90 @@ use ErrorException;
 use Exception;
 use SplObjectStorage;
 
+/**
+ * The core class for the SiteBuilder framework.<br>
+ * To use this framework, follow these basic steps:<br>
+ * <ol>
+ * <li>Initialize a SiteBuilderCore object, giving it a page hierarchy to manage</li>
+ * <li>Add SiteBuilderSystems to the core</li>
+ * <li>Manipulate the head content of the page directly using the $page->head public field</li>
+ * <li>Manipulate the body content of the page indirectly using SiteBuilderComponents</li>
+ * <li>Set the $page field of the core object</li>
+ * <li>Run the core</li>
+ * </ol>
+ *
+ * @author Alpin Gencer
+ * @namespace SiteBuilder
+ * @see SiteBuilderPage
+ * @see SiteBuilderComponent
+ * @see SiteBuilderSystem
+ */
 class SiteBuilderCore {
+	/**
+	 * The page hierarchy the framework manages
+	 *
+	 * @var array
+	 */
 	private $pageHierarchy;
+	/**
+	 * The root directory for the sitebuilder framework, relative to the server root
+	 *
+	 * @var string
+	 */
 	private $sitebuilderDirectoryPath;
+	/**
+	 * The root directory for the page content files, relative to the server root
+	 *
+	 * @var string
+	 */
 	private $pageContentDirectoryPath;
+	/**
+	 * The default page to show, determined by it's path in the page hierarchy
+	 *
+	 * @var string
+	 */
 	private $defaultPageHierarchyPath;
+	/**
+	 * The 404 page to show, determined by it's path in the page hierarchy
+	 *
+	 * @var string
+	 */
 	private $notFoundHierarchyPath;
+	/**
+	 * The 403 page to show, determined by it's path in the page hierarchy
+	 *
+	 * @var string
+	 */
 	private $forbiddenHierarchyPath;
+	/**
+	 * The current SiteBuilderPage instance
+	 *
+	 * @var SiteBuilderPage
+	 */
 	private $currentPage;
+	/**
+	 * The systems added to this core
+	 *
+	 * @var SplObjectStorage
+	 */
 	private $systems;
 
+	/**
+	 * Return an instance of SiteBuilderCore
+	 *
+	 * @return self The instantiated instance
+	 * @see SiteBuilderCore::__construct()
+	 */
 	public static function newInstance(array $pageHierarchy, string $sitebuilderDirectoryPath, string $pageContentDirectoryPath): self {
 		return new self($pageHierarchy, $sitebuilderDirectoryPath, $pageContentDirectoryPath);
 	}
 
+	/**
+	 * Normalize a directory path such that it always starts and ends with a single slash character
+	 *
+	 * @param string The path to format
+	 * @return string The formatted string
+	 */
 	public static function normalizeDirectoryPath(string $path): string {
 		if(substr($path, 0, 1) !== '/') {
 			$path = '/' . $path;
@@ -32,10 +102,25 @@ class SiteBuilderCore {
 		return $path;
 	}
 
+	/**
+	 * Returns the absolute path of the page content files for the specified page hierarchy path
+	 *
+	 * @param string $pageContentDirectoryPath The root directory for the page content files,
+	 *        relative to the server root
+	 * @param string $pageHierarchyPath The page to find the file of
+	 * @return string The computed file path
+	 */
 	public static function normalizePageHierarchyPath(string $pageContentDirectoryPath, string $pageHierarchyPath): string {
 		return $_SERVER['DOCUMENT_ROOT'] . $pageContentDirectoryPath . $pageHierarchyPath . '.php';
 	}
 
+
+	/**
+	 * Copies all attributes in a parent array down to it's children,
+	 * unless the child defines it already
+	 *
+	 * @param array $pages The pages to cascade the attributes down of
+	 */
 	public static function cascadePageAttributesDownInHierarchy(array &$pages): void {
 		if(!isset($pages['children'])) return;
 
@@ -52,6 +137,16 @@ class SiteBuilderCore {
 		}
 	}
 
+	/**
+	 * Constructor for the core
+	 *
+	 * @param array $pageHierarchy The page hierarchy the framework manages
+	 * @param string $sitebuilderDirectoryPath The root directory for the sitebuilder framework,
+	 *        relative to the server root
+	 * @param string $pageContentDirectoryPath The root directory for the page content files,
+	 *        relative to the server root
+	 * @param string $defaultPageHierarchyPath The default page to show, determined by it's path in the page hierarchy
+	 */
 	public function __construct(array $pageHierarchy, string $sitebuilderDirectoryPath, string $pageContentDirectoryPath, string $defaultPageHierarchyPath) {
 		$this->pageHierarchy = $pageHierarchy;
 		$this->sitebuilderDirectoryPath = self::normalizeDirectoryPath($sitebuilderDirectoryPath);
@@ -73,6 +168,13 @@ class SiteBuilderCore {
 		self::cascadePageAttributesDownInHierarchy($this->pageHierarchy);
 	}
 
+	/**
+	 * Gets a page in the hierarchy by a given page hierarchy path
+	 * Note: This function returns a reference to the page.
+	 *
+	 * @param string $pageHierarchyPath The hierarchy path to search for
+	 * @return array A reference to the array in the page hierarchy corresponding the the given hierarchy path
+	 */
 	public function &getPageInHierarchy(string $pageHierarchyPath) {
 		// Start with root
 		$currentPage = &$this->pageHierarchy;
@@ -94,22 +196,50 @@ class SiteBuilderCore {
 		return $currentPage;
 	}
 
+	/**
+	 * Getter for the page hierarchy
+	 *
+	 * @return array
+	 */
 	public function getPageHierarchy(): array {
 		return $this->pageHierarchy;
 	}
 
+	/**
+	 * Getter for the sitebuilder framework root path
+	 *
+	 * @return string
+	 */
 	public function getSiteBuilderDirectoryPath(): string {
 		return $this->sitebuilderDirectoryPath;
 	}
 
+	/**
+	 * Getter for the page content root path
+	 *
+	 * @return string
+	 */
 	public function getPageContentDirectoryPath(): string {
 		return $this->pageContentDirectoryPath;
 	}
 
+	/**
+	 * Getter for the default page hierarchy path
+	 *
+	 * @return string
+	 */
 	public function getDefaultPageHierarchyPath(): string {
 		return $this->defaultPageHierarchyPath;
 	}
 
+	/**
+	 * Sets the page hierarchy path of the 404 page to be shown if neccessary
+	 *
+	 * @param string $notFoundHierarchyPath The page hierarchy path to use
+	 * @throws ErrorException If the page hierarchy path is not found in the page hierarchy,
+	 *         or if the corresponding page content file is not found
+	 * @return self Returns itself to chain other functions
+	 */
 	public function setNotFoundHierarchyPath(string $notFoundHierarchyPath): self {
 		if(is_null($this->getPageInHierarchy($notFoundHierarchyPath))) {
 			throw new ErrorException('The given 404 page path was not found in the page hierarchy!');
@@ -122,10 +252,23 @@ class SiteBuilderCore {
 		return $this;
 	}
 
+	/**
+	 * Getter for the page hierarchy path of the 404 page
+	 *
+	 * @return string
+	 */
 	public function getNotFoundHierarchyPath(): string {
 		return $this->notFoundHierarchyPath;
 	}
 
+	/**
+	 * Sets the page hierarchy path of the 403 page to be shown if neccessary
+	 *
+	 * @param string $forbiddenHierarchyPath The page hierarchy path to use
+	 * @throws ErrorException If the page hierarchy path is not found in the page hierarchy,
+	 *         or if the corresnponding page content file is not found
+	 * @return self Returns itself to chain other functions
+	 */
 	public function setForbiddenHierarchyPath(string $forbiddenHierarchyPath): self {
 		if(is_null($this->getPageInHierarchy($forbiddenHierarchyPath))) {
 			throw new ErrorException('The given 403 page path was not found in the page hierarchy!');
@@ -138,14 +281,31 @@ class SiteBuilderCore {
 		return $this;
 	}
 
+	/**
+	 * Getter for the page hierarchy path of the 403 page
+	 *
+	 * @return string
+	 */
 	public function getForbiddenHierarchyPath(): string {
 		return $this->forbiddenHierarchyPath;
 	}
 
+	/**
+	 * Getter for the current instance of SiteBuilderPage
+	 *
+	 * @return SiteBuilderPage
+	 */
 	public function getCurrentPage(): SiteBuilderPage {
 		return $this->currentPage;
 	}
 
+	/**
+	 * Add a system to this core
+	 *
+	 * @param SiteBuilderSystem $system The system to be added
+	 * @return self Returns itself to chain other functions
+	 * @throws ErrorException If a system of the same class or subclass already exists
+	 */
 	public function addSystem(SiteBuilderSystem $system): self {
 		// Check if system of same class already exists
 		if(!is_null($this->getSystem(get_class($system)))) {
@@ -157,6 +317,12 @@ class SiteBuilderCore {
 		return $this;
 	}
 
+	/**
+	 * Add all the given systems to this core
+	 *
+	 * @param SiteBuilderSystem ...$systems The systems to be added
+	 * @return self Returns itself to chain other functions
+	 */
 	public function addAllSystems(SiteBuilderSystem ...$systems): self {
 		foreach($systems as $system) {
 			$this->addSystem($system);
@@ -165,6 +331,12 @@ class SiteBuilderCore {
 		return $this;
 	}
 
+	/**
+	 * Remove a system from this core
+	 *
+	 * @param string $className The class name of the system to be removed
+	 * @return self Returns itself to chain other functions
+	 */
 	public function removeSystem(string $className): self {
 		$system = $this->getSystem($className);
 
@@ -179,6 +351,12 @@ class SiteBuilderCore {
 		return $this;
 	}
 
+	/**
+	 * Remove all the given systems from this core
+	 *
+	 * @param SiteBuilderSystem ...$systems The class names of the systems to be removed
+	 * @return self Returns itself to chain other functions
+	 */
 	public function removeAllSystems(string ...$classNames): self {
 		foreach($classNames as $className) {
 			$this->removeSystem($className);
@@ -187,11 +365,23 @@ class SiteBuilderCore {
 		return $this;
 	}
 
+	/**
+	 * Remove all the systems added to this core
+	 *
+	 * @return self Returns itself to chain other functions
+	 */
 	public function clearSystems(): self {
 		$this->systems->removeAll($this->systems);
 		return $this;
 	}
 
+	/**
+	 * Get a system added to this core by its class name
+	 *
+	 * @param string $className The class name to be searched for.
+	 *        Note the given class name can also be the name of the parent class of the system.
+	 * @return SiteBuilderSystem|NULL The system if it's found, null otherwise
+	 */
 	public function getSystem(string $className) {
 		foreach($this->systems as $system) {
 			if(get_class($system) === $className || is_subclass_of($system, $className)) {
@@ -202,16 +392,19 @@ class SiteBuilderCore {
 		return null;
 	}
 
+	/**
+	 * Getter for the SplObjectStorage containing all added systems
+	 *
+	 * @return SplObjectStorage
+	 */
 	public function getAllSystems(): SplObjectStorage {
 		return $this->systems;
 	}
 
+	/**
+	 * Proccess all added systems and output the page to the browser
+	 */
 	public function run(): void {
-		// Check if page is set
-		if(!isset($this->currentPage)) {
-			throw new ErrorException('The current page has not been set!');
-		}
-
 		// Include current page
 		$pageInHierarchy = $this->getPageInHierarchy($this->currentPage->getHierarchyPath());
 
