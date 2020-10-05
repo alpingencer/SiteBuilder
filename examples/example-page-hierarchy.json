@@ -1,0 +1,9 @@
+{
+	"title": "Examples",
+	"children": {
+		"home": {
+			"title": "Example Home Page",
+			"href": "/"
+		}
+	}
+}

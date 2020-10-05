@@ -1,13 +1,12 @@
 <?php
-use SiteBuilder\SiteBuilderCore;
 use SiteBuilder\SiteBuilderFamily;
 use SiteBuilder\SiteBuilderPage;
 use SiteBuilder\SiteBuilderSystem;
 
 class ExampleSystem extends SiteBuilderSystem {
 
-	public function __construct(SiteBuilderCore $sb, int $priority = 0) {
-		parent::__construct($sb, SiteBuilderFamily::newInstance()->requireAll(ExampleComponent::class), $priority);
+	public function __construct(int $priority = 0) {
+		parent::__construct(SiteBuilderFamily::newInstance()->requireAll(ExampleComponent::class), $priority);
 	}
 
 	public function proccess(SiteBuilderPage $page): void {
