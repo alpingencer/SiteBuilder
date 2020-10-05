@@ -41,11 +41,13 @@ class ListElement extends PageElement {
 		}
 
 		// Query database
-		$query = 'SELECT ' . $this->idDatabaseName . ', ' . implode(', ', $this->columnDatabaseNames);
-		$query .= ' FROM ' . $this->tableDatabaseName;
-		$query .= ' WHERE ' . $this->queryCriteria;
-		$query .= ' ORDER BY ' . $this->defaultSort;
-		$result = $database->query($query);
+// 		$query = 'SELECT ' . $this->idDatabaseName . ', ' . implode(', ', $this->columnDatabaseNames);
+// 		$query .= ' FROM ' . $this->tableDatabaseName;
+// 		$query .= ' WHERE ' . $this->queryCriteria;
+// 		$query .= ' ORDER BY ' . $this->defaultSort;
+// 		$result = $database->query($query);
+		$columns = $this->idDatabaseName . ', ' . implode(', ', $this->columnDatabaseNames);
+		$result = $database->getRows($this->tableDatabaseName, $this->queryCriteria, $columns, $this->defaultSort);
 
 		// Set table id
 		$tableID = $this->tableID;
@@ -78,7 +80,7 @@ class ListElement extends PageElement {
 			if(empty($this->rowOnClickRef)) {
 				$onClick = '';
 			} else {
-				$id = $res[0];
+				$id = $res[$this->idDatabaseName];
 				// Check if on click ref has other get parameters
 				if(strpos($this->rowOnClickRef, '?') !== false) {
 					$onClick = 'window.location.href=\'' . $this->rowOnClickRef . '&amp;id=' . $id . '\'';
@@ -89,11 +91,11 @@ class ListElement extends PageElement {
 
 			// Set cells
 			$cells = array();
-			for($i = 0; $i < count($this->columnNames) + 1; $i++) {
+			foreach($this->columnDatabaseNames as $columndatabaseName) {
 				// If not show id, skip
-				if($i === 0 && !$this->showID) continue;
+				if(!$this->showID && $columndatabaseName === $this->idDatabaseName) continue;
 
-				$cell = SortableTableCell::newInstance($res[$i]);
+				$cell = SortableTableCell::newInstance($res[$columndatabaseName]);
 				array_push($cells, $cell);
 			}
 

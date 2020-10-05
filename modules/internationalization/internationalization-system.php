@@ -22,12 +22,10 @@ class InternationalizationSystem extends SiteBuilderSystem {
 	}
 
 	public static function getToken(string $identifier, InternationalizationComponent $component, Database $database): string {
-		$query = 'SELECT ' . $component->getLangColumnName() . ' FROM ' . $component->getTokenTableName();
-		$query .= ' WHERE ' . $component->getIdentifierColumnName() . '="' . $identifier . '"';
-		$token = $database->getVal($query);
+		$token = $database->getVal($component->getTokenTableName(), "'" . $identifier. "'", $component->getLangColumnName(), $component->getIdentifierColumnName());
 
 		// Return on error
-		if(is_null($token)) {
+		if(empty($token)) {
 			return 'Error while fetching token. ' . $component->getIdentifierColumnName() . ': "' . $identifier . '"';
 		}
 

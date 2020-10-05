@@ -24,5 +24,4 @@ require_once 'elements/list/list-element.php';
 require_once 'elements/sortable-table/sortable-table-element.php';
 
 /* Systems */
-require_once 'form-system.php';
 require_once 'page-element-system.php';

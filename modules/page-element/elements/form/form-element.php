@@ -4,22 +4,24 @@ namespace SiteBuilder\PageElement;
 
 class FormElement extends PageElement {
 	private $fieldsets;
+	private $formName;
 	private $deleteText, $submitText;
 	private $showDelete;
-	private $proccessFunction, $deleteFunction;
+	private $autoProccess, $autoDeleteDatabaseEntry;
 
-	public static function newInstance(): self {
-		return new self();
+	public static function newInstance(string $formName): self {
+		return new self($formName);
 	}
 
-	public function __construct() {
+	public function __construct(string $formName) {
 		parent::__construct();
 		$this->fieldsets = array();
+		$this->formName = $formName;
 		$this->deleteText = 'Delete';
 		$this->submitText = 'Submit';
 		$this->showDelete = true;
-		$this->proccessFunction = function () {};
-		$this->deleteFunction = function () {};
+		$this->autoProccess = true;
+		$this->autoDeleteDatabaseEntry = true;
 	}
 
 	public function getDependencies(): array {
@@ -48,9 +50,21 @@ class FormElement extends PageElement {
 	}
 
 	public function getContent(): string {
+		// Proccess form
+		if($this->autoProccess && isset($_POST['__SiteBuilder_SubmitForm_' . $this->formName])) {
+			$this->proccess();
+		}
+
+		// Delete form
+		if($this->autoDeleteDatabaseEntry && isset($_POST['__SiteBuilder_DeleteForm_' . $this->formName])) {
+			$this->deleteDatabaseEntry();
+		}
+
 		$html = '<form method="POST" enctype="multipart/form-data"><table class="sitebuilder-form-table">';
 
 		// Generate fieldset html
+		$html .= '<tbody>';
+
 		foreach($this->fieldsets as $fieldset) {
 			$html .= '<tr><td>' . $fieldset->getPrompt() . ':</td>';
 
@@ -72,21 +86,33 @@ class FormElement extends PageElement {
 			$html .= '</fieldset></td></tr>';
 		}
 
+		$html .= '</tbody>';
+
 		// Generate submit button html
-		$html .= '<tr>';
+		$html .= '<tfoot><tr>';
 
 		if($this->showDelete) {
-			$html .= '<td><input class="sitebuilder-form-button" type="submit" name="__SiteBuilder_DeleteForm" value="' . $this->deleteText . '"></td>';
+			$html .= '<td><input class="sitebuilder-form-button" type="submit" name="__SiteBuilder_DeleteForm_' . $this->formName . '" value="' . $this->deleteText . '"></td>';
 			$html .= '<td>';
 		} else {
 			$html .= '<td colspan="2">';
 		}
-		$html .= '<input class="sitebuilder-form-button" type="submit" name="__SiteBuilder_SubmitForm" value="' . $this->submitText . '">';
+		$html .= '<input class="sitebuilder-form-button" type="submit" name="__SiteBuilder_SubmitForm_' . $this->formName . '" value="' . $this->submitText . '">';
 
-		$html .= '</td></tr>';
+		$html .= '</td></tr></tfoot>';
 		$html .= '</table></form>';
 
 		return $html;
+	}
+
+	public function proccess(): self {
+		// TODO Proccess form
+		return $this;
+	}
+
+	public function deleteDatabaseEntry(): self {
+		// TODO Delete form
+		return $this;
 	}
 
 	public function addFieldset(FormFieldset $fieldset): self {
@@ -96,6 +122,10 @@ class FormElement extends PageElement {
 
 	public function getFieldsets(): array {
 		return $this->fieldsets;
+	}
+
+	public function getFormName(): string {
+		return $this->formName;
 	}
 
 	public function setDeleteText(string $deleteText): self {
@@ -125,22 +155,22 @@ class FormElement extends PageElement {
 		return $this->showDelete;
 	}
 
-	public function setProccessFunction(callable $proccessFunction): self {
-		$this->proccessFunction = $proccessFunction;
+	public function setAutoProccess(bool $autoProccess): self {
+		$this->autoProccess = $autoProccess;
 		return $this;
 	}
 
-	public function getProccessFunction(): callable {
-		return $this->proccessFunction;
+	public function getAutoProccess(): bool {
+		return $this->autoProccess;
 	}
 
-	public function setDeleteFunction(callable $deleteFunction): self {
-		$this->deleteFunction = $deleteFunction;
+	public function setAutoDeleteDatabaseEntry(bool $autoDeleteDatabaseEntry): self {
+		$this->autoDeleteDatabaseEntry = $autoDeleteDatabaseEntry;
 		return $this;
 	}
 
-	public function getDeleteFunction(): callable {
-		return $this->deleteFunction;
+	public function getAutoDeleteDatabaseEntry(): bool {
+		return $this->autoDeleteDatabaseEntry;
 	}
 
 }
