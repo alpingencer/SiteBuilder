@@ -4,10 +4,10 @@
 require_once 'Dependency.php';
 
 // Forms Fields
+require_once 'elements/form/FormFieldset.php';
 require_once 'elements/form/form-fields/FormField.php';
-require_once 'elements/form/form-fields/FormFieldset.php';
-require_once 'elements/form/form-fields/StaticHTMLField.php';
-require_once 'elements/form/form-fields/searchable-select/SearchableSelectField.php';
+require_once 'elements/form/form-fields/InputBoxFormField.php';
+// require_once 'elements/form/form-fields/searchable-select/SearchableSelectField.php';
 
 // Sortable Table
 require_once 'elements/sortable-table/SortableTableCell.php';

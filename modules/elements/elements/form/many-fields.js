@@ -21,8 +21,8 @@ var getMaxFields = function(element) {
 };
 
 /* Add buttons to add and remove fieldsets */
-$('.sitebuilder-many-fields').append('<button type="button" class="sitebuilder-fieldset-adder">+</button>');
-$('.sitebuilder-many-fields').append('<button type="button" class="sitebuilder-fieldset-remover">-</button>');
+$('.sitebuilder-many-fields').append('<button type="button" class="sitebuilder-fieldset-adder"></button>');
+$('.sitebuilder-many-fields').append('<button type="button" class="sitebuilder-fieldset-remover"></button>');
 
 /* Adding fieldsets */
 $('.sitebuilder-fieldset-adder').click(function() {

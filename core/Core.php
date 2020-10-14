@@ -23,7 +23,7 @@ class Core {
 	public function __construct(array $pageHierarchy, string $defaultPagePath) {
 		$GLOBALS['__SiteBuilder_Core'] = &$this;
 		$this->setFrameworkDirectory('/sitebuilder/');
-		$this->setPageContentDirectory('/pages/');
+		$this->setPageContentDirectory('/content/');
 		$this->setPageHierarchy($pageHierarchy);
 		$this->setDefaultPagePath($defaultPagePath);
 		$this->errorPagePaths = array();
@@ -213,7 +213,7 @@ class Core {
 					break;
 			}
 
-			$message = "$errorType: $errorMessage in $errorFile:$errorLine\nStack trace:\n" . $e->getTraceAsString();
+			$message = "$errorType: $errorMessage\nFile: $errorFile:$errorLine\nStack trace:\n" . $e->getTraceAsString();
 			error_log($message);
 		}, E_USER_ERROR | E_USER_WARNING | E_USER_NOTICE | E_USER_DEPRECATED);
 	}

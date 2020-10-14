@@ -8,9 +8,14 @@ use function SiteBuilder\normalizePathString;
 
 class ListElement extends SortableTableElement {
 	private $tableDatabaseName;
-	private $idColumnName, $idDatabaseName, $showID;
-	private $columnNames, $columnDatabaseNames;
-	private $defaultSort, $queryCriteria, $rowOnClickPagePath;
+	private $idColumnName;
+	private $idDatabaseName;
+	private $showID;
+	private $columnNames;
+	private $columnDatabaseNames;
+	private $defaultSort;
+	private $queryCriteria;
+	private $rowOnClickPagePath;
 
 	public static function newInstance(string $tableDatabaseName): self {
 		return new self($tableDatabaseName);

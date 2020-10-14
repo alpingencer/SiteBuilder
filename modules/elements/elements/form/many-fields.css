@@ -14,3 +14,11 @@
 .sitebuilder-many-fields > button:first-of-type {
 	margin-right: 0.25em;
 }
+
+.sitebuilder-fieldset-adder:after {
+	content: '+';
+}
+
+.sitebuilder-fieldset-remover:after {
+	content: '-';
+}

@@ -1,18 +1,20 @@
 
-.sitebuilder-form-table tbody td:first-child {
+.sitebuilder-form tbody td:first-child {
 	vertical-align: baseline;
+	min-width: 20%;
 	padding-top: 0.5em;
 }
 
-.sitebuilder-form-table fieldset {
+.sitebuilder-form fieldset {
 	border: none;
 	padding: 0;
 }
 
-	.sitebuilder-form-table fieldset > * {
+	.sitebuilder-form fieldset > * {
 		margin-bottom: 0.5em;
 	}
 
-.sitebuilder-form-table tfoot td {
+.sitebuilder-form tfoot td {
 	text-align: center;
+	padding-top: 0.5em;
 }

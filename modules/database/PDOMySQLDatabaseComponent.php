@@ -29,7 +29,7 @@ class PDOMySQLDatabaseComponent extends DatabaseComponent {
 	}
 
 	public function getRow(string $table, string $id, string $columns = '*', string $primaryKey = 'ID'): array {
-		$query = "SELECT $columns FROM $table WHERE $primaryKey='$id'";
+		$query = "SELECT $columns FROM $table WHERE `$primaryKey`='$id'";
 		$statement = $this->query($query);
 
 		if($statement->rowCount() === 0) {
@@ -52,7 +52,7 @@ class PDOMySQLDatabaseComponent extends DatabaseComponent {
 	}
 
 	public function getVal(string $table, string $id, string $column, string $primaryKey = 'ID'): string {
-		$query = "SELECT $column FROM $table WHERE $primaryKey='$id'";
+		$query = "SELECT `$column` FROM $table WHERE `$primaryKey`='$id'";
 		$statement = $this->query($query);
 
 		if($statement->rowCount() == 0) {
@@ -65,16 +65,14 @@ class PDOMySQLDatabaseComponent extends DatabaseComponent {
 		}
 	}
 
-	public function insert(string $table, array $values): bool {
-		$fields = "";
-		$fieldValues = "";
+	public function insert(string $table, array $values, $primaryKey = 'ID'): int {
+		$objectID = $this->query("SELECT MAX(DISTINCT `$primaryKey`) FROM $table")->fetch(PDO::FETCH_NUM)[0] + 1;
+		$fields = "`$primaryKey`";
+		$fieldValues = "$objectID";
 
 		foreach($values as $field => $value) {
-			if($fields) {
-				$fields .= ", ";
-			}
-
-			$fields .= "'" . $field . "'";
+			$fields .= ", ";
+			$fields .= "`" . $field . "`";
 
 			if($fieldValues) {
 				$fieldValues .= ", ";
@@ -83,20 +81,19 @@ class PDOMySQLDatabaseComponent extends DatabaseComponent {
 			$fieldValues .= $this->pdo->quote($value);
 		}
 
-		$query = "INSERT INTO $table ($fields) VALUES ($fieldValues)";
+		$query = "INSERT INTO `$table` ($fields) VALUES ($fieldValues)";
 		$numAffectedRows = $this->pdo->exec($query);
 
 		if($numAffectedRows === 0) {
 			$this->log('E', $query);
-			return false;
 		} else {
 			$this->log('I', $query);
-			return true;
 		}
-		return false;
+
+		return $objectID;
 	}
 
-	public function update(string $table, array $values, string $where): bool {
+	public function update(string $table, array $values, string $where): int {
 		$fieldsValues = "";
 
 		foreach($values as $field => $value) {
@@ -107,29 +104,18 @@ class PDOMySQLDatabaseComponent extends DatabaseComponent {
 			$fieldsValues .= "`" . $field . "`=" . $this->pdo->quote($value);
 		}
 
-		$query = "UPDATE $table SET $fieldsValues WHERE $where";
+		$query = "UPDATE `$table` SET $fieldsValues WHERE $where";
 		$numAffectedRows = $this->pdo->exec($query);
 
-		if($numAffectedRows === 0) {
-			$this->log('E', $query);
-			return false;
-		} else {
-			$this->log('U', $query);
-			return true;
-		}
+		$this->log('U', $query);
+		return $numAffectedRows;
 	}
 
-	public function delete(string $table, string $where): bool {
-		$query = "DELETE FROM $table WHERE $where";
+	public function delete(string $table, string $where): int {
+		$query = "DELETE FROM `$table` WHERE $where";
 		$numAffectedRows = $this->pdo->exec($query);
-
-		if($numAffectedRows === 0) {
-			$this->log('E', $query);
-			return false;
-		} else {
-			$this->log('D', $query);
-			return true;
-		}
+		$this->log('D', $query);
+		return $numAffectedRows;
 	}
 
 	public function log(string $type, string $query): bool {
