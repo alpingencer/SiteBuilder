@@ -23,6 +23,7 @@ class FormElement extends Element {
 	}
 
 	public function __construct(string $formName, string $tableDatabaseName) {
+		parent::__construct();
 		$this->setIsNewForm(true);
 		$this->setTableDatabaseName($tableDatabaseName);
 		$this->setFormName($formName);
@@ -68,7 +69,20 @@ class FormElement extends Element {
 			$this->process();
 		}
 
-		$html = '<form class="sitebuilder-form" method="POST" enctype="multipart/form-data"><table>';
+		// Set id
+		if(empty($this->getHTMLID())) {
+			$id = '';
+		} else {
+			$id = ' id="' . $this->getHTMLID() . '"';
+		}
+
+		// Set classes
+		$classes = 'sitebuilder-form';
+		if(!empty($this->getHTMLClasses())) {
+			$classes .= ' ' . $this->getHTMLClasses();
+		}
+
+		$html = '<form' . $id . ' class="' . $classes . '" method="POST" enctype="multipart/form-data"><table>';
 
 		// Generate fieldset html
 		$html .= '<tbody>';

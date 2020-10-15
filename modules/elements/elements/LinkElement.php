@@ -24,18 +24,33 @@ class LinkElement extends Element {
 	}
 
 	public function getContent(): string {
+		// Set inner HTML
 		$sb = $GLOBALS['__SiteBuilder_Core'];
-
 		if(empty($this->innerHTML) && $this->linkPath !== '#' && isset($sb->getPageInfoInHierarchy($this->linkPath)['title'])) {
 			$innerHTML = $sb->getPageInfoInHierarchy($this->linkPath)['title'];
 		} else {
 			$innerHTML = $this->innerHTML;
 		}
 
+		// Set href
 		$href = $this->linkPath;
 		if($this->linkPath !== '#') $href = '?p=' . $href;
 
-		return '<a href="' . $href . '">' . $innerHTML . '</a>';
+		// Set id
+		if(empty($this->getHTMLID())) {
+			$id = '';
+		} else {
+			$id = ' id="' . $this->getHTMLID() . '"';
+		}
+
+		// Set classes
+		if(empty($this->getHTMLClasses())) {
+			$classes = '';
+		} else {
+			$classes = ' class="' . $this->getHTMLClasses() . '"';
+		}
+
+		return '<a' . $id . $classes . ' href="' . $href . '">' . $innerHTML . '</a>';
 	}
 
 	public function setLinkPath(string $linkPath): self {

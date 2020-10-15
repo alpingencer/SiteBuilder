@@ -41,7 +41,20 @@ class CarouselElement extends Element {
 	}
 
 	public function getContent(): string {
-		$html = '<div class="sitebuilder-carousel" data-flickity=\'' . json_encode($this->flickityOptions) . '\'>';
+		// Set id
+		if(empty($this->getHTMLID())) {
+			$id = '';
+		} else {
+			$id = ' id="' . $this->getHTMLID() . '"';
+		}
+
+		// Set classes
+		$classes = 'sitebuilder-carousel';
+		if(!empty($this->getHTMLClasses())) {
+			$classes .= ' ' . $this->getHTMLClasses();
+		}
+
+		$html = '<div' . $id . ' class="' . $classes . '" data-flickity=\'' . json_encode($this->flickityOptions) . '\'>';
 
 		foreach($this->imgSources as $index => $imgSource) {
 			if(empty($this->altTexts[$index])) {

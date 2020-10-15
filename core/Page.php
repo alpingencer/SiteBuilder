@@ -26,12 +26,16 @@ class Page {
 		$this->setPrettyPrint(true);
 	}
 
-	public function addHTML(string $html): void {
-		$this->addComponent(StaticHTMLElement::newInstance($html));
+	public function addHTML(string $html): StaticHTMLElement {
+		$component = StaticHTMLElement::newInstance($html);
+		$this->addComponent($component);
+		return $component;
 	}
 
-	public function addLink(string $linkPath, string $innerHTML = ''): void {
-		$this->addComponent(LinkElement::newInstance($linkPath)->setInnerHTML($innerHTML));
+	public function addLink(string $linkPath): LinkElement {
+		$component = LinkElement::newInstance($linkPath);
+		$this->addComponent($component);
+		return $component;
 	}
 
 	public function matchesFamily(Family $family): bool {

@@ -41,7 +41,7 @@ class ListElement extends SortableTableElement {
 		$sb = $GLOBALS['__SiteBuilder_Core'];
 
 		if(!$sb->getCurrentPage()->hasComponentsByClass(DatabaseComponent::class)) {
-			throw new ErrorException('No DatabaseComponent found when using a ListElement!');
+			throw new ErrorException("No DatabaseComponent found when using a ListElement!");
 		}
 
 		// Query database
@@ -74,18 +74,15 @@ class ListElement extends SortableTableElement {
 			$this->addRow(SortableTableRow::newInstance()->setOnClick($onClick)->setCells($cells));
 		}
 
+		// Set classes
+		$classes = 'sitebuilder-list-table ';
+		if(!empty($this->rowOnClickPagePath)) {
+			$classes .= 'sitebuilder-hover-table ';
+		}
+		$this->setHTMLClasses($classes . $this->getHTMLClasses());
+
 		// Use SortableTableElement::getContent() to generate complete HTML
 		return parent::getContent();
-	}
-
-	protected function getTableClasses(): string {
-		$classes = 'sitebuilder-list-table';
-
-		if(!empty($this->rowOnClickPagePath)) {
-			$classes .= ' sitebuilder-hover-table';
-		}
-
-		return $classes;
 	}
 
 	protected function getColumns(): array {

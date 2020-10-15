@@ -3,13 +3,11 @@
 namespace SiteBuilder\Elements;
 
 abstract class SortableTableElement extends Element {
-	private $tableID;
 	private $rows;
 
 	public function __construct() {
 		parent::__construct();
 		$this->clearRows();
-		$this->clearTableID();
 	}
 
 	public function getDependencies(): array {
@@ -21,16 +19,16 @@ abstract class SortableTableElement extends Element {
 
 	public function getContent(): string {
 		// Set table id
-		if(empty($this->tableID)) {
+		if(empty($this->getHTMLID())) {
 			$id = '';
 		} else {
-			$id = ' id="' . $this->tableID . '"';
+			$id = ' id="' . $this->getHTMLID() . '"';
 		}
 
 		// Set table classes
 		$classes = 'sitebuilder-sortable-table';
-		if(!empty($this->getTableClasses())) {
-			$classes .= ' ' . $this->getTableClasses();
+		if(!empty($this->getHTMLClasses())) {
+			$classes .= ' ' . $this->getHTMLClasses();
 		}
 
 		// Generate <thead>
@@ -69,8 +67,6 @@ abstract class SortableTableElement extends Element {
 
 	protected abstract function getColumns(): array;
 
-	protected abstract function getTableClasses(): string;
-
 	protected function addRow(SortableTableRow $row): self {
 		array_push($this->rows, $row);
 		return $this;
@@ -84,20 +80,6 @@ abstract class SortableTableElement extends Element {
 	protected function clearRows(): self {
 		$this->rows = array();
 		return $this;
-	}
-
-	public function setTableID(string $tableID): self {
-		$this->tableID = $tableID;
-		return $this;
-	}
-
-	public function clearTableID(): self {
-		$this->setTableID('');
-		return $this;
-	}
-
-	public function getTableID(): string {
-		return $this->tableID;
 	}
 
 }

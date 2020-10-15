@@ -57,7 +57,20 @@ class AccordionNavigationElement extends Element {
 	public function getContent(): string {
 		$sb = $GLOBALS['__SiteBuilder_Core'];
 
-		$html = '<nav class="sitebuilder-accordion-nav"><ul>';
+		// Set id
+		if(empty($this->getHTMLID())) {
+			$id = '';
+		} else {
+			$id = ' id="' . $this->getHTMLID() . '"';
+		}
+
+		// Set classes
+		$classes = 'sitebuilder-accordion-nav';
+		if(!empty($this->getHTMLClasses())) {
+			$classes .= ' ' . $this->getHTMLClasses();
+		}
+
+		$html = '<nav' . $id . ' class="' . $classes . '"><ul>';
 
 		foreach($sb->getPageHierarchy()['children'] as $childName => $child) {
 			$html .= self::generateHTMLFromPageInfo($child, $childName, $sb->getCurrentPage()->getPagePath());
