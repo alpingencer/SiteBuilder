@@ -43,23 +43,34 @@ class Page {
 	}
 
 	public function getHTML(): string {
+		// Generate DOCTYPE HTML
 		$content = '<!DOCTYPE html>';
 
+		// Generate <html> tag at start
 		if(empty($this->lang)) {
 			$content .= '<html>';
 		} else {
 			$content .= '<html lang="' . $this->lang . '">';
 		}
 
-		if(empty($this->head)) {
-			$content .= '<head><title>SiteBuilder Page</title></head>';
-		} else {
-			$content .= '<head>' . $this->head . '</head>';
+		// Generate <head>
+		$content .= '<head>';
+
+		if(strpos($this->head, '<title>') === false) {
+			// No <title> tag found in page head
+			$sb = $GLOBALS['__SiteBuilder_Core'];
+			$content .= '<title>' . $sb->getPageInfoInHierarchy($this->pagePath)['title'] . ' - ' . $sb->getPageHierarchy()['title'] . '</title>';
 		}
 
+		$content .= $this->head . '</head>';
+
+		// Generate <body>
 		$content .= '<body>' . $this->body . '</body>';
+
+		// Close <html>
 		$content .= '</html>';
 
+		// Pretty print
 		if($this->prettyPrint) {
 			$content = formatHTML($content);
 		}
