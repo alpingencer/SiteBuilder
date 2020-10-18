@@ -81,6 +81,11 @@ class FormFieldset {
 			// Get database component
 			$database = $GLOBALS['__SiteBuilder_Core']->getCurrentPage()->getComponentByClass(DatabaseComponent::class);
 
+			// If there are no form fields, return
+			if(empty($this->formFields)) {
+				return array();
+			}
+
 			// For each defined fieldset
 			// Check first added form field post variable to search for additional fieldsets
 			for($i = 1; isset($_POST[$this->formFields[0]->getFormFieldName() . '_' . $i]); $i++) {

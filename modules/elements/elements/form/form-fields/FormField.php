@@ -9,11 +9,17 @@ abstract class FormField {
 	private $formFieldName;
 	private $column;
 	private $defaultValue;
+	private $isAutoFocus;
+	private $isDisabled;
+	private $isRequired;
 
 	public function __construct(string $formFieldName, string $column, string $defaultValue) {
 		$this->setColumn($column);
 		$this->setFormFieldName($formFieldName);
 		$this->setDefaultValue($defaultValue);
+		$this->setAutoFocus(false);
+		$this->setDisabled(false);
+		$this->setRequired(false);
 	}
 
 	public abstract function getDependencies(): array;
@@ -83,6 +89,33 @@ abstract class FormField {
 
 	public function getDefaultValue(): string {
 		return $this->defaultValue;
+	}
+
+	public function setAutoFocus(bool $isAutoFocus): self {
+		$this->isAutoFocus = $isAutoFocus;
+		return $this;
+	}
+
+	public function isAutoFocus(): bool {
+		return $this->isAutoFocus;
+	}
+
+	public function setDisabled(bool $isDisabled): self {
+		$this->isDisabled = $isDisabled;
+		return $this;
+	}
+
+	public function isDisabled(): bool {
+		return $this->isDisabled;
+	}
+
+	public function setRequired(bool $isRequired): self {
+		$this->isRequired = $isRequired;
+		return $this;
+	}
+
+	public function isRequired(): bool {
+		return $this->isRequired;
 	}
 
 }

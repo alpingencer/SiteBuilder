@@ -6,8 +6,10 @@ require_once 'Dependency.php';
 // Forms Fields
 require_once 'elements/form/FormFieldset.php';
 require_once 'elements/form/form-fields/FormField.php';
-require_once 'elements/form/form-fields/InputBoxFormField.php';
-// require_once 'elements/form/form-fields/searchable-select/SearchableSelectField.php';
+require_once 'elements/form/form-fields/SelectFormField.php';
+require_once 'elements/form/form-fields/TextAreaFormField.php';
+require_once 'elements/form/form-fields/InputFormField.php';
+require_once 'elements/form/form-fields/searchable-select/SearchableSelectFormField.php';
 
 // Sortable Table
 require_once 'elements/sortable-table/SortableTableCell.php';
