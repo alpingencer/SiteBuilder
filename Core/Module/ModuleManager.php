@@ -5,7 +5,13 @@ namespace SiteBuilder\Core\Module;
 use ErrorException;
 
 /**
+ * <p>
  * Manages the initialization and uninitialization of Modules
+ * </p>
+ * <p>
+ * Note that ModuleManager is a Singleton class, meaning only one instance of it can be initialized
+ * at a time.
+ * </p>
  *
  * @author Alpin Gencer
  * @namespace SiteBuilder\Core\Module
@@ -42,7 +48,8 @@ class ModuleManager {
 	/**
 	 * Constructor for the ModuleManager.
 	 * To get an instance of this class, use ModuleManager::init().
-	 * The constructor also sets the superglobal '__SiteBuilder_ModuleManager' to easily get this instance.
+	 * The constructor also sets the superglobal '__SiteBuilder_ModuleManager' to easily get this
+	 * instance.
 	 *
 	 * @see ModuleManager::init()
 	 */
