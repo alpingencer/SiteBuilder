@@ -37,7 +37,7 @@ class PageHierarchy {
 	 * @return PageHierarchy The initialized instance
 	 */
 	public static function loadFromJSON(string $file): PageHierarchy {
-		return new self(json_decode(file_get_contents($file), true));
+		return PageHierarchy::init(json_decode(file_get_contents($file), true));
 	}
 
 	/**
