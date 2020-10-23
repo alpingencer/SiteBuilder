@@ -124,7 +124,7 @@ class CMSManager {
 	 *
 	 * @see CMSManager::init()
 	 */
-	private function __construct(array $config = []) {
+	private function __construct(array $config) {
 		$GLOBALS['__SiteBuilder_CMSManager'] = &$this;
 
 		if(!isset($config['frameworkDirectory'])) $config['frameworkDirectory'] = '/SiteBuilder/';
