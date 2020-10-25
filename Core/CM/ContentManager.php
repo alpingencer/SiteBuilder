@@ -6,14 +6,22 @@ use ErrorException;
 use SplObjectStorage;
 
 /**
+ * <p>
  * The ContentManager class is responsible for building and managing the content of a webpage using
  * components.
+ * </p>
+ * <p>
  * To modify the content of your webpage:
+ * </p>
  * <ol>
  * <li>Manipulate the page head content directly using the page constructor's 'head' public field
  * ($this->page()->head).</li>
  * <li>Manipulate the page body content indirectly by adding components to the ContentManager.</li>
  * </ol>
+ * <p>
+ * Note that ContentManager is a Singleton class, meaning only one instance of it can be initialized
+ * at a time.
+ * </p>
  *
  * @author Alpin Gencer
  * @namespace SiteBuilder\Core\CM
