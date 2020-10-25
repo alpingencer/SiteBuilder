@@ -72,7 +72,9 @@ class ContentManager {
 
 	/**
 	 * Constructor for the ContentManager.
-	 * To get an instance of this class, use ContentManager::init()
+	 * To get an instance of this class, use ContentManager::init().
+	 * The constructor also sets the superglobal '__SiteBuilder_ContentManager' to easily get this
+	 * instance.
 	 *
 	 * @param array $config The configuration parameters to use
 	 * @see ContentManager::init()
