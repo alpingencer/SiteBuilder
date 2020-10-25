@@ -6,12 +6,23 @@ use ErrorException;
 
 /**
  * Abstract base class for Modules, managed by ModuleManager.
- * To define a module, extend this class and override the init() and uninit() methods
+ * To define a module, extend this class and override its methods.
+ * There are 5 stages during which a module can execute code:
+ * <ol>
+ * <li>When it is being constructed, as defined in the init() method</li>
+ * <li>An early run, which will be called first, as defined in runEarly()</li>
+ * <li>A normal run, which will be called second, as defined in run()</li>
+ * <li>An late run, which will be called last, as defined in runLate()</li>
+ * <li>When it is being destructed, as defined in the uninit() method</li>
+ * </ol>
  *
  * @author Alpin Gencer
  * @namespace SiteBuilder\Core\MM
  * @see ModuleManager
  * @see Module::init()
+ * @see Module::runEarly()
+ * @see Module::run()
+ * @see Module::runLate()
  * @see Module::uninit()
  */
 abstract class Module {
@@ -37,6 +48,17 @@ abstract class Module {
 	}
 
 	/**
+	 * Destructor for the module.
+	 * Note that this destructor is final and cannot be overridden.
+	 * To define what happens when a module is destructed, use the uninit() method
+	 *
+	 * @see Module::uninit()
+	 */
+	public final function __destruct() {
+		$this->uninit();
+	}
+
+	/**
 	 * Initializes the module.
 	 * Override this method to determine what happens when a module is initialized.
 	 *
@@ -45,16 +67,28 @@ abstract class Module {
 	public function init(array $config): void {}
 
 	/**
+	 * First stage of running the module.
+	 * Override this method to determine what happens in the first run stage.
+	 */
+	public function runEarly(): void {}
+
+	/**
+	 * Second stage of running the module.
+	 * Override this method to determine what happens in the second run stage.
+	 */
+	public function run(): void {}
+
+	/**
+	 * Third stage of running the module.
+	 * Override this method to determine what happens in the third run stage.
+	 */
+	public function runLate(): void {}
+
+	/**
 	 * Uninitializes the module.
 	 * Override this method to determine what happens when a module is uninitialized.
 	 */
 	public function uninit(): void {}
-
-	/**
-	 * Runs the module.
-	 * Ovverride this method t odetermine what happens when the module is run.
-	 */
-	public function run(): void {}
 
 }
 

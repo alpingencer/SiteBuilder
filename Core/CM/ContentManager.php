@@ -95,8 +95,11 @@ class ContentManager {
 
 	/**
 	 * Runs the ContentManager, so that the added components' contents and dependencies are added to
-	 * the page and the resulting HTML is outputted to the browser.
+	 * the page.
+	 * In order to output the resulting HTML to the browser, call the outputToBrowser() method.
 	 * Please note that this method must be called in order for the ContentManager to work.
+	 *
+	 * @see ContentManager::outputToBrowser()
 	 */
 	public function run(): void {
 		// Add components to page
@@ -128,8 +131,14 @@ class ContentManager {
 			$dependencyHTML .= '<!-- End SiteBuilder Generated Dependencies -->';
 			$this->page->head .= $dependencyHTML;
 		}
+	}
 
-		// Show page
+	/**
+	 * Outputs previously generated HTML in run() to the browser.
+	 *
+	 * @see ContentManager::run()
+	 */
+	public function outputToBrowser(): void {
 		echo $this->page->getHTML();
 	}
 

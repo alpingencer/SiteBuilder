@@ -61,12 +61,54 @@ class ModuleManager {
 	}
 
 	/**
-	 * Runs each added module in order.
-	 * Please note that this method must be called in order for the added modules to work.
+	 * Runs all stages of each added module in sequential order
+	 *
+	 * @see Module::runEarly()
+	 * @see Module::run()
+	 * @see Module::runLate()
+	 */
+	public function runAll(): void {
+		$this->runEarly();
+		$this->run();
+		$this->runLate();
+	}
+
+	/**
+	 * Runs the first stage of each added module in order
+	 *
+	 * @see Module::runAll()
+	 * @see Module::run()
+	 * @see Module::runLate()
+	 */
+	public function runEarly(): void {
+		foreach($this->modules as $module) {
+			$module->runEarly();
+		}
+	}
+
+	/**
+	 * Runs the second stage of each added module in order
+	 *
+	 * @see Module::runAll()
+	 * @see Module::runEarly()
+	 * @see Module::runLate()
 	 */
 	public function run(): void {
 		foreach($this->modules as $module) {
 			$module->run();
+		}
+	}
+
+	/**
+	 * Runs the third stage of each added module in order
+	 *
+	 * @see Module::runAll()
+	 * @see Module::runEarly()
+	 * @see Module::run()
+	 */
+	public function runLate(): void {
+		foreach($this->modules as $module) {
+			$module->runLate();
 		}
 	}
 

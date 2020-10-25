@@ -77,6 +77,14 @@ class Core {
 	/**
 	 * Run the core, so that the individual managers are run.
 	 * Please note that this method must be called in order for the framework to work.
+	 * The managers are run in the following order:
+	 * <ol>
+	 * <li>The website manager is run.</li>
+	 * <li>The first and second stages of the module manager are run.</li>
+	 * <li>The content manager is run.</li>
+	 * <li>The last stage of the module manager is run.</li>
+	 * <li>The content manager sends its output to the browser.</li>
+	 * </ol>
 	 *
 	 * @see WebsiteManager::run()
 	 * @see ModuleManager::run()
@@ -84,8 +92,15 @@ class Core {
 	 */
 	public function run(): void {
 		$this->wm->run();
+
+		$this->mm->runEarly();
 		$this->mm->run();
+
 		$this->cm->run();
+
+		$this->mm->runLate();
+
+		$this->cm->outputToBrowser();
 	}
 
 	/**
