@@ -26,7 +26,7 @@ class DatabaseModule extends Module {
 			}
 		}
 
-		// Initaite class and connect to database
+		// Initiate class and connect to database
 		$this->database = call_user_func(array(
 				$config['class'],
 				'init'
