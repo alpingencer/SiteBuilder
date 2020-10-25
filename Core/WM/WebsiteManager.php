@@ -95,6 +95,8 @@ class WebsiteManager {
 	 * @return WebsiteManager The initialized instance
 	 */
 	public static function init(array $config = []): WebsiteManager {
+		// Check if static instance field is set
+		// If yes, throw error: Singleton class already initialized!
 		if(isset(WebsiteManager::$instance)) {
 			throw new ErrorException("An instance of WebsiteManager has already been initialized!");
 		}

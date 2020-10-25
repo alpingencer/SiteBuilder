@@ -37,6 +37,8 @@ class ModuleManager {
 	 * @return ModuleManager The initialized instance
 	 */
 	public static function init(): ModuleManager {
+		// Check if static instance field is set
+		// If yes, throw error: Singleton class already initialized!
 		if(isset(ModuleManager::$instance)) {
 			throw new ErrorException("An instance of ModuleManager has already been initialized!");
 		}

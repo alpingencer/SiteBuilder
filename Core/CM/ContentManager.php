@@ -62,6 +62,8 @@ class ContentManager {
 	 * @return ContentManager The initialized instance
 	 */
 	public static function init(array $config = []): ContentManager {
+		// Check if static instance field is set
+		// If yes, throw error: Singleton class already initialized!
 		if(isset(ContentManager::$instance)) {
 			throw new ErrorException("An instance of ContentManager has already been initialized!");
 		}
