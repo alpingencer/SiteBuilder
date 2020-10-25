@@ -1,6 +1,6 @@
 <?php
 
-namespace SiteBuilder\Core\CMS;
+namespace SiteBuilder\Core\WM;
 
 use ErrorException;
 
@@ -8,7 +8,7 @@ use ErrorException;
  * A convenience class for easily generating HTML pages corresponding to HTTP error codes
  *
  * @author Alpin Gencer
- * @namespace SiteBuilder\Core\CMS
+ * @namespace SiteBuilder\Core\WM
  */
 class DefaultErrorPage {
 	/**

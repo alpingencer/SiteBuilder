@@ -1,16 +1,16 @@
 <?php
 
-namespace SiteBuilder\Core\CMS;
+namespace SiteBuilder\Core\WM;
 
 use ErrorException;
 
 /**
  * A PageHierarchy is a multi-dimensional data structure used for defining every webpage the
- * CMSManager should know about.
+ * WebsiteManager should know about.
  * It also stores additional metadata about the pages known as the page's "attributes".
  *
  * @author Alpin Gencer
- * @namespace SiteBuilder\Core\CMS
+ * @namespace SiteBuilder\Core\WM
  */
 class PageHierarchy {
 	/**

@@ -1,41 +1,42 @@
 <?php
 
-namespace SiteBuilder\Core\CMS;
+namespace SiteBuilder\Core\WM;
 
 use ErrorException;
 use Throwable;
 
 /**
  * <p>
- * The content management system (CMS) of SiteBuilder handles the inclusion of the PHP content,
- * header and footer files of all of the websites webpages, and provides a convenient way to store
- * metadata about the pages themselves.
+ * The website management of SiteBuilder is a content management system (CMS) that handles the
+ * inclusion of the PHP content, header and footer files of all of the websites webpages, and
+ * provides a convenient way to store metadata about the pages themselves.
  * </p>
  * <p>
- * To use the CMS, initialize an instace of this class using CMSManager::init(), passing in an
+ * To use the CMS, initialize an instace of this class using WebsiteManager::init(), passing in an
  * instance of a PageHierarchy in the configuration parameters, and call its run() method. The
- * CMSManager will automatically find the necessary things it needs to manage your website (which is
- * of course also configureable). In addition, the CMSManager will also automatically use the 'p'
- * GET parameter from the URL to determine which page should be shown. As such, you only need to
- * define one 'index.php' for each website you have on your server. The rest of the page-specific
- * elements and scripts should go into the corresponding content files.
+ * WebsiteManager will automatically find the necessary things it needs to manage your website
+ * (which is of course also configureable). In addition, the WebsiteManager will also automatically
+ * use the 'p' GET parameter from the URL to determine which page should be shown. As such, you only
+ * need to define one 'index.php' for each website you have on your server. The rest of the
+ * page-specific components and scripts should go into the corresponding content files.
  * </p>
  * <p>
- * Note that CMSManager is a Singleton class, meaning only one instance of it can be initialized at
+ * Note that WebsiteManager is a Singleton class, meaning only one instance of it can be initialized
+ * at
  * a time.
  * </p>
  *
  * @author Alpin Gencer
- * @namespace SiteBuilder\Core\CMS
+ * @namespace SiteBuilder\Core\WM
  * @see PageHierarchy
- * @see CMSManager::init()
- * @see CMSManager::run()
+ * @see WebsiteManager::init()
+ * @see WebsiteManager::run()
  */
-class CMSManager {
+class WebsiteManager {
 	/**
 	 * Static instance field for Singleton code design in PHP
 	 *
-	 * @var CMSManager
+	 * @var WebsiteManager
 	 */
 	private static $instance;
 	/**
@@ -74,7 +75,7 @@ class CMSManager {
 	private $showErrorPageOnException;
 	/**
 	 * The current page path, as defined by the 'p' GET parameter.
-	 * If no 'p' parameter is set, the CMSManager will redirect the user to the default page.
+	 * If no 'p' parameter is set, the WebsiteManager will redirect the user to the default page.
 	 *
 	 * @var string
 	 */
@@ -88,20 +89,18 @@ class CMSManager {
 	private $defaultPagePath;
 
 	/**
-	 * Returns an instance of CMSManager
+	 * Returns an instance of WebsiteManager
 	 *
 	 * @param array $config The configuration parameters to use.
-	 *        Please note that 'hierarchy' is a required parameter and must pass in a PageHierarchy
-	 *        object.
-	 * @return CMSManager The initialized instance
+	 * @return WebsiteManager The initialized instance
 	 */
-	public static function init(array $config = []): CMSManager {
-		if(isset(CMSManager::$instance)) {
-			throw new ErrorException("An instance of CMSManager has already been instantiated!");
+	public static function init(array $config = []): WebsiteManager {
+		if(isset(WebsiteManager::$instance)) {
+			throw new ErrorException("An instance of WebsiteManager has already been initialized!");
 		}
 
-		CMSManager::$instance = new self($config);
-		return CMSManager::$instance;
+		WebsiteManager::$instance = new self($config);
+		return WebsiteManager::$instance;
 	}
 
 	/**
@@ -117,19 +116,29 @@ class CMSManager {
 	}
 
 	/**
-	 * Constructor for the CMSManager.
-	 * To get an instance of this class, use CMSManager::init().
-	 * The constructor also sets the superglobal '__SiteBuilder_CMSManager' to easily get this
+	 * Constructor for the WebsiteManager.
+	 * To get an instance of this class, use WebsiteManager::init().
+	 * The constructor also sets the superglobal '__SiteBuilder_WebsiteManager' to easily get this
 	 * instance.
 	 *
-	 * @see CMSManager::init()
+	 * @see WebsiteManager::init()
 	 */
 	private function __construct(array $config) {
-		$GLOBALS['__SiteBuilder_CMSManager'] = &$this;
+		$GLOBALS['__SiteBuilder_WebsiteManager'] = &$this;
 
 		if(!isset($config['frameworkDirectory'])) $config['frameworkDirectory'] = '/SiteBuilder/';
 		if(!isset($config['contentDirectory'])) $config['contentDirectory'] = '/Content/';
-		if(!isset($config['hierarchy'])) throw new ErrorException("The required configuration parameter 'hierarchy' has not been set!");
+
+		if(!isset($config['hierarchy'])) {
+			// Check if file 'hierarchy.json' in the root of the content directory exists
+			// If no, throw error: A PageHierarchy must be defined
+			if(file_exists(($path = trim($config['contentDirectory'], '/') . '/hierarchy.json'))) {
+				$config['hierarchy'] = PageHierarchy::loadFromJSON($path);
+			} else {
+				throw new ErrorException("The SiteBuilder default page hierarchy file was not found, and no other file was specified!");
+			}
+		}
+
 		if(!isset($config['showErrorPageOnException'])) $config['showErrorPageOnException'] = true;
 		if(!isset($config['defaultPagePath'])) $config['defaultPagePath'] = 'home';
 
@@ -141,16 +150,17 @@ class CMSManager {
 		$this->setShowErrorPageOnException($config['showErrorPageOnException']);
 
 		if(isset($_GET['p']) && !empty($_GET['p'])) {
+			// Get current page path from 'p' GET parameter
 			$this->setCurrentPagePath($_GET['p']);
 		} else {
-			// Redirect to set 'p' parameter in request URI
+			// Redirect to set 'p' GET parameter
 			$this->redirectToPage($this->defaultPagePath, true);
 		}
 	}
 
 	/**
-	 * Runs the manager to execute so that the processes that the CMSManager handles are executed.
-	 * Please note that this function must be run in order for the CMSManager to work.
+	 * Runs the manager so that the processes that the WebsiteManager handles are executed.
+	 * Please note that this method must be called in order for the WebsiteManager to work.
 	 */
 	public function run(): void {
 		// Check if page exists in hierarchy
@@ -410,8 +420,8 @@ class CMSManager {
 	 * @param string $frameworkDirectory
 	 * @return self Returns itself for chaining other functions
 	 */
-	public function setFrameworkDirectory(string $frameworkDirectory): self {
-		$this->frameworkDirectory = CMSManager::normalizeDirectoryString($frameworkDirectory);
+	private function setFrameworkDirectory(string $frameworkDirectory): self {
+		$this->frameworkDirectory = WebsiteManager::normalizeDirectoryString($frameworkDirectory);
 		return $this;
 	}
 
@@ -430,8 +440,8 @@ class CMSManager {
 	 * @param string $contentDirectory
 	 * @return self Returns itself for chaining other functions
 	 */
-	public function setContentDirectory(string $contentDirectory): self {
-		$this->contentDirectory = CMSManager::normalizeDirectoryString($contentDirectory);
+	private function setContentDirectory(string $contentDirectory): self {
+		$this->contentDirectory = WebsiteManager::normalizeDirectoryString($contentDirectory);
 		return $this;
 	}
 
@@ -456,7 +466,7 @@ class CMSManager {
 	}
 
 	/**
-	 * Getter for wether the CMSManager shows an error page on an uncaught exception
+	 * Getter for wether the WebsiteManager shows an error page on an uncaught exception
 	 *
 	 * @return bool
 	 */
@@ -465,12 +475,12 @@ class CMSManager {
 	}
 
 	/**
-	 * Setter for wether the CMSManager should show an error page on an uncaught exception
+	 * Setter for wether the WebsiteManager should show an error page on an uncaught exception
 	 *
 	 * @param bool $showErrorPageOnException
 	 * @return self Returns itself for chaining other functions
 	 */
-	public function setShowErrorPageOnException(bool $showErrorPageOnException): self {
+	private function setShowErrorPageOnException(bool $showErrorPageOnException): self {
 		$this->showErrorPageOnException = $showErrorPageOnException;
 
 		if($this->showErrorPageOnException) {

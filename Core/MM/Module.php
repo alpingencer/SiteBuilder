@@ -1,6 +1,6 @@
 <?php
 
-namespace SiteBuilder\Core\Module;
+namespace SiteBuilder\Core\MM;
 
 use ErrorException;
 
@@ -9,7 +9,7 @@ use ErrorException;
  * To define a module, extend this class and override the init() and uninit() methods
  *
  * @author Alpin Gencer
- * @namespace SiteBuilder\Core\Module
+ * @namespace SiteBuilder\Core\MM
  * @see ModuleManager
  * @see Module::init()
  * @see Module::uninit()
@@ -38,20 +38,23 @@ abstract class Module {
 
 	/**
 	 * Initializes the module.
-	 * Define this method to determine what happens when a module is initialized.
+	 * Override this method to determine what happens when a module is initialized.
 	 *
 	 * @param array $config The configuration options passed to the module
-	 * @see Module::uninit()
 	 */
-	public abstract function init(array $config): void;
+	public function init(array $config): void {}
 
 	/**
 	 * Uninitializes the module.
 	 * Override this method to determine what happens when a module is uninitialized.
-	 *
-	 * @see Module::init()
 	 */
 	public function uninit(): void {}
+
+	/**
+	 * Runs the module.
+	 * Ovverride this method t odetermine what happens when the module is run.
+	 */
+	public function run(): void {}
 
 }
 

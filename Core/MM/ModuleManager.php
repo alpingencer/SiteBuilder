@@ -1,6 +1,6 @@
 <?php
 
-namespace SiteBuilder\Core\Module;
+namespace SiteBuilder\Core\MM;
 
 use ErrorException;
 
@@ -14,7 +14,7 @@ use ErrorException;
  * </p>
  *
  * @author Alpin Gencer
- * @namespace SiteBuilder\Core\Module
+ * @namespace SiteBuilder\Core\MM
  * @see Module
  */
 class ModuleManager {
@@ -38,7 +38,7 @@ class ModuleManager {
 	 */
 	public static function init(): ModuleManager {
 		if(isset(ModuleManager::$instance)) {
-			throw new ErrorException("An instance of ModuleManager has already been instantiated!");
+			throw new ErrorException("An instance of ModuleManager has already been initialized!");
 		}
 
 		ModuleManager::$instance = new self();
@@ -56,6 +56,16 @@ class ModuleManager {
 	private function __construct() {
 		$GLOBALS['__SiteBuilder_ModuleManager'] = &$this;
 		$this->modules = array();
+	}
+
+	/**
+	 * Runs each added module in order.
+	 * Please note that this method must be called in order for the added modules to work.
+	 */
+	public function run(): void {
+		foreach($this->modules as $module) {
+			$module->run();
+		}
 	}
 
 	/**
