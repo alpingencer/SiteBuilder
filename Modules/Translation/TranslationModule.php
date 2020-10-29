@@ -39,12 +39,16 @@ class TranslationModule extends Module {
 	 * @see \SiteBuilder\Core\MM\Module::init()
 	 */
 	public function init(array $config): void {
+		// Check if content manager has been initialized
+		// If no, throw error: The translation module depends on the content manager
 		if(!isset($GLOBALS['__SiteBuilder_ContentManager'])) {
-			throw new ErrorException("TranslationModule can only be used along with the 'SiteBuilder\Core\CM' namespace!");
+			throw new ErrorException("TranslationModule cannot be used if a ContentManager has not been initialized!");
 		}
 
 		$cm = $GLOBALS['__SiteBuilder_ContentManager'];
 
+		// Check if required configuration parameter 'controller' has been set
+		// If no, throw error: A TranslationController must be passed to the module
 		if(!isset($config['controller'])) {
 			throw new ErrorException("The required configuration parameter 'controller' has not been set!");
 		}
@@ -57,8 +61,8 @@ class TranslationModule extends Module {
 			}
 		}
 
-		$this->controller = $config['controller'];
-		$this->lang = $config['lang'];
+		$this->setController($config['controller']);
+		$this->setLang($config['lang']);
 	}
 
 	/**
@@ -107,6 +111,24 @@ class TranslationModule extends Module {
 			$formatter = new IntlDateFormatter($this->lang, IntlDateFormatter::LONG, IntlDateFormatter::NONE);
 			return $formatter->format($dateTime);
 		}, $content);
+	}
+
+	public function getController(): TranslationController {
+		return $this->controller;
+	}
+
+	private function setController(TranslationController $controller): self {
+		$this->controller = $controller;
+		return $this;
+	}
+
+	public function getLang(): string {
+		return $this->lang;
+	}
+
+	private function setLang(string $lang): self {
+		$this->lang = $lang;
+		return $this;
 	}
 
 }
