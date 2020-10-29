@@ -168,14 +168,7 @@ class WebsiteManager {
 		// Check if page exists in hierarchy
 		// If not, show error 404: Page not found
 		if(!$this->hierarchy->isPageDefined($this->currentPagePath)) {
-			if($this->isErrorPagePathDefined(404)) {
-				$this->redirectToPage($this->getErrorPagePath(404));
-			} else if($this->isErrorPagePathDefined(400)) {
-				$this->redirectToPage($this->getErrorPagePath(400));
-			} else {
-				$this->showDefaultErrorPage(404);
-				return;
-			}
+			$this->showErrorPage(404, 400);
 		}
 
 		// Include content files for the page, the global header and footer,
@@ -207,15 +200,7 @@ class WebsiteManager {
 			} else {
 				// A required file was not found, show 501 page
 				trigger_error("The path '" . $path . "' does not have a corresponding content file!", E_USER_WARNING);
-
-				if($this->isErrorPagePathDefined(501)) {
-					$this->redirectToPage($this->getErrorPagePath(501));
-				} else if($this->isErrorPagePathDefined(500)) {
-					$this->redirectToPage($this->getErrorPagePath(500));
-				} else {
-					$this->showDefaultErrorPage(501);
-					return;
-				}
+				$this->showErrorPage(501, 500);
 			}
 		}
 
@@ -321,9 +306,9 @@ class WebsiteManager {
 		// If no, check if the sitebuilder default path for error pages is defined in the hierarchy
 		// If also no, throw error: No error page path defined
 		if(!isset($this->errorPagePaths[$errorCode])) {
-			try {
-				$this->setErrorPagePath($errorCode, 'error/' . $errorCode);
-			} catch(ErrorException $e) {
+			if($this->hierarchy->isPageDefined(($path = 'error/' . $errorCode))) {
+				$this->setErrorPagePath($errorCode, $path);
+			} else {
 				throw new ErrorException("The page path for the error code '$errorCode' is not defined!");
 			}
 		}
@@ -392,6 +377,27 @@ class WebsiteManager {
 	public function clearErrorPagePaths(): self {
 		$this->errorPagePaths = array();
 		return $this;
+	}
+
+	/**
+	 * Shows a custom error page if one is defined, or the SiteBuilder default error page if it
+	 * isn't.
+	 * If multiple error codes are given, each error code will be checked in sequential order before
+	 * resorting to the default.
+	 *
+	 * @param int ...$errorCodes The error codes to search for
+	 */
+	public function showErrorPage(int ...$errorCodes): void {
+		// Check each error code in order to see if its error page is defined
+		// If yes, redirect to it
+		foreach($errorCodes as $errorCode) {
+			if($this->isErrorPagePathDefined($errorCode)) {
+				$this->redirectToPage($this->getErrorPagePath($errorCode));
+			}
+		}
+
+		// If here, show default error page
+		$this->showDefaultErrorPage($errorCode);
 	}
 
 	/**
