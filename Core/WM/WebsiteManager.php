@@ -397,7 +397,7 @@ class WebsiteManager {
 		}
 
 		// If here, show default error page
-		$this->showDefaultErrorPage($errorCode);
+		$this->showDefaultErrorPage($errorCodes[0]);
 	}
 
 	/**
