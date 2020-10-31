@@ -27,8 +27,8 @@ class AuthenticationComponent extends Component {
 	}
 
 	public function getContent(): string {
-		$id = empty($this->getHtmlID()) ? '' : ' id="' . $this->getHtmlID() . '"';
-		$class = empty($this->getHtmlClasses()) ? '' : ' class="' . $this->getHtmlClasses() . '"';
+		$id = empty($this->getHTMLID()) ? '' : ' id="' . $this->getHTMLID() . '"';
+		$class = empty($this->getHTMLClasses()) ? '' : ' class="' . $this->getHTMLClasses() . '"';
 
 		$html = '<form' . $id . $class . ' method="POST" enctype="multipart/form-data">';
 

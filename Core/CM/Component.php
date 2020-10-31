@@ -47,8 +47,8 @@ abstract class Component {
 	 * @see StaticHTMLComponent
 	 */
 	protected function __construct() {
-		$this->clearHtmlID();
-		$this->clearHtmlClasses();
+		$this->clearHTMLID();
+		$this->clearHTMLClasses();
 	}
 
 	/**
@@ -71,7 +71,7 @@ abstract class Component {
 	 *
 	 * @return string
 	 */
-	public final function getHtmlID(): string {
+	public final function getHTMLID(): string {
 		return $this->htmlID;
 	}
 
@@ -82,7 +82,7 @@ abstract class Component {
 	 * @param string $htmlID
 	 * @return self Returns itself for chaining other functions
 	 */
-	public final function setHtmlID(string $htmlID): self {
+	public final function setHTMLID(string $htmlID): self {
 		// Check if this is a StaticHTMLComponent
 		// If yes, throw error: ID of StaticHTMLComponent must be defined manually
 		if($this instanceof StaticHTMLComponent) {
@@ -98,8 +98,8 @@ abstract class Component {
 	 *
 	 * @return self Returns itself for chaining other functions
 	 */
-	public final function clearHtmlID(): self {
-		$this->setHtmlID('');
+	public final function clearHTMLID(): self {
+		$this->setHTMLID('');
 		return $this;
 	}
 
@@ -108,7 +108,7 @@ abstract class Component {
 	 *
 	 * @return string
 	 */
-	public final function getHtmlClasses(): string {
+	public final function getHTMLClasses(): string {
 		return $this->htmlClasses;
 	}
 
@@ -119,7 +119,7 @@ abstract class Component {
 	 * @param string $htmlClasses
 	 * @return self Returns itself for chaining other functions
 	 */
-	public final function setHtmlClasses(string $htmlClasses): self {
+	public final function setHTMLClasses(string $htmlClasses): self {
 		// Check if this is a StaticHTMLComponent
 		// If yes, throw error: Classes of StaticHTMLComponent must be defined manually
 		if($this instanceof StaticHTMLComponent) {
@@ -153,8 +153,8 @@ abstract class Component {
 	 *
 	 * @return self Returns itself for chaining other functions
 	 */
-	public final function clearHtmlClasses(): self {
-		$this->setHtmlClasses('');
+	public final function clearHTMLClasses(): self {
+		$this->setHTMLClasses('');
 		return $this;
 	}
 
