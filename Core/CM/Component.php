@@ -2,6 +2,7 @@
 
 namespace SiteBuilder\Core\CM;
 
+use SiteBuilder\Core\CM\Dependency\Dependency;
 use ErrorException;
 
 /**
@@ -55,7 +56,7 @@ abstract class Component {
 	 * Returns an array of CSS and JS dependencies to automatically get added to the page's head
 	 *
 	 * @return array
-	 * @see Dependency
+	 * @see Dependency\Dependency
 	 */
 	public abstract function getDependencies(): array;
 

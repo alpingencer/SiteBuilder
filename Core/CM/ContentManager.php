@@ -2,6 +2,7 @@
 
 namespace SiteBuilder\Core\CM;
 
+use SiteBuilder\Core\CM\Dependency\Dependency;
 use ErrorException;
 use SplObjectStorage;
 
@@ -117,9 +118,9 @@ class ContentManager {
 		// Get rid of duplicate dependencies
 		Dependency::removeDuplicates($dependencies);
 
-		// Sort dependencies by type
+		// Sort dependencies by class
 		usort($dependencies, function (Dependency $d1, Dependency $d2) {
-			return $d1->getType() <=> $d2->getType();
+			return get_class($d1) <=> get_class($d2);
 		});
 
 		// Add dependencies to page

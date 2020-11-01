@@ -2,6 +2,7 @@
 
 namespace SiteBuilder\Core\CM;
 
+
 /**
  * A StaticHTMLComponent is the most basic form of Component there is.
  * It is used to define the HTML to be output directly, meaning it will not get processed in any

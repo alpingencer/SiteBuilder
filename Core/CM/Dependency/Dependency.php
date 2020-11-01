@@ -1,28 +1,18 @@
 <?php
 
-namespace SiteBuilder\Core\CM;
-
-define('__SITEBUILDER_JS_DEPENDENCY', 0);
-define('__SITEBUILDER_CSS_DEPENDENCY', 1);
+namespace SiteBuilder\Core\CM\Dependency;
 
 /**
  * The Dependency class provides a convenient way for components to find and add CSS and JS
  * dependencies to the page head.
- * To use them, define an array of dependencies in the components
+ * To use them, define an array of dependencies in the component's
  * getDependencies() method.
  *
  * @author Alpin Gencer
- * @namespace SiteBuilder\Core\CM
+ * @namespace SiteBuilder\Core\CM\Dependency
  * @see Component::getDependencies()
  */
-class Dependency {
-	/**
-	 * The type of the dependency, as defined by the '__SITEBUILDER_JS_DEPENDENCY' and
-	 * '__SITEBUILDER_CSS_DEPENDENCY' constants
-	 *
-	 * @var int
-	 */
-	private $type;
+abstract class Dependency {
 	/**
 	 * The HTML source path of the dependency.
 	 * Note that this doesn't have to be an absolute path, as any given relative path will be found
@@ -41,13 +31,12 @@ class Dependency {
 	/**
 	 * Returns an instance of Dependency
 	 *
-	 * @param int $type The type of the dependency
 	 * @param string $source The source string of the dependency
 	 * @param string $params Optional additional HTML attributes of the dependency
 	 * @return Dependency The initialized instance
 	 */
-	public static function init(int $type, string $source, string $params = ''): Dependency {
-		return new self($type, $source, $params);
+	public final static function init(string $source, string $params = ''): Dependency {
+		return new static($source, $params);
 	}
 
 	/**
@@ -55,7 +44,7 @@ class Dependency {
 	 *
 	 * @param array $dependencies The array to process
 	 */
-	public static function removeDuplicates(array &$dependencies): void {
+	public final static function removeDuplicates(array &$dependencies): void {
 		$addedDependencies = array();
 		$addedDependencySources = array();
 
@@ -77,7 +66,9 @@ class Dependency {
 	 * @param string $source The source path to search for
 	 * @return string The normalized path
 	 */
-	public static function getNormalizedPath(string $frameworkDirectory, string $source): string {
+	public final static function getNormalizedPath(string $frameworkDirectory, string $source): string {
+		// Check if source starts with '/'
+		// If yes, return unedited string: Absolute path given
 		if(substr($source, 0, 1) === '/') {
 			return $source;
 		}
@@ -105,57 +96,18 @@ class Dependency {
 	 * @param string $source The source path to search for
 	 * @see Dependency::init()
 	 */
-	private function __construct(int $type, string $source, string $params) {
-		$this->setType($type);
+	private final function __construct(string $source, string $params) {
 		$this->setSource($source);
 		$this->setParams($params);
 	}
 
 	/**
-	 * Builds and returns the HTML string of the dependency based on it's type, source and
+	 * Builds and returns the HTML string of the dependency based on it's class, source and
 	 * parameters.
 	 *
 	 * @return string The generated HTML string
 	 */
-	public function getHTML(): string {
-		$cm = $GLOBALS['__SiteBuilder_ContentManager'];
-		$normalizedPath = Dependency::getNormalizedPath($cm->getFrameworkDirectory(), $this->source);
-
-		if(empty($this->params)) {
-			$params = '';
-		} else {
-			$params = $this->params . ' ';
-		}
-
-		switch($this->type) {
-			case __SITEBUILDER_JS_DEPENDENCY:
-				return '<script ' . $params . 'src="' . $normalizedPath . '"></script>';
-				break;
-			case __SITEBUILDER_CSS_DEPENDENCY:
-				return '<link rel="stylesheet" type="text/css" ' . $params . 'href="' . $normalizedPath . '">';
-				break;
-		}
-	}
-
-	/**
-	 * Getter for the dependency type
-	 *
-	 * @return int
-	 */
-	public function getType(): int {
-		return $this->type;
-	}
-
-	/**
-	 * Setter for the dependency type
-	 *
-	 * @param int $type
-	 * @return self Returns itself for chaining other functions
-	 */
-	private function setType(int $type): self {
-		$this->type = $type;
-		return $this;
-	}
+	public abstract function getHTML(): string;
 
 	/**
 	 * Getter for the dependency source
@@ -169,11 +121,11 @@ class Dependency {
 	/**
 	 * Setter for the dependency source
 	 *
-	 * @param string $src
+	 * @param string $source
 	 * @return self Returns itself for chaining other functions
 	 */
-	private function setSource(string $src): self {
-		$this->source = $src;
+	private final function setSource(string $source): self {
+		$this->source = $source;
 		return $this;
 	}
 
@@ -182,7 +134,7 @@ class Dependency {
 	 *
 	 * @return string
 	 */
-	public function getParams(): string {
+	public final function getParams(): string {
 		return $this->params;
 	}
 
@@ -192,7 +144,7 @@ class Dependency {
 	 * @param string $params
 	 * @return self Returns itself for chaining other functions
 	 */
-	private function setParams(string $params): self {
+	private final function setParams(string $params): self {
 		$this->params = $params;
 		return $this;
 	}
