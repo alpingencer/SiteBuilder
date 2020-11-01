@@ -308,14 +308,11 @@ class ContentManager {
 	 * Setter for the framework directory
 	 *
 	 * @param string $frameworkDirectory
-	 * @return self Returns itself for chaining other functions
 	 */
-	private function setFrameworkDirectory(string $frameworkDirectory): self {
+	private function setFrameworkDirectory(string $frameworkDirectory): void {
 		// Normalize directory string
 		$frameworkDirectory = '/' . trim($frameworkDirectory, '/') . '/';
-
 		$this->frameworkDirectory = $frameworkDirectory;
-		return $this;
 	}
 
 	/**
@@ -344,11 +341,9 @@ class ContentManager {
 	 * Setter for the page constructor
 	 *
 	 * @param PageConstructor $page
-	 * @return self Returns itself for chaining other functions
 	 */
-	private function setPageConstructor(PageConstructor $page): self {
+	private function setPageConstructor(PageConstructor $page): void {
 		$this->page = $page;
-		return $this;
 	}
 
 }

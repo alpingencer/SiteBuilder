@@ -209,21 +209,16 @@ class PageConstructor {
 	 * Setter for the HTML language
 	 *
 	 * @param string $lang
-	 * @return self Returns itself for chaining other functions
 	 */
-	private function setLang(string $lang): self {
+	private function setLang(string $lang): void {
 		$this->lang = $lang;
-		return $this;
 	}
 
 	/**
 	 * Clears the HTML language
-	 *
-	 * @return self Returns itself for chaining other functions
 	 */
-	private function clearLang(): self {
+	private function clearLang(): void {
 		$this->setLang('');
-		return $this;
 	}
 
 	/**
@@ -239,11 +234,9 @@ class PageConstructor {
 	 * Setter for the pretty print parameter
 	 *
 	 * @param bool $prettyPrint
-	 * @return self Returns itself for chaining other functions
 	 */
-	private function setPrettyPrint(bool $prettyPrint): self {
+	private function setPrettyPrint(bool $prettyPrint): void {
 		$this->prettyPrint = $prettyPrint;
-		return $this;
 	}
 
 }

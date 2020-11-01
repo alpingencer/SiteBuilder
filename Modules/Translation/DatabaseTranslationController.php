@@ -86,11 +86,9 @@ class DatabaseTranslationController extends TranslationController {
 	 * Setter for the token table name
 	 *
 	 * @param string $tokenTableName
-	 * @return self Returns itself for chaining other functions
 	 */
-	private function setTokenTableName(string $tokenTableName): self {
+	private function setTokenTableName(string $tokenTableName): void {
 		$this->tokenTableName = $tokenTableName;
-		return $this;
 	}
 
 	/**
@@ -106,11 +104,9 @@ class DatabaseTranslationController extends TranslationController {
 	 * Setter for the primary ekey
 	 *
 	 * @param string $primaryKey
-	 * @return self Returns itself for chaining other functions
 	 */
-	private function setPrimaryKey(string $primaryKey): self {
+	private function setPrimaryKey(string $primaryKey): void {
 		$this->primaryKey = $primaryKey;
-		return $this;
 	}
 
 }

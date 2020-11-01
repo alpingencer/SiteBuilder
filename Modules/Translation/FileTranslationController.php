@@ -79,11 +79,9 @@ class FileTranslationController extends TranslationController {
 	 * Setter for the translations associative array
 	 *
 	 * @param array $translations
-	 * @return self Returns itself for chaining other functions
 	 */
-	private function setTranslation(array $translations): self {
+	private function setTranslation(array $translations): void {
 		$this->translations = $translations;
-		return $this;
 	}
 
 }

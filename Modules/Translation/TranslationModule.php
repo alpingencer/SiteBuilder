@@ -117,18 +117,16 @@ class TranslationModule extends Module {
 		return $this->controller;
 	}
 
-	private function setController(TranslationController $controller): self {
+	private function setController(TranslationController $controller): void {
 		$this->controller = $controller;
-		return $this;
 	}
 
 	public function getLang(): string {
 		return $this->lang;
 	}
 
-	private function setLang(string $lang): self {
+	private function setLang(string $lang): void {
 		$this->lang = $lang;
-		return $this;
 	}
 
 }

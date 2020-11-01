@@ -144,10 +144,9 @@ class DefaultErrorPage {
 	 * Setter for the error code
 	 *
 	 * @param int $errorCode
-	 * @return self Returns itself for chaining other functions
 	 * @see DefaultErrorPage::$errorCode
 	 */
-	private function setErrorCode(int $errorCode): self {
+	private function setErrorCode(int $errorCode): void {
 		// Check if the error code is less than 100
 		// If no, throw error: Error code cannot be less than 100
 		if($errorCode < 100) {
@@ -155,7 +154,6 @@ class DefaultErrorPage {
 		}
 
 		$this->errorCode = $errorCode;
-		return $this;
 	}
 
 	/**
@@ -172,10 +170,9 @@ class DefaultErrorPage {
 	 * Setter for the error name
 	 *
 	 * @param string $errorName
-	 * @return self Returns itself for chaining other functions
 	 * @see DefaultErrorPage::$errorName
 	 */
-	private function setErrorName(string $errorName): self {
+	private function setErrorName(string $errorName): void {
 		// Check if error name is empty
 		// If yes, throw error: Error name should not be empty
 		if(empty($errorName)) {
@@ -183,7 +180,6 @@ class DefaultErrorPage {
 		}
 
 		$this->errorName = $errorName;
-		return $this;
 	}
 
 	/**
@@ -200,12 +196,10 @@ class DefaultErrorPage {
 	 * Setter for the error message
 	 *
 	 * @param string $errorMessage
-	 * @return self Returns itself for chaining other functions
 	 * @see DefaultErrorPage::$errorMessage
 	 */
-	private function setErrorMessage(string $errorMessage): self {
+	private function setErrorMessage(string $errorMessage): void {
 		$this->errorMessage = $errorMessage;
-		return $this;
 	}
 
 }

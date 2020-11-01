@@ -184,46 +184,41 @@ class SecurityModule extends Module {
 		return $this->getUserLevelFunction;
 	}
 
-	private function setGetUserLevelFunction(callable $getUserLevelFunction): self {
+	private function setGetUserLevelFunction(callable $getUserLevelFunction): void {
 		$this->getUserLevelFunction = $getUserLevelFunction;
-		return $this;
 	}
 
 	public function getProcessLoginFunction(): callable {
 		return $this->processLoginFunction;
 	}
 
-	private function setProcessLoginFunction(callable $processLoginFunction): self {
+	private function setProcessLoginFunction(callable $processLoginFunction): void {
 		$this->processLoginFunction = $processLoginFunction;
-		return $this;
 	}
 
 	public function getProcessLogoutFunction(): callable {
 		return $this->processLogoutFunction;
 	}
 
-	private function setProcessLogoutFunction(callable $processLogoutFunction): self {
+	private function setProcessLogoutFunction(callable $processLogoutFunction): void {
 		$this->processLogoutFunction = $processLogoutFunction;
-		return $this;
 	}
 
 	public function isRedirectGuestToLogin(): bool {
 		return $this->isRedirectGuestToLogin;
 	}
 
-	private function setIsRedirectGuestToLogin(bool $isRedirectGuestToLogin): self {
+	private function setIsRedirectGuestToLogin(bool $isRedirectGuestToLogin): void {
 		$this->isRedirectGuestToLogin = $isRedirectGuestToLogin;
-		return $this;
 	}
 
 	public function getLoginPagePath(): string {
 		return $this->loginPagePath;
 	}
 
-	private function setLoginPagePath(string $loginPagePath): self {
+	private function setLoginPagePath(string $loginPagePath): void {
 		$this->loginPagePath = $loginPagePath;
 		$this->setIsRedirectGuestToLogin(true);
-		return $this;
 	}
 
 }

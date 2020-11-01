@@ -46,18 +46,16 @@ class AuthenticationComponent extends Component {
 		return $this->loginInnerHTML;
 	}
 
-	private function setLoginInnerHTML(string $loginInnerHTML): self {
+	private function setLoginInnerHTML(string $loginInnerHTML): void {
 		$this->loginInnerHTML = $loginInnerHTML;
-		return $this;
 	}
 
 	public function getLogoutInnerHTML(): string {
 		return $this->logoutInnerHTML;
 	}
 
-	private function setLogoutInnerHTML(string $logoutInnerHTML): self {
+	private function setLogoutInnerHTML(string $logoutInnerHTML): void {
 		$this->logoutInnerHTML = $logoutInnerHTML;
-		return $this;
 	}
 
 	public function isLoginOrLogout(): bool {
@@ -69,9 +67,8 @@ class AuthenticationComponent extends Component {
 		return $this;
 	}
 
-	private function setDependencies(array $dependencies): self {
+	private function setDependencies(array $dependencies): void {
 		$this->dependencies = $dependencies;
-		return $this;
 	}
 
 }

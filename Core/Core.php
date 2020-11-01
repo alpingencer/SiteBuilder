@@ -135,11 +135,9 @@ class Core {
 	 * Setter for the website manager
 	 *
 	 * @param array $config The configuration parameters to use
-	 * @return self Returns itself for chaining other functions
 	 */
-	private function setWebsiteManager(array $config): self {
+	private function setWebsiteManager(array $config): void {
 		$this->wm = WebsiteManager::init($config);
-		return $this;
 	}
 
 	/**
@@ -168,11 +166,9 @@ class Core {
 	 * Setter for the module manager
 	 *
 	 * @param array $config The configuration parameters to use
-	 * @return self Returns itself for chaining other functions
 	 */
-	private function setModuleManager(array $config): self {
+	private function setModuleManager(array $config): void {
 		$this->mm = ModuleManager::init($config);
-		return $this;
 	}
 
 	/**
@@ -201,11 +197,9 @@ class Core {
 	 * Setter for the content manager
 	 *
 	 * @param array $config The configuration parameters to use
-	 * @return self Returns itself for chaining other functions
 	 */
-	private function setContentManager(array $config): self {
+	private function setContentManager(array $config): void {
 		$this->cm = ContentManager::init($config);
-		return $this;
 	}
 
 }

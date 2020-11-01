@@ -256,9 +256,8 @@ class PageHierarchy {
 	 * Setter for the hierarchy
 	 *
 	 * @param array $pages
-	 * @return self Returns itself for chaining other functions
 	 */
-	private function setPages(array $pages): self {
+	private function setPages(array $pages): void {
 		// Check if the given page hierarchy is valid
 		// If no, throw error: Page hierarchy must be valid
 		$valid = $this->validate($pages);
@@ -268,7 +267,6 @@ class PageHierarchy {
 
 		$this->cascadeDown($pages);
 		$this->pages = $pages;
-		return $this;
 	}
 
 }

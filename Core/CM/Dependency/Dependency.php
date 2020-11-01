@@ -122,11 +122,9 @@ abstract class Dependency {
 	 * Setter for the dependency source
 	 *
 	 * @param string $source
-	 * @return self Returns itself for chaining other functions
 	 */
-	private final function setSource(string $source): self {
+	private final function setSource(string $source): void {
 		$this->source = $source;
-		return $this;
 	}
 
 	/**
@@ -142,11 +140,9 @@ abstract class Dependency {
 	 * Setter for the dependency parameters
 	 *
 	 * @param string $params
-	 * @return self Returns itself for chaining other functions
 	 */
-	private final function setParams(string $params): self {
+	private final function setParams(string $params): void {
 		$this->params = $params;
-		return $this;
 	}
 
 }

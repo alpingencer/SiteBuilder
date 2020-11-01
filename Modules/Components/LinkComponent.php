@@ -123,9 +123,8 @@ class LinkComponent extends Component {
 	 * Setter for the link path
 	 *
 	 * @param string $linkPath
-	 * @return self Returns itself for chaining other functions
 	 */
-	private function setLinkPath(string $linkPath): self {
+	private function setLinkPath(string $linkPath): void {
 		$this->setIsAbsolutePath(substr($linkPath, 0, 1) === '/');
 		$linkPath = PageHierarchy::normalizePathString($linkPath);
 
@@ -169,8 +168,6 @@ class LinkComponent extends Component {
 				$currentPagePath = $dirname;
 			} while(!isset($this->linkPath));
 		}
-
-		return $this;
 	}
 
 	/**
@@ -186,11 +183,9 @@ class LinkComponent extends Component {
 	 * Setter for wether an absolute path was given
 	 *
 	 * @param bool $isAbsolutePath
-	 * @return self
 	 */
-	private function setIsAbsolutePath(bool $isAbsolutePath): self {
+	private function setIsAbsolutePath(bool $isAbsolutePath): void {
 		$this->isAbsolutePath = $isAbsolutePath;
-		return $this;
 	}
 
 	/**
@@ -206,11 +201,9 @@ class LinkComponent extends Component {
 	 * Setter for the inner HTML
 	 *
 	 * @param string $innerHTML
-	 * @return self
 	 */
-	private function setInnerHTML(string $innerHTML): self {
+	private function setInnerHTML(string $innerHTML): void {
 		$this->innerHTML = $innerHTML;
-		return $this;
 	}
 
 }

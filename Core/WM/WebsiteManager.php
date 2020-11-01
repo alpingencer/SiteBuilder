@@ -426,11 +426,9 @@ class WebsiteManager {
 	 * Setter for the framework directory
 	 *
 	 * @param string $frameworkDirectory
-	 * @return self Returns itself for chaining other functions
 	 */
-	private function setFrameworkDirectory(string $frameworkDirectory): self {
+	private function setFrameworkDirectory(string $frameworkDirectory): void {
 		$this->frameworkDirectory = WebsiteManager::normalizeDirectoryString($frameworkDirectory);
-		return $this;
 	}
 
 	/**
@@ -446,11 +444,9 @@ class WebsiteManager {
 	 * Setter for the content directory
 	 *
 	 * @param string $contentDirectory
-	 * @return self Returns itself for chaining other functions
 	 */
-	private function setContentDirectory(string $contentDirectory): self {
+	private function setContentDirectory(string $contentDirectory): void {
 		$this->contentDirectory = WebsiteManager::normalizeDirectoryString($contentDirectory);
-		return $this;
 	}
 
 	/**
@@ -466,11 +462,9 @@ class WebsiteManager {
 	 * Setter for the page hierarchy
 	 *
 	 * @param PageHierarchy $hierarchy
-	 * @return self Returns itself for chaining other functions
 	 */
-	private function setHierarchy(PageHierarchy $hierarchy): self {
+	private function setHierarchy(PageHierarchy $hierarchy): void {
 		$this->hierarchy = $hierarchy;
-		return $this;
 	}
 
 	/**
@@ -486,9 +480,8 @@ class WebsiteManager {
 	 * Setter for wether the WebsiteManager should show an error page on an uncaught exception
 	 *
 	 * @param bool $showErrorPageOnException
-	 * @return self Returns itself for chaining other functions
 	 */
-	private function setShowErrorPageOnException(bool $showErrorPageOnException): self {
+	private function setShowErrorPageOnException(bool $showErrorPageOnException): void {
 		$this->showErrorPageOnException = $showErrorPageOnException;
 
 		if($this->showErrorPageOnException) {
@@ -508,8 +501,6 @@ class WebsiteManager {
 			// Restore previous exception handler
 			restore_exception_handler();
 		}
-
-		return $this;
 	}
 
 	/**
@@ -525,9 +516,8 @@ class WebsiteManager {
 	 * Setter for the current page path
 	 *
 	 * @param string $currentPagePath
-	 * @return self Returns itself for chaining other functions
 	 */
-	private function setCurrentPagePath(string $currentPagePath): self {
+	private function setCurrentPagePath(string $currentPagePath): void {
 		if(empty($currentPagePath)) {
 			throw new ErrorException("The given page path is empty!");
 		}
@@ -546,7 +536,6 @@ class WebsiteManager {
 		}
 
 		$this->currentPagePath = $p;
-		return $this;
 	}
 
 	/**
@@ -562,11 +551,9 @@ class WebsiteManager {
 	 * Setter for the default page path
 	 *
 	 * @param string $defaultPagePath
-	 * @return self
 	 */
-	private function setDefaultPagePath(string $defaultPagePath): self {
+	private function setDefaultPagePath(string $defaultPagePath): void {
 		$this->defaultPagePath = PageHierarchy::normalizePathString($defaultPagePath);
-		return $this;
 	}
 
 }

@@ -42,36 +42,32 @@ abstract class DatabaseController {
 		return $this->server;
 	}
 
-	private final function setServer($server): self {
+	private final function setServer($server): void {
 		$this->server = $server;
-		return $this;
 	}
 
 	public final function getName(): string {
 		return $this->name;
 	}
 
-	private final function setName($name): self {
+	private final function setName($name): void {
 		$this->name = $name;
-		return $this;
 	}
 
 	public final function getUser(): string {
 		return $this->user;
 	}
 
-	private final function setUser($user): self {
+	private final function setUser($user): void {
 		$this->user = $user;
-		return $this;
 	}
 
 	public final function getPassword(): string {
 		return $this->password;
 	}
 
-	private final function setPassword($password): self {
+	private final function setPassword($password): void {
 		$this->password = $password;
-		return $this;
 	}
 
 	public final function isLoggingEnabled(): bool {
@@ -94,9 +90,8 @@ abstract class DatabaseController {
 		return $this->logTableName;
 	}
 
-	private final function setLogTableName(string $logTableName): self {
+	private final function setLogTableName(string $logTableName): void {
 		$this->logTableName = $logTableName;
-		return $this;
 	}
 
 }
