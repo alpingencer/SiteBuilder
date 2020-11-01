@@ -2,7 +2,6 @@
 
 namespace SiteBuilder\Modules\Database;
 
-
 abstract class DatabaseController {
 	private $server;
 	private $name;

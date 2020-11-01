@@ -104,6 +104,7 @@ class SecurityModule extends Module {
 		}
 
 		// Check if page level is greater than user level
+		// If yes, don't show page
 		if($pageLevel > $userLevel) {
 			if($userLevel === 0 && $this->isRedirectGuestToLogin) {
 				// User is not logged in and login page specified
@@ -134,7 +135,7 @@ class SecurityModule extends Module {
 		// If yes, process login
 		if(isset($_POST['__SiteBuilder_LoginRequest'])) {
 			$userID = $this->processLogin();
-			if($userID !== false) {
+			if($userID !== 0) {
 				$_SESSION['__SiteBuilder_UserIsLoggedIn'] = true;
 				$_SESSION['__SiteBuilder_UserID'] = $userID;
 
@@ -171,16 +172,8 @@ class SecurityModule extends Module {
 		return $this->getGetUserLevelFunction()($userID);
 	}
 
-	private function processLogin() {
-		$return = $this->getProcessLoginFunction()();
-
-		// Check if return type is int or false
-		// If no, throw error: Return type of given process function must be of type int or false
-		if(!is_int($return) && $return !== false) {
-			throw new ErrorException("Return value of processLogin() must be of type int or false!");
-		}
-
-		return $return;
+	private function processLogin(): int {
+		return $this->getProcessLoginFunction()();
 	}
 
 	private function processLogout(): bool {
