@@ -74,9 +74,11 @@ class Core {
 		$this->setContentManager($config);
 
 		// Check if 'autoGenerateTitle' configuration parameter is set to false
-		// If no, generate <title> tag from page hierarchy 'title' attribute
+		// If no, generate <title> tag from page hierarchy 'title' attributes
 		if(!(isset($config['autoGenerateTitle']) && $config['autoGenerateTitle'] === false) && $this->wm->getHierarchy()->isPageDefined($this->wm->getCurrentPagePath())) {
-			$this->cm->page()->head .= '<title>' . $this->wm->getHierarchy()->getPageAttribute($this->wm->getCurrentPagePath(), 'title') . '</title>';
+			$pageTitle = $this->wm->getHierarchy()->getPageAttribute($this->wm->getCurrentPagePath(), 'title');
+			$websiteTitle = $this->wm->getHierarchy()->getGlobalAttribute('title');
+			$this->cm->page()->head .= "<title>$pageTitle - $websiteTitle</title>";
 		}
 	}
 
