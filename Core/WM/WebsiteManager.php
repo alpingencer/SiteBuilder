@@ -195,10 +195,8 @@ class WebsiteManager {
 			// If yes, include it
 			// If no, show error 501: Page not implemented
 			if($this->isContentFileDefined($path)) {
-				// File found, include
 				require $this->getContentFilePath($path);
 			} else {
-				// A required file was not found, show 501 page
 				trigger_error("The path '" . $path . "' does not have a corresponding content file!", E_USER_WARNING);
 				$this->showErrorPage(501, 500);
 			}
@@ -320,6 +318,7 @@ class WebsiteManager {
 	 * Getter for the error page paths
 	 *
 	 * @return array An associative array with the HTTP error codes and the error page paths
+	 * @see WebsiteManager::$errorPagePaths
 	 */
 	public function getAllErrorPagePaths(): array {
 		return $this->errorPagePaths;
@@ -333,6 +332,7 @@ class WebsiteManager {
 	 * @param int $errorCode The HTTP error code to define the error page path for
 	 * @param string $pagePath The error page path to use
 	 * @return self Returns itself for chaining other functions
+	 * @see WebsiteManager::$errorPagePaths
 	 */
 	public function setErrorPagePath(int $errorCode, string $pagePath): self {
 		$pagePath = PageHierarchy::normalizePathString($pagePath);
@@ -417,6 +417,7 @@ class WebsiteManager {
 	 * Getter for the framework directory
 	 *
 	 * @return string
+	 * @see WebsiteManager::$frameworkDirectory
 	 */
 	public function getFrameworkDirectory(): string {
 		return $this->frameworkDirectory;
@@ -426,6 +427,7 @@ class WebsiteManager {
 	 * Setter for the framework directory
 	 *
 	 * @param string $frameworkDirectory
+	 * @see WebsiteManager::$frameworkDirectory
 	 */
 	private function setFrameworkDirectory(string $frameworkDirectory): void {
 		$this->frameworkDirectory = WebsiteManager::normalizeDirectoryString($frameworkDirectory);
@@ -435,6 +437,7 @@ class WebsiteManager {
 	 * Getter for the content directory
 	 *
 	 * @return string
+	 * @see WebsiteManager::$contentDirectory
 	 */
 	public function getContentDirectory(): string {
 		return $this->contentDirectory;
@@ -444,6 +447,7 @@ class WebsiteManager {
 	 * Setter for the content directory
 	 *
 	 * @param string $contentDirectory
+	 * @see WebsiteManager::$contentDirectory
 	 */
 	private function setContentDirectory(string $contentDirectory): void {
 		$this->contentDirectory = WebsiteManager::normalizeDirectoryString($contentDirectory);
@@ -453,6 +457,7 @@ class WebsiteManager {
 	 * Getter for the page hierarchy
 	 *
 	 * @return PageHierarchy
+	 * @see WebsiteManager::$hierarchy
 	 */
 	public function getHierarchy(): PageHierarchy {
 		return $this->hierarchy;
@@ -462,6 +467,7 @@ class WebsiteManager {
 	 * Setter for the page hierarchy
 	 *
 	 * @param PageHierarchy $hierarchy
+	 * @see WebsiteManager::$hierarchy
 	 */
 	private function setHierarchy(PageHierarchy $hierarchy): void {
 		$this->hierarchy = $hierarchy;
@@ -471,6 +477,7 @@ class WebsiteManager {
 	 * Getter for wether the WebsiteManager shows an error page on an uncaught exception
 	 *
 	 * @return bool
+	 * @see WebsiteManager::$showErrorPageOnException
 	 */
 	public function isShowErrorPageOnException(): bool {
 		return $this->showErrorPageOnException;
@@ -480,6 +487,7 @@ class WebsiteManager {
 	 * Setter for wether the WebsiteManager should show an error page on an uncaught exception
 	 *
 	 * @param bool $showErrorPageOnException
+	 * @see WebsiteManager::$showErrorPageOnException
 	 */
 	private function setShowErrorPageOnException(bool $showErrorPageOnException): void {
 		$this->showErrorPageOnException = $showErrorPageOnException;
@@ -507,6 +515,7 @@ class WebsiteManager {
 	 * Getter for the current page path
 	 *
 	 * @return string
+	 * @see WebsiteManager::$currentPagePath
 	 */
 	public function getCurrentPagePath(): string {
 		return $this->currentPagePath;
@@ -516,6 +525,7 @@ class WebsiteManager {
 	 * Setter for the current page path
 	 *
 	 * @param string $currentPagePath
+	 * @see WebsiteManager::$currentPagePath
 	 */
 	private function setCurrentPagePath(string $currentPagePath): void {
 		if(empty($currentPagePath)) {
@@ -542,6 +552,7 @@ class WebsiteManager {
 	 * Getter for the default page path
 	 *
 	 * @return string
+	 * @see WebsiteManager::$defaultPagePath
 	 */
 	public function getDefaultPagePath(): string {
 		return $this->defaultPagePath;
@@ -551,6 +562,7 @@ class WebsiteManager {
 	 * Setter for the default page path
 	 *
 	 * @param string $defaultPagePath
+	 * @see WebsiteManager::$defaultPagePath
 	 */
 	private function setDefaultPagePath(string $defaultPagePath): void {
 		$this->defaultPagePath = PageHierarchy::normalizePathString($defaultPagePath);

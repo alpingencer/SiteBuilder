@@ -113,6 +113,7 @@ abstract class Dependency {
 	 * Getter for the dependency source
 	 *
 	 * @return string
+	 * @see Dependency::$source
 	 */
 	public function getSource(): string {
 		return $this->source;
@@ -122,6 +123,7 @@ abstract class Dependency {
 	 * Setter for the dependency source
 	 *
 	 * @param string $source
+	 * @see Dependency::$source
 	 */
 	private final function setSource(string $source): void {
 		$this->source = $source;
@@ -131,6 +133,7 @@ abstract class Dependency {
 	 * Getter for the dependency parameters
 	 *
 	 * @return string
+	 * @see Dependency::$params
 	 */
 	public final function getParams(): string {
 		return $this->params;
@@ -140,6 +143,7 @@ abstract class Dependency {
 	 * Setter for the dependency parameters
 	 *
 	 * @param string $params
+	 * @see Dependency::$params
 	 */
 	private final function setParams(string $params): void {
 		$this->params = $params;

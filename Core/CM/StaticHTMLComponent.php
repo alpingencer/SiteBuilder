@@ -61,6 +61,7 @@ class StaticHTMLComponent extends Component {
 	 * Getter for the HTML string
 	 *
 	 * @return string
+	 * @see StaticHTMLComponent::$html
 	 */
 	public function getHTML(): string {
 		return $this->html;

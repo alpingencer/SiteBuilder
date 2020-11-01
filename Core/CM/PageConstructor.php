@@ -200,6 +200,7 @@ class PageConstructor {
 	 * Getter for the HTML language
 	 *
 	 * @return string
+	 * @see PageConstructor::$lang
 	 */
 	public function getLang(): string {
 		return $this->lang;
@@ -209,6 +210,7 @@ class PageConstructor {
 	 * Setter for the HTML language
 	 *
 	 * @param string $lang
+	 * @see PageConstructor::$lang
 	 */
 	private function setLang(string $lang): void {
 		$this->lang = $lang;
@@ -216,6 +218,8 @@ class PageConstructor {
 
 	/**
 	 * Clears the HTML language
+	 *
+	 * @see PageConstructor::$lang
 	 */
 	private function clearLang(): void {
 		$this->setLang('');
@@ -225,6 +229,7 @@ class PageConstructor {
 	 * Getter for the pretty print parameter
 	 *
 	 * @return bool
+	 * @see PageConstructor::$prettyPrint
 	 */
 	public function isPrettyPrint(): bool {
 		return $this->prettyPrint;
@@ -233,7 +238,7 @@ class PageConstructor {
 	/**
 	 * Setter for the pretty print parameter
 	 *
-	 * @param bool $prettyPrint
+	 * @param bool $prettyPrint $see PageConstructor::$prettyPrint
 	 */
 	private function setPrettyPrint(bool $prettyPrint): void {
 		$this->prettyPrint = $prettyPrint;

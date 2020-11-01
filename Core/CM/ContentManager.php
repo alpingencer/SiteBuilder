@@ -44,9 +44,9 @@ class ContentManager {
 	 */
 	private $frameworkDirectory;
 	/**
-	 * An array of components that have been added to the manager
+	 * An SplObjectStorage of components that have been added to the manager
 	 *
-	 * @var array
+	 * @var SplObjectStorage
 	 */
 	private $components;
 	/**
@@ -222,6 +222,7 @@ class ContentManager {
 	 * Getter for the added components
 	 *
 	 * @return SplObjectStorage
+	 * @see ContentManager::$components
 	 */
 	public function getAllComponents(): SplObjectStorage {
 		return $this->components;
@@ -299,6 +300,7 @@ class ContentManager {
 	 * Getter for the framework directory
 	 *
 	 * @return string
+	 * @see ContentManager::$frameworkDirectory
 	 */
 	public function getFrameworkDirectory(): string {
 		return $this->frameworkDirectory;
@@ -308,6 +310,7 @@ class ContentManager {
 	 * Setter for the framework directory
 	 *
 	 * @param string $frameworkDirectory
+	 * @see ContentManager::$frameworkDirectory
 	 */
 	private function setFrameworkDirectory(string $frameworkDirectory): void {
 		// Normalize directory string
@@ -321,6 +324,7 @@ class ContentManager {
 	 *
 	 * @return PageConstructor
 	 * @see ContentManager::page()
+	 * @see ContentManager::$page
 	 */
 	public function getPageConstructor(): PageConstructor {
 		return $this->page;
@@ -332,6 +336,7 @@ class ContentManager {
 	 *
 	 * @return PageConstructor
 	 * @see ContentManager::getPageConstructor()
+	 * @see ContentManager::$page
 	 */
 	public function page(): PageConstructor {
 		return $this->getPageConstructor();
@@ -341,6 +346,7 @@ class ContentManager {
 	 * Setter for the page constructor
 	 *
 	 * @param PageConstructor $page
+	 * @see ContentManager::$page
 	 */
 	private function setPageConstructor(PageConstructor $page): void {
 		$this->page = $page;

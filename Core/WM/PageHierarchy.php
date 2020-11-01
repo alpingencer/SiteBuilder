@@ -247,6 +247,7 @@ class PageHierarchy {
 	 * Getter for the hierarchy
 	 *
 	 * @return array The entire page hierarchy
+	 * @see PageHierarchy::$pages
 	 */
 	public function getAllPages(): array {
 		return $this->pages;
@@ -256,6 +257,7 @@ class PageHierarchy {
 	 * Setter for the hierarchy
 	 *
 	 * @param array $pages
+	 * @see PageHierarchy::$pages
 	 */
 	private function setPages(array $pages): void {
 		// Check if the given page hierarchy is valid

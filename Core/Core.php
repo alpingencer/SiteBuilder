@@ -75,7 +75,7 @@ class Core {
 
 		// Check if 'autoGenerateTitle' configuration parameter is set to false
 		// If no, generate <title> tag from page hierarchy 'title' attribute
-		if(!(isset($config['autoGenerateTitle']) && $config['autoGenerateTitle'] === false)) {
+		if(!(isset($config['autoGenerateTitle']) && $config['autoGenerateTitle'] === false) && $this->wm->getHierarchy()->isPageDefined($this->wm->getCurrentPagePath())) {
 			$this->cm->page()->head .= '<title>' . $this->wm->getHierarchy()->getPageAttribute($this->wm->getCurrentPagePath(), 'title') . '</title>';
 		}
 	}
@@ -115,6 +115,7 @@ class Core {
 	 *
 	 * @return WebsiteManager
 	 * @see Core::wm()
+	 * @see Core::$wm
 	 */
 	public function getWebsiteManager(): WebsiteManager {
 		return $this->wm;
@@ -126,6 +127,7 @@ class Core {
 	 *
 	 * @return WebsiteManager
 	 * @see Core::getWebsiteManager()
+	 * @see Core::$wm
 	 */
 	public function wm(): WebsiteManager {
 		return $this->getWebsiteManager();
@@ -135,6 +137,7 @@ class Core {
 	 * Setter for the website manager
 	 *
 	 * @param array $config The configuration parameters to use
+	 * @see Core::$wm
 	 */
 	private function setWebsiteManager(array $config): void {
 		$this->wm = WebsiteManager::init($config);
@@ -145,7 +148,8 @@ class Core {
 	 * For a convenience function with a shorter name, see Core::mm()
 	 *
 	 * @return ModuleManager
-	 * @see Core::mm()
+	 * @see Core::mm(
+	 * @see Core::$mm)
 	 */
 	public function getModuleManager(): ModuleManager {
 		return $this->mm;
@@ -157,6 +161,7 @@ class Core {
 	 *
 	 * @return ModuleManager
 	 * @see Core::getModuleManager()
+	 * @see Core::$mm
 	 */
 	public function mm(): ModuleManager {
 		return $this->getModuleManager();
@@ -166,6 +171,7 @@ class Core {
 	 * Setter for the module manager
 	 *
 	 * @param array $config The configuration parameters to use
+	 * @see Core::$mm
 	 */
 	private function setModuleManager(array $config): void {
 		$this->mm = ModuleManager::init($config);
@@ -177,6 +183,7 @@ class Core {
 	 *
 	 * @return ContentManager
 	 * @see Core::cm()
+	 * @see Core::$cm
 	 */
 	public function getContentManager(): ContentManager {
 		return $this->cm;
@@ -188,6 +195,7 @@ class Core {
 	 *
 	 * @return ContentManager
 	 * @see Core::getContentManager()
+	 * @see Core::$cm
 	 */
 	public function cm(): ContentManager {
 		return $this->getContentManager();
@@ -197,6 +205,7 @@ class Core {
 	 * Setter for the content manager
 	 *
 	 * @param array $config The configuration parameters to use
+	 * @see Core::$cm
 	 */
 	private function setContentManager(array $config): void {
 		$this->cm = ContentManager::init($config);

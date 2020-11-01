@@ -70,6 +70,7 @@ class FileTranslationController extends TranslationController {
 	 * Getter for the translations associative array
 	 *
 	 * @return array
+	 * @see FileTranslationController::$translations
 	 */
 	public function getTranslations(): array {
 		return $this->translations;
@@ -79,6 +80,7 @@ class FileTranslationController extends TranslationController {
 	 * Setter for the translations associative array
 	 *
 	 * @param array $translations
+	 * @see FileTranslationController::$translations
 	 */
 	private function setTranslation(array $translations): void {
 		$this->translations = $translations;

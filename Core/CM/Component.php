@@ -71,6 +71,7 @@ abstract class Component {
 	 * Getter for the HTML ID
 	 *
 	 * @return string
+	 * @see Component::$htmlID
 	 */
 	public final function getHTMLID(): string {
 		return $this->htmlID;
@@ -82,6 +83,7 @@ abstract class Component {
 	 *
 	 * @param string $htmlID
 	 * @return self Returns itself for chaining other functions
+	 * @see Component::$htmlID
 	 */
 	public final function setHTMLID(string $htmlID): self {
 		// Check if this is a StaticHTMLComponent
@@ -98,6 +100,7 @@ abstract class Component {
 	 * Clears the HTML ID
 	 *
 	 * @return self Returns itself for chaining other functions
+	 * @see Component::$htmlID
 	 */
 	public final function clearHTMLID(): self {
 		$this->setHTMLID('');
@@ -108,6 +111,7 @@ abstract class Component {
 	 * Getter for the HTML classes
 	 *
 	 * @return string
+	 * @see Component::$htmlClasses
 	 */
 	public final function getHTMLClasses(): string {
 		return $this->htmlClasses;
@@ -119,6 +123,7 @@ abstract class Component {
 	 *
 	 * @param string $htmlClasses
 	 * @return self Returns itself for chaining other functions
+	 * @see Component::$htmlClasses
 	 */
 	public final function setHTMLClasses(string $htmlClasses): self {
 		// Check if this is a StaticHTMLComponent
@@ -136,6 +141,7 @@ abstract class Component {
 	 *
 	 * @param string $htmlClasses
 	 * @return self Returns itself for chaining other functions
+	 * @see Component::$htmlClasses
 	 */
 	public final function addHTMLClasses(string $htmlClasses): self {
 		$htmlClasses = trim($htmlClasses);
@@ -153,6 +159,7 @@ abstract class Component {
 	 * Clears the HTML classes
 	 *
 	 * @return self Returns itself for chaining other functions
+	 * @see Component::$htmlClasses
 	 */
 	public final function clearHTMLClasses(): self {
 		$this->setHTMLClasses('');

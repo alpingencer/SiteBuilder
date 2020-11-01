@@ -114,6 +114,7 @@ class LinkComponent extends Component {
 	 * Getter for the link path
 	 *
 	 * @return string
+	 * @see LinkComponent::$linkPath
 	 */
 	public function getLinkPath(): string {
 		return $this->linkPath;
@@ -123,6 +124,7 @@ class LinkComponent extends Component {
 	 * Setter for the link path
 	 *
 	 * @param string $linkPath
+	 * @see LinkComponent::$linkPath
 	 */
 	private function setLinkPath(string $linkPath): void {
 		$this->setIsAbsolutePath(substr($linkPath, 0, 1) === '/');
@@ -174,15 +176,17 @@ class LinkComponent extends Component {
 	 * Getter for wether an absolute path was given
 	 *
 	 * @return bool
+	 * @see LinkComponent::$isAbsolutePath
 	 */
 	public function isAbsolutePath(): bool {
-		return substr($this->linkPath, 0, 1) === '/';
+		return $this->isAbsolutePath;
 	}
 
 	/**
 	 * Setter for wether an absolute path was given
 	 *
 	 * @param bool $isAbsolutePath
+	 * @see LinkComponent::$isAbsolutePath
 	 */
 	private function setIsAbsolutePath(bool $isAbsolutePath): void {
 		$this->isAbsolutePath = $isAbsolutePath;
@@ -192,6 +196,7 @@ class LinkComponent extends Component {
 	 * Getter for the inner HTML
 	 *
 	 * @return string
+	 * @see LinkComponent::$innerHTML
 	 */
 	public function getInnerHTML(): string {
 		return $this->innerHTML;
@@ -201,6 +206,7 @@ class LinkComponent extends Component {
 	 * Setter for the inner HTML
 	 *
 	 * @param string $innerHTML
+	 * @see LinkComponent::$innerHTML
 	 */
 	private function setInnerHTML(string $innerHTML): void {
 		$this->innerHTML = $innerHTML;
