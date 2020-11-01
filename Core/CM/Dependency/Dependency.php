@@ -73,11 +73,8 @@ abstract class Dependency {
 			return $source;
 		}
 
-		if(file_exists($_SERVER['DOCUMENT_ROOT'] . ($path = $frameworkDirectory . 'Modules/Components/external/' . $source))) {
-			// File in external
-			return $path;
-		} else if(file_exists($_SERVER['DOCUMENT_ROOT'] . ($path = $frameworkDirectory . 'Modules/Components/' . $source))) {
-			// File in Components
+		if(file_exists($_SERVER['DOCUMENT_ROOT'] . ($path = $frameworkDirectory . 'Modules/Components/Assets/' . $source))) {
+			// File in assets folder of Components module
 			return $path;
 		} else if(file_exists($_SERVER['DOCUMENT_ROOT'] . ($path = $frameworkDirectory . $source))) {
 			// File in SiteBuilder
