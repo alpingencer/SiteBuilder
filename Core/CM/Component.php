@@ -92,7 +92,7 @@ abstract class Component {
 			throw new ErrorException("Cannot set HTML ID of a StaticHTMLComponent!");
 		}
 
-		$this->htmlID = $htmlID;
+		$this->htmlID = trim($htmlID);
 		return $this;
 	}
 
@@ -132,7 +132,7 @@ abstract class Component {
 			throw new ErrorException("Cannot set HTML classes of a StaticHTMLComponent!");
 		}
 
-		$this->htmlClasses = $htmlClasses;
+		$this->htmlClasses = trim($htmlClasses);
 		return $this;
 	}
 
