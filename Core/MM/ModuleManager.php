@@ -123,6 +123,31 @@ class ModuleManager {
 	}
 
 	/**
+	 * Gets an initialized module by its class name
+	 *
+	 * @param string $moduleClass The module class to search for
+	 * @return Module The found module
+	 */
+	public function getModuleByClass(string $moduleClass): Module {
+		// Check if module has been initialized
+		// If no, throw error: The module must be initialized first
+		if(!$this->isModuleInitialized($moduleClass)) {
+			throw new ErrorException("No module of the given class '$moduleClass' has been initialized!");
+		}
+
+		return $this->modules[$moduleClass];
+	}
+
+	/**
+	 * Gets all initailized modules
+	 *
+	 * @return array An array of all active modules
+	 */
+	public function getAllModules(): array {
+		return $this->modules;
+	}
+
+	/**
 	 * Initialize a module of a given class
 	 *
 	 * @param string $moduleClass The module class to initialize
@@ -164,31 +189,6 @@ class ModuleManager {
 		foreach(array_keys($this->modules) as $moduleClass) {
 			$this->uninitModule($moduleClass);
 		}
-	}
-
-	/**
-	 * Gets an initialized module by its class name
-	 *
-	 * @param string $moduleClass The module class to search for
-	 * @return Module The found module
-	 */
-	public function getModule(string $moduleClass): Module {
-		// Check if module has been initialized
-		// If no, throw error: The module must be initialized first
-		if(!$this->isModuleInitialized($moduleClass)) {
-			throw new ErrorException("No module of the given class '$moduleClass' has been initialized!");
-		}
-
-		return $this->modules[$moduleClass];
-	}
-
-	/**
-	 * Gets all initailized modules
-	 *
-	 * @return array An array of all active modules
-	 */
-	public function getAllModules(): array {
-		return $this->modules;
 	}
 
 }

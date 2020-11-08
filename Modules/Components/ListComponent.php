@@ -42,7 +42,7 @@ class ListComponent extends SortableTableComponent {
 		$mm = $GLOBALS['__SiteBuilder_ModuleManager'];
 
 		// Query database
-		$database = $mm->getModule(DatabaseModule::class)->db();
+		$database = $mm->getModuleByClass(DatabaseModule::class)->db();
 		$columns = $this->primaryKey . ', ' . implode(', ', $this->columnKeys);
 		$result = $database->getRows($this->tableDatabaseName, $this->queryCriteria, $columns, $this->defaultSort);
 
