@@ -5,10 +5,41 @@ namespace SiteBuilder\Modules\Components\SortableTable;
 use SiteBuilder\Core\CM\Component;
 use SiteBuilder\Core\CM\Dependency\CSSDependency;
 use SiteBuilder\Core\CM\Dependency\JSDependency;
+use SiteBuilder\Modules\Components\ListComponent;
 
+/**
+ * <p>
+ * The SortableTableComponent class provides a base class for componenets that need to display data
+ * in an HTML table that is sortable by clicking on the column names.
+ * </p>
+ * <p>
+ * To get started, define the getColumns() abstract method and add rows to the table using addRow(),
+ * setRows() and clearRows(). For an example implementation, see ListComponent.
+ * </p>
+ *
+ * @author Alpin Gencer
+ * @namespace SiteBuilder\Modules\Components\SortableTable
+ * @see SortableTableComponent::addRow()
+ * @see SortableTableComponent::setRows()
+ * @see SortableTableComponent::clearRows()
+ * @see ListComponent
+ */
 abstract class SortableTableComponent extends Component {
+	/**
+	 * An array of SortableTableRows added to this table
+	 *
+	 * @var array
+	 */
 	private $rows;
 
+	/**
+	 * Constructor for the SortableTableComponent.
+	 * Please note that when extending this abstract class, it is convention to set the visibility
+	 * of the constructor to private and create a public static init() method. See
+	 * ListComponent for an example.
+	 *
+	 * @see ListComponent
+	 */
 	protected function __construct() {
 		parent::__construct();
 		$this->clearRows();
@@ -77,22 +108,53 @@ abstract class SortableTableComponent extends Component {
 		return $html;
 	}
 
+	/**
+	 * This method should return an array of strings containing the names of the columns.
+	 *
+	 * @return array
+	 */
 	protected abstract function getColumns(): array;
 
+	/**
+	 * Getter for the rows
+	 *
+	 * @return array
+	 * @see SortableTableComponent::$rows
+	 */
 	public final function getRows(): array {
 		return $this->rows;
 	}
 
+	/**
+	 * Adds a row to the table
+	 *
+	 * @param SortableTableRow $row The row to add
+	 * @return self Returns itself for chaining other functions.
+	 * @see SortableTableComponent::$rows
+	 */
 	protected final function addRow(SortableTableRow $row): self {
 		array_push($this->rows, $row);
 		return $this;
 	}
 
+	/**
+	 * Sets the rows field to a given array
+	 *
+	 * @param array $rows An array of SortableTableRows
+	 * @return self Returns itself for chaining other functions
+	 * @see SortableTableComponent::$rows
+	 */
 	protected final function setRows(array $rows): self {
 		$this->rows = $rows;
 		return $this;
 	}
 
+	/**
+	 * Clears all previously added rows
+	 *
+	 * @return self Returns itself for chaining other functions
+	 * @see SortableTableComponent::$rows
+	 */
 	protected final function clearRows(): self {
 		$this->rows = array();
 		return $this;
