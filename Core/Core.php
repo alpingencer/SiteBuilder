@@ -25,6 +25,12 @@ class Core {
 	 */
 	private static $instance;
 	/**
+	 * Wether the core was run previously
+	 *
+	 * @var bool
+	 */
+	private $isRun;
+	/**
 	 * The WebsiteManager instance
 	 *
 	 * @var WebsiteManager
@@ -69,6 +75,7 @@ class Core {
 	private function __construct(array $config) {
 		$GLOBALS['__SiteBuilder_Core'] = &$this;
 
+		$this->setIsRun(false);
 		$this->setWebsiteManager($config);
 		$this->setModuleManager($config);
 		$this->setContentManager($config);
@@ -99,16 +106,58 @@ class Core {
 	 * @see ContentManager::run()
 	 */
 	public function run(): void {
-		$this->wm->run();
+		// Check if the core has already been run
+		// If yes, trigger warning and return: Cannot run core multiple times
+		if($this->isRun) {
+			trigger_error("The core has already been run!", E_USER_WARNING);
+			return;
+		}
+
+		// Set is run
+		$this->setIsRun(true);
+
+		// Check if the website manager has already been run
+		// If yes, trigger notice: Skipping running it a second time
+		if(!$this->wm->isRun()) {
+			$this->wm->run();
+		} else {
+			trigger_error("The website manager has already been run! Skipping it...", E_USER_NOTICE);
+		}
 
 		$this->mm->runEarly();
 		$this->mm->run();
 
-		$this->cm->run();
+		// Check if the content manager has already been run
+		// If yes, trigger notice: Skipping running it a second time
+		if(!$this->cm->isRun()) {
+			$this->cm->run();
+		} else {
+			trigger_error("The content manager has already been run! Skipping it...", E_USER_NOTICE);
+		}
 
 		$this->mm->runLate();
 
 		$this->cm->outputToBrowser();
+	}
+
+	/**
+	 * Getter for wether the core was run previously
+	 *
+	 * @return bool
+	 * @see Core::$isRun
+	 */
+	public function isRun(): bool {
+		return $this->isRun;
+	}
+
+	/**
+	 * Setter for wether the core was run previously
+	 *
+	 * @param bool $isRun
+	 * @see Core::$isRun
+	 */
+	private function setIsRun(bool $isRun): void {
+		$this->isRun = $isRun;
 	}
 
 	/**

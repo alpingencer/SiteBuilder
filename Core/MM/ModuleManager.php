@@ -178,7 +178,6 @@ class ModuleManager {
 			throw new ErrorException("No module of the given class '$moduleClass' has been initialized!");
 		}
 
-		$this->getModule($moduleClass)->uninit();
 		unset($this->modules[$moduleClass]);
 	}
 

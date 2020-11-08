@@ -37,6 +37,12 @@ class ContentManager {
 	 */
 	private static $instance;
 	/**
+	 * Wether the manager was run previously
+	 *
+	 * @var bool
+	 */
+	private $isRun;
+	/**
 	 * The directory in which SiteBuilder itself lives, relative to the document root.
 	 * Defaults to '/SiteBuilder/'
 	 *
@@ -89,6 +95,7 @@ class ContentManager {
 		if(!isset($config['lang'])) $config['lang'] = '';
 		if(!isset($config['prettyPrint'])) $config['prettyPrint'] = true;
 
+		$this->setIsRun(false);
 		$this->setFrameworkDirectory($config['frameworkDirectory']);
 		$this->clearComponents();
 		$this->setPageConstructor(PageConstructor::init($config['lang'], $config['prettyPrint']));
@@ -103,6 +110,16 @@ class ContentManager {
 	 * @see ContentManager::outputToBrowser()
 	 */
 	public function run(): void {
+		// Check if the manager was run already
+		// If yes, trigger warning and return: Cannot run manager multiple times
+		if($this->isRun) {
+			trigger_error("The content manager has already been run!", E_USER_WARNING);
+			return;
+		}
+
+		// Set is run
+		$this->setIsRun(true);
+
 		// Add components to page
 		foreach($this->components as $component) {
 			$this->page->body .= $component->getContent();
@@ -140,7 +157,13 @@ class ContentManager {
 	 * @see ContentManager::run()
 	 */
 	public function outputToBrowser(): void {
-		echo $this->page->getHTML();
+		// Check if the manager was run previously
+		// If no, throw error: Cannot output to browser before running!
+		if($this->isRun) {
+			echo $this->page->getHTML();
+		} else {
+			throw new ErrorException("Cannot output to the browser before running the content manager!");
+		}
 	}
 
 	/**
@@ -255,11 +278,11 @@ class ContentManager {
 	 */
 	public function removeComponent(Component $component): void {
 		// Check if component has been added
-		// If no, trigger notice: Component not found
+		// If no, trigger warning: Component not found
 		if($this->components->contains($component)) {
 			$this->components->detach($component);
 		} else {
-			trigger_error("The given component was not found!", E_USER_NOTICE);
+			trigger_error("The given component was not found!", E_USER_WARNING);
 		}
 	}
 
@@ -281,11 +304,11 @@ class ContentManager {
 	 */
 	public function removeAllComponentsByClass(string $class): void {
 		// Check if components of the given class have been added
-		// If no, trigger notice: Components of given class not found
+		// If no, trigger warning: Components of given class not found
 		if($this->hasComponents($class)) {
 			$this->removeAllComponents($this->getComponentByClass($class));
 		} else {
-			trigger_error("No components of the given class '$class' were found!", E_USER_NOTICE);
+			trigger_error("No components of the given class '$class' were found!", E_USER_WARNING);
 		}
 	}
 
@@ -294,6 +317,26 @@ class ContentManager {
 	 */
 	public function clearComponents(): void {
 		$this->components = new SplObjectStorage();
+	}
+
+	/**
+	 * Getter for wether the manager was run previously
+	 *
+	 * @return bool
+	 * @see ContentManager::$isRun
+	 */
+	public function isRun(): bool {
+		return $this->isRun;
+	}
+
+	/**
+	 * Getter for wether the manager was run previously
+	 *
+	 * @param bool $isRun
+	 * @see ContentManager::$isRun
+	 */
+	private function setIsRun(bool $isRun): void {
+		$this->isRun = $isRun;
 	}
 
 	/**

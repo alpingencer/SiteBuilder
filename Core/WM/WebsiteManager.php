@@ -40,6 +40,12 @@ class WebsiteManager {
 	 */
 	private static $instance;
 	/**
+	 * Wether the manager was run previously
+	 *
+	 * @var bool
+	 */
+	private $isRun;
+	/**
 	 * The directory in which SiteBuilder itself lives, relative to the document root.
 	 * Defaults to '/SiteBuilder/'
 	 *
@@ -144,6 +150,7 @@ class WebsiteManager {
 		if(!isset($config['showErrorPageOnException'])) $config['showErrorPageOnException'] = true;
 		if(!isset($config['defaultPagePath'])) $config['defaultPagePath'] = 'home';
 
+		$this->setIsRun(false);
 		$this->setFrameworkDirectory($config['frameworkDirectory']);
 		$this->setContentDirectory($config['contentDirectory']);
 		$this->setHierarchy($config['hierarchy']);
@@ -165,6 +172,16 @@ class WebsiteManager {
 	 * Please note that this method must be called in order for the WebsiteManager to work.
 	 */
 	public function run(): void {
+		// Check if the manager was run already
+		// If yes, trigger warning and return: Cannot run manager multiple times
+		if($this->isRun) {
+			trigger_error("The website manager has already been run!", E_USER_WARNING);
+			return;
+		}
+
+		// Set is run
+		$this->setIsRun(true);
+
 		// Check if page exists in hierarchy
 		// If not, show error 404: Page not found
 		if(!$this->hierarchy->isPageDefined($this->currentPagePath)) {
@@ -360,10 +377,11 @@ class WebsiteManager {
 	 * @return self Returns itself for chaining other functions
 	 */
 	public function removeErrorPagePath(int $errorCode): self {
+		// Check if page path of given error code was defined
 		if(isset($this->errorPagePaths[$errorCode])) {
 			unset($this->errorPagePaths[$errorCode]);
 		} else {
-			trigger_error("No error page path with the given error code '$errorCode' to remove is defined!", E_USER_NOTICE);
+			trigger_error("No error page path with the given error code '$errorCode' to remove is defined!", E_USER_WARNING);
 		}
 
 		return $this;
@@ -411,6 +429,26 @@ class WebsiteManager {
 		$errorPage = DefaultErrorPage::init($errorCode);
 		echo $errorPage->getHTML();
 		die();
+	}
+
+	/**
+	 * Getter for wether the manager was run previously
+	 *
+	 * @return bool
+	 * @see WebsiteManager::$isRun
+	 */
+	public function isRun(): bool {
+		return $this->isRun;
+	}
+
+	/**
+	 * Getter for wether the manager was run previously
+	 *
+	 * @param bool $isRun
+	 * @see WebsiteManager::$isRun
+	 */
+	private function setIsRun(bool $isRun): void {
+		$this->isRun = $isRun;
 	}
 
 	/**
