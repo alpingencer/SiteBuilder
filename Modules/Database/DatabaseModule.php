@@ -6,40 +6,26 @@ use SiteBuilder\Core\MM\Module;
 use ErrorException;
 
 class DatabaseModule extends Module {
-	private $database;
+	private $controller;
 
 	public function init(array $config): void {
-		if(!isset($config['class'])) $config['class'] = MySQLDatabaseController::class;
-
-		$requiredConfigParams = [
-				'server',
-				'name',
-				'user',
-				'password'
-		];
-
-		// Check if each required parameters is set
-		// If no, throw error: The parameter must be defined
-		foreach($requiredConfigParams as $param) {
-			if(!isset($config[$param])) {
-				throw new ErrorException("The required configuration parameter '$param' has not been set!");
-			}
+		// Check if required configuration parameter 'controller' has been set
+		// If no, throw error: A DatabaseController must be passed to the module
+		if(!isset($config['controller'])) {
+			throw new ErrorException("The required configuration parameter 'controller' has not been set!");
 		}
 
-		// Initiate class and connect to database
-		$this->database = call_user_func(array(
-				$config['class'],
-				'init'
-		), $config['server'], $config['name'], $config['user'], $config['password']);
-		$this->database->connect();
+		// Set controller field and connect to database
+		$this->controller = $config['controller'];
+		$this->controller->connect();
 	}
 
-	public function getDatabase(): DatabaseController {
-		return $this->database;
+	public function getController(): DatabaseController {
+		return $this->controller;
 	}
 
 	public function db(): DatabaseController {
-		return $this->getDatabase();
+		return $this->getController();
 	}
 
 }
