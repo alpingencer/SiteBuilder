@@ -98,13 +98,13 @@ class ListComponent extends SortableTableComponent {
 	private function __construct(string $tableDatabaseName) {
 		parent::__construct();
 		$this->setTableDatabaseName($tableDatabaseName);
-		$this->setPrimaryColumnName('ID');
-		$this->setPrimaryKey('ID');
+		$this->clearPrimaryColumnName();
+		$this->clearPrimaryKey();
 		$this->setShowPrimaryColumn(true);
 		$this->clearColumns();
-		$this->setDefaultSort('');
-		$this->setQueryCriteria('1');
-		$this->setRowOnClickPath('');
+		$this->clearDefaultSort();
+		$this->clearQueryCriteria();
+		$this->clearRowOnClickPath();
 
 		// Check if database module is initialized
 		// If no, throw error: Cannot use ListComponent without DatabaseModule
@@ -244,6 +244,17 @@ class ListComponent extends SortableTableComponent {
 	}
 
 	/**
+	 * Resets the primary column display name to the SiteBuilder default value 'ID'
+	 *
+	 * @return self Returns itself for chaining other functions
+	 * @see ListComponent::$primaryColumnName
+	 */
+	public function clearPrimaryColumnName(): self {
+		$this->setPrimaryColumnName('ID');
+		return $this;
+	}
+
+	/**
 	 * Getter for the primary database key
 	 *
 	 * @return string
@@ -262,6 +273,17 @@ class ListComponent extends SortableTableComponent {
 	 */
 	public function setPrimaryKey(string $primaryKey): self {
 		$this->primaryKey = $primaryKey;
+		return $this;
+	}
+
+	/**
+	 * Resets the primary database key to the SiteBuilder default value 'ID';
+	 *
+	 * @return self Returns itself for chaining other functions
+	 * @see ListComponent::$primaryKey
+	 */
+	public function clearPrimaryKey(): self {
+		$this->setPrimaryKey('ID');
 		return $this;
 	}
 
@@ -330,6 +352,17 @@ class ListComponent extends SortableTableComponent {
 	}
 
 	/**
+	 * Clears the previously defined column to sort by by default
+	 *
+	 * @return self Returns itself for chaining other functions
+	 * @see ListComponent::$defaultSort
+	 */
+	public function clearDefaultSort(): self {
+		$this->setDefaultSort('');
+		return $this;
+	}
+
+	/**
 	 * Getter for the additional MySQL 'WHERE' criteria
 	 *
 	 * @return string
@@ -348,6 +381,17 @@ class ListComponent extends SortableTableComponent {
 	 */
 	public function setQueryCriteria(string $queryCriteria): self {
 		$this->queryCriteria = $queryCriteria;
+		return $this;
+	}
+
+	/**
+	 * Clears the previously defined additional MySQL 'WHERE' criteria
+	 *
+	 * @return self Returns itself for chaining other functions
+	 * @see ListComponent::$queryCriteria
+	 */
+	public function clearQueryCriteria(): self {
+		$this->setQueryCriteria('1');
 		return $this;
 	}
 
@@ -371,6 +415,16 @@ class ListComponent extends SortableTableComponent {
 	public function setRowOnClickPath(string $rowOnClickPath): self {
 		$rowOnClickPath = PageHierarchy::normalizePathString($rowOnClickPath);
 		$this->rowOnClickPath = $rowOnClickPath;
+		return $this;
+	}
+
+	/**
+	 * Returns the previously defined page path to redirect to when a row has been clicked
+	 * @return self Returns itself for chaining other functions
+	 * @see ListComponent::$rowOnClickPath
+	 */
+	public function clearRowOnClickPath(): self {
+		$this->setRowOnClickPath('');
 		return $this;
 	}
 
