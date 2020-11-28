@@ -6,6 +6,7 @@ use SiteBuilder\Core\WM\PageHierarchy;
 use SiteBuilder\Modules\Components\SortableTable\SortableTableComponent;
 use SiteBuilder\Modules\Components\SortableTable\SortableTableRow;
 use SiteBuilder\Modules\Database\DatabaseModule;
+use ErrorException;
 
 /**
  * <p>
@@ -104,6 +105,12 @@ class ListComponent extends SortableTableComponent {
 		$this->setDefaultSort('');
 		$this->setQueryCriteria('1');
 		$this->setRowOnClickPath('');
+
+		// Check if database module is initialized
+		// If no, throw error: Cannot use ListComponent without DatabaseModule
+		if(!$GLOBALS['__SiteBuilder_ModuleManager']->isModuleInitialized(DatabaseModule::class)) {
+			throw new ErrorException("The DatabaseModule must be initialized when using a ListComponent!");
+		}
 	}
 
 	/**
