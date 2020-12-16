@@ -420,6 +420,7 @@ class ListComponent extends SortableTableComponent {
 
 	/**
 	 * Returns the previously defined page path to redirect to when a row has been clicked
+	 *
 	 * @return self Returns itself for chaining other functions
 	 * @see ListComponent::$rowOnClickPath
 	 */
