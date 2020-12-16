@@ -1,0 +1,24 @@
+
+.sitebuilder-template-fieldset {
+	display: none !important;
+}
+
+.sitebuilder-many-fields > fieldset:last-of-type, .sitebuilder-many-fields > button {
+	display: inline-block;
+}
+
+.sitebuilder-many-fields > fieldset:last-of-type {
+	margin-right: 0.5em;
+}
+
+.sitebuilder-many-fields > button:first-of-type {
+	margin-right: 0.25em;
+}
+
+.sitebuilder-fieldset-adder:after {
+	content: '+';
+}
+
+.sitebuilder-fieldset-remover:after {
+	content: '-';
+}

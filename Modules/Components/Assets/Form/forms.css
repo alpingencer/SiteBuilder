@@ -1,0 +1,20 @@
+
+.sitebuilder-form tbody td:first-child {
+	vertical-align: baseline;
+	min-width: 20%;
+	padding-top: 0.5em;
+}
+
+.sitebuilder-form fieldset {
+	border: none;
+	padding: 0;
+}
+
+	.sitebuilder-form fieldset > * {
+		margin-bottom: 0.5em;
+	}
+
+.sitebuilder-form tfoot td {
+	text-align: center;
+	padding-top: 0.5em;
+}
