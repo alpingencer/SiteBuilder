@@ -5,11 +5,15 @@ namespace SiteBuilder\Modules\Database;
 use ErrorException;
 
 abstract class DatabaseController {
+	const LOGGING_NONE = 0;
+	const LOGGING_ERROR = 1;
+	const LOGGING_MODIFY = 2;
+	const LOGGING_ALL = 3;
 	private $server;
 	private $name;
 	private $user;
 	private $password;
-	private $isLoggingEnabled;
+	private $loggingLevel;
 	private $logTableName;
 
 	public final static function init(string $server, string $name, string $user, string $password): DatabaseController {
@@ -21,7 +25,7 @@ abstract class DatabaseController {
 		$this->setName($name);
 		$this->setUser($user);
 		$this->setPassword($password);
-		$this->setLoggingEnabled(false);
+		$this->setLoggingLevel(DatabaseController::LOGGING_NONE);
 	}
 
 	public abstract function connect(): void;
@@ -48,7 +52,6 @@ abstract class DatabaseController {
 		}
 
 		return $rows[0][$column];
-
 	}
 
 	public abstract function insert(string $table, array $values, $primaryKey = 'ID'): int;
@@ -91,14 +94,14 @@ abstract class DatabaseController {
 		$this->password = $password;
 	}
 
-	public final function isLoggingEnabled(): bool {
-		return $this->isLoggingEnabled;
+	public final function getLoggingLevel(): int {
+		return $this->loggingLevel;
 	}
 
-	public function setLoggingEnabled(bool $isLoggingEnabled, string $logTableName = '__log'): self {
-		$this->isLoggingEnabled = $isLoggingEnabled;
+	public function setLoggingLevel(int $loggingLevel, string $logTableName = '__log'): self {
+		$this->loggingLevel = $loggingLevel;
 
-		if($this->isLoggingEnabled) {
+		if($loggingLevel > 0) {
 			$this->setLogTableName($logTableName);
 		} else {
 			unset($this->logTableName);

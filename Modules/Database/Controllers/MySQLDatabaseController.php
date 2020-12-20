@@ -131,7 +131,25 @@ class MySQLDatabaseController extends DatabaseController {
 	}
 
 	public function log(string $type, string $query): bool {
-		if(!$this->isLoggingEnabled()) return true;
+		switch($type) {
+			case 'Q':
+				$minLoggingLevel = DatabaseController::LOGGING_ALL;
+				break;
+			case 'I':
+			case 'U':
+			case 'D':
+				$minLoggingLevel = DatabaseController::LOGGING_MODIFY;
+				break;
+			case 'E':
+				$minLoggingLevel = DatabaseController::LOGGING_ERROR;
+				break;
+		}
+
+		// Check if current logging level is higher than minimum required level for current type
+		// If no, return: No logging enabled
+		if($minLoggingLevel > $this->getLoggingLevel()) {
+			return true;
+		}
 
 		$date = date('Y-m-d H:i:s');
 
