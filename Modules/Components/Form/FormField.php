@@ -1,8 +1,7 @@
 <?php
 
-namespace SiteBuilder\Modules\Components\Form\FormField;
+namespace SiteBuilder\Modules\Components\Form;
 
-use SiteBuilder\Modules\Components\Form\FormFieldset;
 
 abstract class FormField {
 	private $formFieldName;
@@ -76,7 +75,7 @@ abstract class FormField {
 		return $this->parentFieldset;
 	}
 
-	public final function setParentFieldset(FormFieldset $parentFieldset): self {
+	public final function setParentFieldset(AbstractFormFieldset $parentFieldset): self {
 		$this->parentFieldset = $parentFieldset;
 		return $this;
 	}

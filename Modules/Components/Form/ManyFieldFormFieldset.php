@@ -7,18 +7,18 @@ use SiteBuilder\Core\CM\Dependency\JSDependency;
 use SiteBuilder\Modules\Database\DatabaseModule;
 use ErrorException;
 
-class ManyFieldFormFieldset extends FormFieldset {
+class ManyFieldFormFieldset extends AbstractFormFieldset {
 	private $secondaryTableDatabaseName;
 	private $minNumFields;
 	private $maxNumFields;
 	private $primaryKey;
 	private $foreignKey;
 
-	public static function init(string $prompt, string $secondaryTableDatabaseName): FormFieldset {
+	public static function init(string $prompt, string $secondaryTableDatabaseName): ManyFieldFormFieldset {
 		return new self($prompt, $secondaryTableDatabaseName);
 	}
 
-	function __construct(string $prompt, string $secondaryTableDatabaseName) {
+	private function __construct(string $prompt, string $secondaryTableDatabaseName) {
 		parent::__construct($prompt);
 		$this->setSecondaryTableDatabaseName($secondaryTableDatabaseName);
 		$this->clearMinNumFields();

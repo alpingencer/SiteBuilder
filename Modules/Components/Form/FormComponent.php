@@ -221,7 +221,7 @@ class FormComponent extends Component {
 		$this->formName = $formName;
 	}
 
-	public function addFieldset(FormFieldset $fieldset): self {
+	public function addFieldset(AbstractFormFieldset $fieldset): self {
 		$fieldset->setParentForm($this);
 		array_push($this->fieldsets, $fieldset);
 		return $this;

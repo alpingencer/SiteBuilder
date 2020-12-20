@@ -1,6 +1,8 @@
 <?php
 
-namespace SiteBuilder\Modules\Components\Form\FormField;
+namespace SiteBuilder\Modules\Components\Form\FormFields;
+
+use SiteBuilder\Modules\Components\Form\FormField;
 
 class InputFormField extends FormField {
 	private $type;

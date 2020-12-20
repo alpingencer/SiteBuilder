@@ -1,8 +1,10 @@
 <?php
 
-namespace SiteBuilder\Modules\Components\Form\FormField;
+namespace SiteBuilder\Modules\Components\Form\FormFields;
 
-class SelectFormField extends FormField {
+use SiteBuilder\Modules\Components\Form\FormField;
+
+class DateFormField extends FormField {
 
 	protected function __construct(string $formFieldName, string $column, string $defaultValue) {
 		parent::__construct($formFieldName, $column, $defaultValue);
