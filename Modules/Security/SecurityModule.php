@@ -6,9 +6,7 @@ use SiteBuilder\Core\MM\Module;
 use ErrorException;
 
 class SecurityModule extends Module {
-	private $getUserLevelFunction;
-	private $processLoginFunction;
-	private $processLogoutFunction;
+	private $controller;
 	private $isRedirectGuestToLogin;
 	private $loginPagePath;
 
@@ -41,23 +39,13 @@ class SecurityModule extends Module {
 				break;
 		}
 
-		$requiredConfigParams = [
-				'getUserLevel',
-				'processLogin',
-				'processLogout'
-		];
-
-		// Check if each required parameters is set
-		// If no, throw error: The parameter must be defined
-		foreach($requiredConfigParams as $param) {
-			if(!isset($config[$param])) {
-				throw new ErrorException("The required configuration parameter '$param' has not been set!");
-			}
+		// Check if each required 'controller' parameters is set
+		// If no, throw error: An AuthenticationController must be passed to the module
+		if(!isset($config['controller'])) {
+			throw new ErrorException("The required configuration parameter 'controller' has not been set!");
 		}
 
-		$this->setGetUserLevelFunction($config['getUserLevel']);
-		$this->setProcessLoginFunction($config['processLogin']);
-		$this->setProcessLogoutFunction($config['processLogout']);
+		$this->setController($config['controller']);
 
 		// Check if 'loginPagePath' configuration parameter is set
 		// If yes, set login page path
@@ -98,7 +86,7 @@ class SecurityModule extends Module {
 
 		// Get user level
 		if(isset($_SESSION['__SiteBuilder_UserID'])) {
-			$userLevel = $this->getUserLevel($_SESSION['__SiteBuilder_UserID']);
+			$userLevel = $this->controller->getUserLevel($_SESSION['__SiteBuilder_UserID']);
 		} else {
 			$userLevel = 0;
 		}
@@ -134,7 +122,7 @@ class SecurityModule extends Module {
 		// Check if '__SiteBuilder_LoginRequest' POST variable is set
 		// If yes, process login
 		if(isset($_POST['__SiteBuilder_LoginRequest'])) {
-			$userID = $this->processLogin();
+			$userID = $this->controller->processLogin();
 			if($userID !== 0) {
 				$_SESSION['__SiteBuilder_UserIsLoggedIn'] = true;
 				$_SESSION['__SiteBuilder_UserID'] = $userID;
@@ -152,7 +140,7 @@ class SecurityModule extends Module {
 		// Check if '__SiteBuilder_LogoutRequest' POST variable is set
 		// If yes, process logout
 		if(isset($_POST['__SiteBuilder_LogoutRequest'])) {
-			$success = $this->processLogout();
+			$success = $this->controller->processLogout();
 			if($success) {
 				$_SESSION['__SiteBuilder_UserIsLoggedIn'] = false;
 				unset($_SESSION['__SiteBuilder_UserID']);
@@ -168,40 +156,12 @@ class SecurityModule extends Module {
 		}
 	}
 
-	private function getUserLevel(int $userID): int {
-		return $this->getGetUserLevelFunction()($userID);
+	public function getController(): AuthenticationController {
+		return $this->controller;
 	}
 
-	private function processLogin(): int {
-		return $this->getProcessLoginFunction()();
-	}
-
-	private function processLogout(): bool {
-		return $this->getProcessLogoutFunction()();
-	}
-
-	public function getGetUserLevelFunction(): callable {
-		return $this->getUserLevelFunction;
-	}
-
-	private function setGetUserLevelFunction(callable $getUserLevelFunction): void {
-		$this->getUserLevelFunction = $getUserLevelFunction;
-	}
-
-	public function getProcessLoginFunction(): callable {
-		return $this->processLoginFunction;
-	}
-
-	private function setProcessLoginFunction(callable $processLoginFunction): void {
-		$this->processLoginFunction = $processLoginFunction;
-	}
-
-	public function getProcessLogoutFunction(): callable {
-		return $this->processLogoutFunction;
-	}
-
-	private function setProcessLogoutFunction(callable $processLogoutFunction): void {
-		$this->processLogoutFunction = $processLogoutFunction;
+	private function setController(AuthenticationController $controller): void {
+		$this->controller = $controller;
 	}
 
 	public function isRedirectGuestToLogin(): bool {
