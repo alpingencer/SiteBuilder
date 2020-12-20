@@ -61,14 +61,19 @@ class MySQLDatabaseController extends DatabaseController {
 		$query = "SELECT `$column` FROM $table WHERE `$primaryKey`='$id'";
 		$statement = $this->query($query);
 
-		if($statement->rowCount() == 0) {
-			return '';
-		} else if($statement->rowCount() > 1) {
-			$this->log('E', $query);
-			return '';
-		} else {
-			return $statement->fetch(PDO::FETCH_NUM)[0];
+		// Check if no results are returned
+		// If yes, throw error: Condition is too specific
+		if($statement->rowCount() === 0) {
+			throw new ErrorException("Get value returned no rows!");
 		}
+
+		// Check if multiple results are returned
+		// If yes, throw error: Condition is not specific enough
+		if($statement->rowCount() > 1) {
+			throw new ErrorException("Get value returned multiple rows!");
+		}
+
+		return $statement->fetch(PDO::FETCH_NUM)[0];
 	}
 
 	public function insert(string $table, array $values, $primaryKey = 'ID'): int {
