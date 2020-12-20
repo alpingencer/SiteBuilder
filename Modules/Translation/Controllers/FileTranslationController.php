@@ -1,6 +1,8 @@
 <?php
 
-namespace SiteBuilder\Modules\Translation;
+namespace SiteBuilder\Modules\Translation\Controllers;
+
+use SiteBuilder\Modules\Translation\TranslationController;
 
 /**
  * A FileTranslationController translates tokens using a PHP associative array, loaded from a file

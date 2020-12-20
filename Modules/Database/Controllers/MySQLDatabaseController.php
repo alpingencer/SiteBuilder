@@ -1,7 +1,8 @@
 <?php
 
-namespace SiteBuilder\Modules\Database;
+namespace SiteBuilder\Modules\Database\Controllers;
 
+use SiteBuilder\Modules\Database\DatabaseController;
 use ErrorException;
 use PDO;
 use PDOException;

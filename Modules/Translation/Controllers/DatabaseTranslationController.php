@@ -1,8 +1,9 @@
 <?php
 
-namespace SiteBuilder\Modules\Translation;
+namespace SiteBuilder\Modules\Translation\Controllers;
 
 use SiteBuilder\Modules\Database\DatabaseModule;
+use SiteBuilder\Modules\Translation\TranslationController;
 use ErrorException;
 
 /**
