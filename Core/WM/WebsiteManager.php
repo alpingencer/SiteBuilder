@@ -134,9 +134,6 @@ class WebsiteManager {
 	private function __construct(array $config) {
 		$GLOBALS['__SiteBuilder_WebsiteManager'] = &$this;
 
-		if(!isset($config['frameworkDirectory'])) $config['frameworkDirectory'] = '/SiteBuilder/';
-		if(!isset($config['contentDirectory'])) $config['contentDirectory'] = '/Content/';
-
 		if(!isset($config['hierarchy'])) {
 			// Check if file 'hierarchy.json' in the root of the content directory exists
 			// If no, throw error: A PageHierarchy must be defined
@@ -147,16 +144,13 @@ class WebsiteManager {
 			}
 		}
 
-		if(!isset($config['showErrorPageOnException'])) $config['showErrorPageOnException'] = true;
-		if(!isset($config['defaultPagePath'])) $config['defaultPagePath'] = 'home';
-
 		$this->setIsRun(false);
-		$this->setFrameworkDirectory($config['frameworkDirectory']);
-		$this->setContentDirectory($config['contentDirectory']);
+		$this->setFrameworkDirectory($config['frameworkDirectory'] ?? '/SiteBuilder/');
+		$this->setContentDirectory($config['contentDirectory'] ?? '/Content/');
 		$this->setHierarchy($config['hierarchy']);
-		$this->setDefaultPagePath($config['defaultPagePath']);
+		$this->setDefaultPagePath($config['defaultPagePath'] ?? 'home');
 		$this->clearErrorPagePaths();
-		$this->setShowErrorPageOnException($config['showErrorPageOnException']);
+		$this->setShowErrorPageOnException($config['showErrorPageOnException'] ?? true);
 
 		if(isset($_GET['p']) && !empty($_GET['p'])) {
 			// Get current page path from 'p' GET parameter

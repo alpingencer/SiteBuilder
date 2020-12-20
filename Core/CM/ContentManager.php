@@ -91,14 +91,10 @@ class ContentManager {
 	private function __construct(array $config) {
 		$GLOBALS['__SiteBuilder_ContentManager'] = &$this;
 
-		if(!isset($config['frameworkDirectory'])) $config['frameworkDirectory'] = '/SiteBuilder/';
-		if(!isset($config['lang'])) $config['lang'] = '';
-		if(!isset($config['prettyPrint'])) $config['prettyPrint'] = true;
-
 		$this->setIsRun(false);
-		$this->setFrameworkDirectory($config['frameworkDirectory']);
+		$this->setFrameworkDirectory($config['frameworkDirectory'] ?? '/SiteBuilder/');
 		$this->clearComponents();
-		$this->setPageConstructor(PageConstructor::init($config['lang'], $config['prettyPrint']));
+		$this->setPageConstructor(PageConstructor::init($config['lang'] ?? '', $config['prettyPrint'] ?? true));
 	}
 
 	/**
