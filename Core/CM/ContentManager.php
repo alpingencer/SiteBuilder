@@ -2,7 +2,6 @@
 
 namespace SiteBuilder\Core\CM;
 
-use SiteBuilder\Core\CM\Dependency\Dependency;
 use ErrorException;
 use SplObjectStorage;
 

@@ -3,7 +3,7 @@
 namespace SiteBuilder\Modules\Components;
 
 use SiteBuilder\Core\CM\Component;
-use SiteBuilder\Core\CM\Dependency\JSDependency;
+use SiteBuilder\Core\CM\Dependencies\JSDependency;
 use ErrorException;
 
 /**

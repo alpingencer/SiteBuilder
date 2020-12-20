@@ -3,8 +3,8 @@
 namespace SiteBuilder\Modules\Components;
 
 use SiteBuilder\Core\CM\Component;
-use SiteBuilder\Core\CM\Dependency\CSSDependency;
-use SiteBuilder\Core\CM\Dependency\JSDependency;
+use SiteBuilder\Core\CM\Dependencies\CSSDependency;
+use SiteBuilder\Core\CM\Dependencies\JSDependency;
 
 /**
  * A quick and easy carousel of images using Flickity

@@ -1,6 +1,8 @@
 <?php
 
-namespace SiteBuilder\Core\CM\Dependency;
+namespace SiteBuilder\Core\CM\Dependencies;
+
+use SiteBuilder\Core\CM\Dependency;
 
 /**
  * The JSDependency class provides a convenient way to define a dependency on a JS resource.
@@ -13,7 +15,7 @@ class JSDependency extends Dependency {
 
 	/**
 	 * {@inheritdoc}
-	 * @see \SiteBuilder\Core\CM\Dependency\Dependency::getHTML()
+	 * @see \SiteBuilder\Core\CM\Dependency::getHTML()
 	 */
 	public function getHTML(): string {
 		$cm = $GLOBALS['__SiteBuilder_ContentManager'];

@@ -2,8 +2,8 @@
 
 namespace SiteBuilder\Modules\Components\Form;
 
-use SiteBuilder\Core\CM\Dependency\CSSDependency;
-use SiteBuilder\Core\CM\Dependency\JSDependency;
+use SiteBuilder\Core\CM\Dependencies\CSSDependency;
+use SiteBuilder\Core\CM\Dependencies\JSDependency;
 use SiteBuilder\Modules\Database\DatabaseModule;
 use ErrorException;
 

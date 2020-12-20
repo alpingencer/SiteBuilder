@@ -3,8 +3,8 @@
 namespace SiteBuilder\Modules\Components\SortableTable;
 
 use SiteBuilder\Core\CM\Component;
-use SiteBuilder\Core\CM\Dependency\CSSDependency;
-use SiteBuilder\Core\CM\Dependency\JSDependency;
+use SiteBuilder\Core\CM\Dependencies\CSSDependency;
+use SiteBuilder\Core\CM\Dependencies\JSDependency;
 use SiteBuilder\Modules\Components\ListComponent;
 
 /**

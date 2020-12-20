@@ -3,8 +3,8 @@
 namespace SiteBuilder\Modules\Components\Form;
 
 use SiteBuilder\Core\CM\Component;
-use SiteBuilder\Core\CM\Dependency\CSSDependency;
-use SiteBuilder\Core\CM\Dependency\Dependency;
+use SiteBuilder\Core\CM\Dependency;
+use SiteBuilder\Core\CM\Dependencies\CSSDependency;
 use SiteBuilder\Modules\Database\DatabaseModule;
 use ErrorException;
 

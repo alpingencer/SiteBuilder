@@ -2,7 +2,7 @@
 
 namespace SiteBuilder\Modules\Components\Form;
 
-use SiteBuilder\Core\CM\Dependency\Dependency;
+use SiteBuilder\Core\CM\Dependency;
 
 abstract class AbstractFormFieldset {
 	private $prompt;

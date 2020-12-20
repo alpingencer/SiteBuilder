@@ -1,6 +1,6 @@
 <?php
 
-namespace SiteBuilder\Core\CM\Dependency;
+namespace SiteBuilder\Core\CM;
 
 /**
  * The Dependency class provides a convenient way for components to find and add CSS and JS
