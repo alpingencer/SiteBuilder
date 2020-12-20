@@ -26,6 +26,7 @@ class MySQLDatabaseController extends DatabaseController {
 
 	private function query(string $query): PDOStatement {
 		try {
+			$this->log('Q', $query);
 			return $this->pdo->query($query);
 		} catch(PDOException $e) {
 			$this->log('E', $query);

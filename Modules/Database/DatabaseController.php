@@ -2,6 +2,8 @@
 
 namespace SiteBuilder\Modules\Database;
 
+use ErrorException;
+
 abstract class DatabaseController {
 	private $server;
 	private $name;
@@ -29,6 +31,25 @@ abstract class DatabaseController {
 	public abstract function getRows(string $table, string $where, string $columns = '*', string $order = ''): array;
 
 	public abstract function getVal(string $table, string $id, string $column, string $primaryKey = 'ID'): string;
+
+	public function getValByCondition(string $table, string $where, string $column): string {
+		$rows = $this->getRows($table, $where);
+
+		// Check if no results are returned
+		// If yes, throw error: Condition is too specific
+		if(sizeof($rows) === 0) {
+			throw new ErrorException("Get value condition returned no rows!");
+		}
+
+		// Check if multiple results are returned
+		// If yes, throw error: Condition is not specific enough
+		if(sizeof($rows) > 1) {
+			throw new ErrorException("Get value condition returned multiple rows!");
+		}
+
+		return $rows[0][$column];
+
+	}
 
 	public abstract function insert(string $table, array $values, $primaryKey = 'ID'): int;
 
