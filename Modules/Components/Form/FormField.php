@@ -2,7 +2,6 @@
 
 namespace SiteBuilder\Modules\Components\Form;
 
-
 abstract class FormField {
 	private $formFieldName;
 	private $column;
