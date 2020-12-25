@@ -102,7 +102,7 @@ abstract class DatabaseController {
 		$this->loggingLevel = $loggingLevel;
 
 		if($loggingLevel > 0) {
-			$this->setLogTableName($logTableName);
+			if(!isset($this->logTableName)) $this->setLogTableName($logTableName);
 		} else {
 			unset($this->logTableName);
 		}
