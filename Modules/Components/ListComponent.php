@@ -184,7 +184,7 @@ class ListComponent extends SortableTableComponent {
 	 * @see ListComponent::$columnKeys
 	 * @see ListComponent::$columnNames
 	 */
-	public function addColumn(string $key, string $name): self {
+	public function addColumn(string $name, string $key): self {
 		array_push($this->columnKeys, $key);
 		array_push($this->columnNames, $name);
 		return $this;
