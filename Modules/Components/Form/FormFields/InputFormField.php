@@ -16,10 +16,6 @@ class InputFormField extends FormField {
 		$this->setType($type);
 	}
 
-	public function getDependencies(): array {
-		return array();
-	}
-
 	public function getContent(string $prefillValue, string $formFieldNameSuffix = ''): string {
 		$name = $this->getFormFieldName() . $formFieldNameSuffix;
 		$attributes = $this->getHTMLAttributesAsString();

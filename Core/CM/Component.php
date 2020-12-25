@@ -57,7 +57,9 @@ abstract class Component {
 	 * @return array
 	 * @see Dependency
 	 */
-	public abstract function getDependencies(): array;
+	public function getDependencies(): array {
+		return array();
+	}
 
 	/**
 	 * Generates the HTML string to be added to the page's body

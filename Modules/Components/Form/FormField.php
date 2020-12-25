@@ -16,7 +16,9 @@ abstract class FormField {
 		$this->clearHTMLAttributes();
 	}
 
-	public abstract function getDependencies(): array;
+	public function getDependencies(): array {
+		return array();
+	}
 
 	public abstract function getContent(string $prefillValue, string $formFieldNameSuffix = ''): string;
 

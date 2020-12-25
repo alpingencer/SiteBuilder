@@ -43,14 +43,6 @@ class StaticHTMLComponent extends Component {
 
 	/**
 	 * {@inheritdoc}
-	 * @see Component::getDependencies()
-	 */
-	public function getDependencies(): array {
-		return array();
-	}
-
-	/**
-	 * {@inheritdoc}
 	 * @see Component::getContent()
 	 */
 	public function getContent(): string {
