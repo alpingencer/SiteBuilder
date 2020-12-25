@@ -56,14 +56,18 @@ class MySQLDatabaseController extends DatabaseController {
 	public function getRows(string $table, string $where, string $columns = '*', string $order = ''): array {
 		$query = "SELECT $columns FROM $table WHERE $where";
 		if(!empty($order)) $query .= " ORDER BY $order";
-		return $this->getRowByQuery($query);
+		return $this->getRowsByQuery($query);
 	}
 
 	public function getRowsByQuery(string $query): array {
 		$statement = $this->query($query);
 		$result = $statement->fetchAll(PDO::FETCH_ASSOC);
-		if($result === false) $result = array();
-		return $result;
+
+		if($result === false) {
+			$result = array();
+		} else {
+			return $result;
+		}
 	}
 
 	public function getVal(string $table, string $id, string $column, string $primaryKey = 'ID'): string {
