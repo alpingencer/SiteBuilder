@@ -134,6 +134,8 @@ class WebsiteManager {
 	private function __construct(array $config) {
 		$GLOBALS['__SiteBuilder_WebsiteManager'] = &$this;
 
+		if(!isset($config['contentDirectory'])) $config['contentDirectory'] = '/Content/';
+
 		if(!isset($config['hierarchy'])) {
 			// Check if file 'hierarchy.json' in the root of the content directory exists
 			// If no, throw error: A PageHierarchy must be defined
@@ -146,7 +148,7 @@ class WebsiteManager {
 
 		$this->setIsRun(false);
 		$this->setFrameworkDirectory($config['frameworkDirectory'] ?? '/SiteBuilder/');
-		$this->setContentDirectory($config['contentDirectory'] ?? '/Content/');
+		$this->setContentDirectory($config['contentDirectory']);
 		$this->setHierarchy($config['hierarchy']);
 		$this->setDefaultPagePath($config['defaultPagePath'] ?? 'home');
 		$this->clearErrorPagePaths();
