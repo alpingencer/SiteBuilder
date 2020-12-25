@@ -37,7 +37,7 @@ abstract class DatabaseController {
 	public abstract function getVal(string $table, string $id, string $column, string $primaryKey = 'ID'): string;
 
 	public function getValByCondition(string $table, string $where, string $column): string {
-		$rows = $this->getRows($table, $where);
+		$rows = $this->getRows($table, $where, $column);
 
 		// Check if no results are returned
 		// If yes, throw error: Condition is too specific
