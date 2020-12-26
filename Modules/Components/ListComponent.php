@@ -144,7 +144,7 @@ class ListComponent extends SortableTableComponent {
 			}
 
 			foreach($this->columnKeys as $columnKey) {
-				$row->addCell($res[$columnKey]);
+				$row->addCell($res[$columnKey] ?? '');
 			}
 
 			$this->addRow($row);
