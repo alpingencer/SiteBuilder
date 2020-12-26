@@ -33,4 +33,3 @@ spl_autoload_register(function (string $class) {
 		throw new ErrorException("Could not find required file '$classFile'!");
 	}
 });
-
