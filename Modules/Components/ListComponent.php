@@ -59,6 +59,12 @@ class ListComponent extends SortableTableComponent {
 	 */
 	private $columnKeys;
 	/**
+	 * Wether to generate HTML that outputs the total row count
+	 *
+	 * @var bool
+	 */
+	private $showRowCount;
+	/**
 	 * The database key to sort the data by by default
 	 *
 	 * @var string
@@ -102,6 +108,7 @@ class ListComponent extends SortableTableComponent {
 		$this->clearPrimaryKey();
 		$this->setShowPrimaryColumn(true);
 		$this->clearColumns();
+		$this->setShowRowCount(false);
 		$this->clearDefaultSort();
 		$this->clearQueryCriteria();
 		$this->clearRowOnClickPath();
@@ -158,7 +165,15 @@ class ListComponent extends SortableTableComponent {
 		$this->setHTMLClasses($classes . $this->getHTMLClasses());
 
 		// Use SortableTableComponent::getContent() to generate complete HTML
-		return parent::getContent();
+		$html = parent::getContent();
+
+		// Generate show row count HTML
+		if($this->showRowCount) {
+			$rowCountHTML = '<p class="sitebuilder-list-row-count">Total # of rows: ' . sizeof($result) . '</p>';
+			$html .= $rowCountHTML;
+		}
+
+		return $html;
 	}
 
 	/**
@@ -327,6 +342,28 @@ class ListComponent extends SortableTableComponent {
 	 */
 	public function getColumnKeys(): array {
 		return $this->columnKeys;
+	}
+
+	/**
+	 * Getter for wether to show the row count
+	 *
+	 * @return bool
+	 * @see ListComponent::$showRowCount
+	 */
+	public function getShowRowCount(): bool {
+		return $this->showRowCount;
+	}
+
+	/**
+	 * Setter for wether to show the row count
+	 *
+	 * @param bool $showRowCount
+	 * @return self Returns itself for chaining other functions
+	 * @see ListComponent::$showRowCount
+	 */
+	public function setShowRowCount(bool $showRowCount): self {
+		$this->showRowCount = $showRowCount;
+		return $this;
 	}
 
 	/**
