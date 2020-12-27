@@ -47,7 +47,7 @@ class CarouselComponent extends Component {
 	 * Constructor for the CarouselComponent.
 	 * To get an instance of this class, use CarouselComponent::init()
 	 */
-	private function __construct() {
+	protected function __construct() {
 		parent::__construct();
 
 		$this->clearImgs();

@@ -87,7 +87,7 @@ class ContentManager {
 	 * @param array $config The configuration parameters to use
 	 * @see ContentManager::init()
 	 */
-	private function __construct(array $config) {
+	protected function __construct(array $config) {
 		$GLOBALS['__SiteBuilder_ContentManager'] = &$this;
 
 		$this->setIsRun(false);

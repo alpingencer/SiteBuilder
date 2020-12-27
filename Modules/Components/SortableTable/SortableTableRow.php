@@ -42,7 +42,7 @@ class SortableTableRow {
 	 * @param string $onClick The 'onclick' HTML attribute of the <tr> tag to be generated
 	 * @see SortableTableRow::init()
 	 */
-	private function __construct(string $onClick) {
+	protected function __construct(string $onClick) {
 		$this->setOnClick($onClick);
 		$this->clearCells();
 	}

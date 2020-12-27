@@ -11,7 +11,7 @@ class InputFormField extends FormField {
 		return new self($formFieldName, $column, $defaultValue, $type);
 	}
 
-	private function __construct(string $formFieldName, string $column, string $defaultValue, string $type) {
+	protected function __construct(string $formFieldName, string $column, string $defaultValue, string $type) {
 		parent::__construct($formFieldName, $column, $defaultValue);
 		$this->setType($type);
 	}

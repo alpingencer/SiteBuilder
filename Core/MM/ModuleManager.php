@@ -55,7 +55,7 @@ class ModuleManager {
 	 *
 	 * @see ModuleManager::init()
 	 */
-	private function __construct() {
+	protected function __construct() {
 		$GLOBALS['__SiteBuilder_ModuleManager'] = &$this;
 		$this->modules = array();
 	}

@@ -72,7 +72,7 @@ class Core {
 	 * @param array $config The configuration parameters to use
 	 * @see Core::init()
 	 */
-	private function __construct(array $config) {
+	protected function __construct(array $config) {
 		$GLOBALS['__SiteBuilder_Core'] = &$this;
 
 		$this->setIsRun(false);

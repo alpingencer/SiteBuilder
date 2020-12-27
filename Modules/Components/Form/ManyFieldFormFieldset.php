@@ -18,7 +18,7 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 		return new self($prompt, $secondaryTableDatabaseName);
 	}
 
-	private function __construct(string $prompt, string $secondaryTableDatabaseName) {
+	protected function __construct(string $prompt, string $secondaryTableDatabaseName) {
 		parent::__construct($prompt);
 		$this->setSecondaryTableDatabaseName($secondaryTableDatabaseName);
 		$this->clearMinNumFields();

@@ -14,7 +14,7 @@ class AuthenticationComponent extends Component {
 		return new self($loginInnerHTML, $logoutInnerHTML, $dependencies);
 	}
 
-	private function __construct(string $loginInnerHTML, string $logoutInnerHTML, array $dependencies) {
+	protected function __construct(string $loginInnerHTML, string $logoutInnerHTML, array $dependencies) {
 		parent::__construct();
 		$this->setLoginInnerHTML($loginInnerHTML);
 		$this->setLogoutInnerHTML($logoutInnerHTML);

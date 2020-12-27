@@ -131,7 +131,7 @@ class WebsiteManager {
 	 *
 	 * @see WebsiteManager::init()
 	 */
-	private function __construct(array $config) {
+	protected function __construct(array $config) {
 		$GLOBALS['__SiteBuilder_WebsiteManager'] = &$this;
 
 		if(!isset($config['contentDirectory'])) $config['contentDirectory'] = '/Content/';

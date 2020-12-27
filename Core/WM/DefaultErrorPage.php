@@ -47,7 +47,7 @@ class DefaultErrorPage {
 	 * @param int $errorCode The error code of the page
 	 * @see DefaultErrorPage::init()
 	 */
-	private function __construct(int $errorCode) {
+	protected function __construct(int $errorCode) {
 		$this->setErrorCode($errorCode);
 
 		switch($this->errorCode) {

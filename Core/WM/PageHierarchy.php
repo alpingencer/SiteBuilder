@@ -72,7 +72,7 @@ class PageHierarchy {
 	 * @param $pages array The associative array containing the hierarchy and the page metadata
 	 * @see PageHierarchy::init()
 	 */
-	private function __construct(array $pages) {
+	protected function __construct(array $pages) {
 		$this->setPages($pages);
 	}
 

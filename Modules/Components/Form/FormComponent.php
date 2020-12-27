@@ -23,7 +23,7 @@ class FormComponent extends Component {
 		return new self($formName, $mainTableDatabaseName);
 	}
 
-	private function __construct(string $formName, string $mainTableDatabaseName) {
+	protected function __construct(string $formName, string $mainTableDatabaseName) {
 		parent::__construct();
 		$this->setIsNewObject(true);
 		$this->setMainTableDatabaseName($mainTableDatabaseName);

@@ -10,7 +10,7 @@ class FormFieldset extends AbstractFormFieldset {
 		return new self($prompt);
 	}
 
-	private function __construct(string $prompt) {
+	protected function __construct(string $prompt) {
 		parent::__construct($prompt);
 	}
 

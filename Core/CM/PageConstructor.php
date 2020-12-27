@@ -135,7 +135,7 @@ class PageConstructor {
 	 * @param bool $prettyPrint Wether to format the HTML when generating it
 	 * @see PageConstructor::init()
 	 */
-	private function __construct(string $lang, bool $prettyPrint) {
+	protected function __construct(string $lang, bool $prettyPrint) {
 		$this->clearContent();
 		$this->setLang($lang);
 		$this->setPrettyPrint($prettyPrint);

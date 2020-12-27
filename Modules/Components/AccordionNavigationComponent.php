@@ -32,7 +32,7 @@ class AccordionNavigationComponent extends Component {
 	 *
 	 * @see AccordionNavigationComponent::init()
 	 */
-	private function __construct() {
+	protected function __construct() {
 		parent::__construct();
 
 		// Check if website manager has been initialized

@@ -48,7 +48,7 @@ class FileTranslationController extends TranslationController {
 	 * @param array $translations
 	 * @see FileTranslationController::init()
 	 */
-	private function __construct(array $translations) {
+	protected function __construct(array $translations) {
 		$this->setTranslation($translations);
 	}
 

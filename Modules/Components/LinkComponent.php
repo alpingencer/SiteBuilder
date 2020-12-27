@@ -53,7 +53,7 @@ class LinkComponent extends Component {
 	 * @param string $innerHTML The inner content of the HTML anchor tag
 	 * @see LinkComponent::init()
 	 */
-	private function __construct(string $linkPath, string $innerHTML) {
+	protected function __construct(string $linkPath, string $innerHTML) {
 		parent::__construct();
 
 		// Check if website manager has been initialized

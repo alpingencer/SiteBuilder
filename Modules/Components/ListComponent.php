@@ -101,7 +101,7 @@ class ListComponent extends SortableTableComponent {
 	 * @param string $tableDatabaseName The name of the databsae table to pull the data from
 	 * @see ListComponent The initialized instance
 	 */
-	private function __construct(string $tableDatabaseName) {
+	protected function __construct(string $tableDatabaseName) {
 		parent::__construct();
 		$this->setTableDatabaseName($tableDatabaseName);
 		$this->clearPrimaryColumnName();

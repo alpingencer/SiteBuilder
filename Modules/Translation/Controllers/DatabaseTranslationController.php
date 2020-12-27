@@ -44,7 +44,7 @@ class DatabaseTranslationController extends TranslationController {
 	 * @param string $tokenTableName The database name of the tokens table
 	 * @param string $primaryKey The column name representing the token IDs
 	 */
-	private function __construct(string $tokenTableName, string $primaryKey) {
+	protected function __construct(string $tokenTableName, string $primaryKey) {
 		// Check if database module is initialized
 		// If no, throw error: Cannot use DatabaseTranslationController without DatabaseModule
 		if(!$GLOBALS['__SiteBuilder_ModuleManager']->isModuleInitialized(DatabaseModule::class)) {

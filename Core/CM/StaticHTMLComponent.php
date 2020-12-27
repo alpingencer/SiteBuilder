@@ -37,7 +37,7 @@ class StaticHTMLComponent extends Component {
 	 * @param string $html The HTML string of this component
 	 * @see StaticHTMLComponent::init()
 	 */
-	private function __construct(string $html) {
+	protected function __construct(string $html) {
 		$this->html = $html;
 	}
 
