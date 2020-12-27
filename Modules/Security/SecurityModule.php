@@ -85,7 +85,7 @@ class SecurityModule extends Module {
 		}
 
 		// Get user level
-		if(isset($_SESSION['__SiteBuilder_UserID'])) {
+		if($this->isUserLoggedIn()) {
 			$userLevel = $this->controller->getUserLevel($_SESSION['__SiteBuilder_UserID']);
 		} else {
 			$userLevel = 0;
@@ -125,6 +125,7 @@ class SecurityModule extends Module {
 		// If yes, process login
 		if(isset($_POST['__SiteBuilder_LoginRequest'])) {
 			$userID = $this->controller->processLogin();
+
 			if($userID !== 0) {
 				$_SESSION['__SiteBuilder_UserIsLoggedIn'] = true;
 				$_SESSION['__SiteBuilder_UserID'] = $userID;
@@ -146,6 +147,7 @@ class SecurityModule extends Module {
 		// If yes, process logout
 		if(isset($_POST['__SiteBuilder_LogoutRequest'])) {
 			$success = $this->controller->processLogout();
+
 			if($success) {
 				$_SESSION['__SiteBuilder_UserIsLoggedIn'] = false;
 				unset($_SESSION['__SiteBuilder_UserID']);
@@ -157,10 +159,27 @@ class SecurityModule extends Module {
 		// Check if user is logged in
 		// If no, generate login HTML
 		// If yes, generate logout HTML
-		$isLoginOrLogout = !isset($_SESSION['__SiteBuilder_UserIsLoggedIn']) || $_SESSION['__SiteBuilder_UserIsLoggedIn'] === false;
 		foreach($components as $component) {
-			$component->setIsLoginOrLogout($isLoginOrLogout);
+			$component->setIsLoginOrLogout(!$this->isUserLoggedIn());
 		}
+	}
+
+	public function isUserLoggedIn(): bool {
+		return $_SESSION['__SiteBuilder_UserIsLoggedIn'] ?? false;
+	}
+
+	public function getCurrentUserID(): int {
+		// Check if user is logged in
+		// If no, throw error: Cannot get user ID if user is not logged in
+		if(!$this->isUserLoggedIn()) {
+			throw new ErrorException("No user is currently logged in!");
+		}
+
+		return $_SESSION['__SiteBuilder_UserID'];
+	}
+
+	public function getCurrentUserLevel(): int {
+		return $_SESSION['__SiteBuilder_UserLevel'];
 	}
 
 	public function getController(): AuthenticationController {

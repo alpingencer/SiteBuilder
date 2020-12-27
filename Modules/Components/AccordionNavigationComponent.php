@@ -100,7 +100,8 @@ class AccordionNavigationComponent extends Component {
 		// If user is not authoried to see page, skip
 		if($GLOBALS['__SiteBuilder_ModuleManager']->isModuleInitialized(SecurityModule::class)) {
 			// Get user level
-			$userLevel = $_SESSION['__SiteBuilder_UserLevel'];
+			$userLevel = $GLOBALS['__SiteBuilder_ModuleManager']->getModuleByClass(SecurityModule::class)->getCurrentUserLevel();
+
 			if(($pages['level'] ?? 0) > $userLevel && !($pages['show-if-unauthorized'] ?? false)) return $html;
 		}
 
