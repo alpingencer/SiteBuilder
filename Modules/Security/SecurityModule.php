@@ -91,6 +91,8 @@ class SecurityModule extends Module {
 			$userLevel = 0;
 		}
 
+		$_SESSION['__SiteBuilder_UserLevel'] = $userLevel;
+
 		// Check if page level is greater than user level
 		// If yes, don't show page
 		if($pageLevel > $userLevel) {
@@ -132,8 +134,11 @@ class SecurityModule extends Module {
 				if(isset($_SESSION['__SiteBuilder_RedirectURI'])) {
 					header('Location:' . $_SESSION['__SiteBuilder_RedirectURI'], true, 303);
 					unset($_SESSION['__SiteBuilder_RedirectURI']);
-					die();
+				} else {
+					header('Refresh:0');
 				}
+
+				die();
 			}
 		}
 
@@ -144,6 +149,8 @@ class SecurityModule extends Module {
 			if($success) {
 				$_SESSION['__SiteBuilder_UserIsLoggedIn'] = false;
 				unset($_SESSION['__SiteBuilder_UserID']);
+				header('Refresh:0');
+				die();
 			}
 		}
 
