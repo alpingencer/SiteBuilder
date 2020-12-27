@@ -43,14 +43,22 @@ class MySQLDatabaseController extends DatabaseController {
 	public function getRowByQuery(string $query): array {
 		$statement = $this->query($query);
 
+		// Check if no results are returned
+		// If yes, throw error: Condition is too specific
 		if($statement->rowCount() === 0) {
-			return array();
-		} else if($statement->rowCount() > 1) {
 			$this->log('E', $query);
-			return array();
-		} else {
-			return $statement->fetch(PDO::FETCH_ASSOC);
+			throw new ErrorException('Get row returned no rows!');
 		}
+
+		// Check if multiple results are returned
+		// If yes, throw error: Condition is not specific enough
+		if($statement->rowCount() > 1) {
+			$this->log('E', $query);
+			throw new ErrorException('Get row returned multiple rows!');
+			return array();
+		}
+
+		return $statement->fetch(PDO::FETCH_ASSOC);
 	}
 
 	public function getRows(string $table, string $where, string $columns = '*', string $order = ''): array {
@@ -63,11 +71,13 @@ class MySQLDatabaseController extends DatabaseController {
 		$statement = $this->query($query);
 		$result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
+		// Check if PDOStatement returned false
+		// If yes, throw error: Something went wrong while fetching the result
 		if($result === false) {
-			$result = array();
-		} else {
-			return $result;
+			throw new ErrorException('Error while getting rows by query!');
 		}
+
+		return $result;
 	}
 
 	public function getVal(string $table, string $id, string $column, string $primaryKey = 'ID'): string {
