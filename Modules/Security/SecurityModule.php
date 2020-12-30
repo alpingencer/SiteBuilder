@@ -27,6 +27,18 @@ class SecurityModule extends Module {
 			throw new ErrorException("SecurityModule cannot be used if a ContentManager has not been initialized!");
 		}
 
+		// Check if 'timeout' configuration parameter is set
+		// If yes, check if last login has timed out and set last activity
+		// If yes, destroy current session
+		if(isset($config['timeout'])) {
+			if(isset($_SESSION['__SiteBuilder_UserLastActivity']) && (time() - $_SESSION['__SiteBuilder_UserLastActivity']) > $config['timeout']) {
+				session_unset();
+				session_destroy();
+			}
+
+			$_SESSION ['__SiteBuilder_UserLastActivity']= time();
+		}
+
 		// Start PHP session
 		switch(session_status()) {
 			case PHP_SESSION_DISABLED:
