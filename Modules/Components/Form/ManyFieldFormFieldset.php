@@ -36,7 +36,7 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 		return array_merge($manyFieldDependencies, parent::getDependencies());
 	}
 
-	public function getContent(): string {
+	public function getContent(bool $isReadOnly): string {
 		// Generate prompt HTML
 		$html = '<tr><td>' . $this->getPrompt() . ':</td>';
 
@@ -48,13 +48,15 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 		$html .= '<td class="sitebuilder-many-fields"' . $minNumFields . $maxNumFields . '>';
 
 		// Generate template fieldset HTML
-		$html .= '<fieldset class="sitebuilder-template-fieldset">';
+		if(!$isReadOnly) {
+			$html .= '<fieldset class="sitebuilder-template-fieldset">';
 
-		foreach($this->getFormFields() as $field) {
-			$html .= $field->getContent($field->getDefaultValue());
+			foreach($this->getFormFields() as $field) {
+				$html .= $field->getContent($field->getDefaultValue());
+			}
+
+			$html .= '</fieldset>';
 		}
-
-		$html .= '</fieldset>';
 
 		// Generate existing fieldset HTML
 		if($this->getParentForm()->isNewObject()) {
@@ -79,7 +81,11 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 					$prefillValue = $rows[$i][$field->getColumn()];
 				}
 
-				$html .= $field->getContent($prefillValue, '_' . ($i + 1));
+				if($isReadOnly) {
+					$html .= $prefillValue . ' ';
+				} else {
+					$html .= $field->getContent($prefillValue, '_' . ($i + 1));
+				}
 			}
 
 			$html .= '</fieldset>';

@@ -10,6 +10,7 @@ use ErrorException;
 
 class FormComponent extends Component {
 	private $isNewObject;
+	private $isReadOnly;
 	private $objectID;
 	private $mainTableDatabaseName;
 	private $primaryKey;
@@ -26,6 +27,7 @@ class FormComponent extends Component {
 	protected function __construct(string $formName, string $mainTableDatabaseName) {
 		parent::__construct();
 		$this->setIsNewObject(true);
+		$this->setIsReadOnly(false);
 		$this->setMainTableDatabaseName($mainTableDatabaseName);
 		$this->clearPrimaryKey();
 		$this->setFormName($formName);
@@ -92,29 +94,44 @@ class FormComponent extends Component {
 			$classes .= ' ' . $this->getHTMLClasses();
 		}
 
-		$html = '<form' . $id . ' class="' . $classes . '" method="POST" enctype="multipart/form-data"><table>';
+		// Generate form HTML
+		$html = '';
+
+		if(!$this->isReadOnly) {
+			$html .= '<form' . $id . ' class="' . $classes . '" method="POST" enctype="multipart/form-data">';
+		}
+
+		$html .= '<table class="sitebuilder-form--table">';
 
 		// Generate fieldset html
 		$html .= '<tbody>';
 		foreach($this->fieldsets as $fieldset) {
-			$html .= $fieldset->getContent();
+			$html .= $fieldset->getContent($this->isReadOnly);
 		}
 		$html .= '</tbody>';
 
 		// Generate submit and delete button html
-		$html .= '<tfoot><tr>';
+		if(!$this->isReadOnly) {
+			$html .= '<tfoot><tr>';
 
-		if($this->showDelete) {
-			$html .= '<td><input class="sitebuilder-form-button" type="submit" name="__SiteBuilder_DeleteForm_' . $this->formName . '" value="' . $this->deleteButtonText . '"></td>';
-			$html .= '<td>';
-		} else {
-			$html .= '<td colspan="2">';
+			if($this->showDelete) {
+				$html .= '<td><input class="sitebuilder-form-button" type="submit" name="__SiteBuilder_DeleteForm_' . $this->formName . '" value="' . $this->deleteButtonText . '"></td>';
+				$html .= '<td>';
+			} else {
+				$html .= '<td colspan="2">';
+			}
+			$html .= '<input class="sitebuilder-form-button" type="submit" name="__SiteBuilder_SubmitForm_' . $this->formName . '" value="' . $this->submitButtonText . '">';
+			$html .= '</td>';
+
+			$html .= '</tr></tfoot>';
 		}
-		$html .= '<input class="sitebuilder-form-button" type="submit" name="__SiteBuilder_SubmitForm_' . $this->formName . '" value="' . $this->submitButtonText . '">';
-		$html .= '</td>';
 
-		$html .= '</tr></tfoot>';
-		$html .= '</table></form>';
+		// Generate end of form HTML
+		$html .= '</table>';
+
+		if(!$this->isReadOnly) {
+			$html .= '</form>';
+		}
 
 		return $html;
 	}
@@ -182,6 +199,15 @@ class FormComponent extends Component {
 			$this->setShowDelete(false);
 		}
 
+		return $this;
+	}
+
+	public function isReadOnly(): bool {
+		return $this->isReadOnly;
+	}
+
+	public function setIsReadOnly(bool $isReadOnly): self {
+		$this->isReadOnly = $isReadOnly;
 		return $this;
 	}
 

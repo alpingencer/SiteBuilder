@@ -14,13 +14,16 @@ class FormFieldset extends AbstractFormFieldset {
 		parent::__construct($prompt);
 	}
 
-	public function getContent(): string {
+	public function getContent(bool $isReadOnly): string {
 		// Generate prompt HTML
 		$html = '<tr><td>' . $this->getPrompt() . ':</td>';
 
 		// Generate fieldset HTML
 		$html .= '<td>';
-		$html .= '<fieldset>';
+
+		if(!$isReadOnly) {
+			$html .= '<fieldset>';
+		}
 
 		// Generate form field HTML
 		foreach($this->getFormFields() as $field) {
@@ -36,10 +39,18 @@ class FormFieldset extends AbstractFormFieldset {
 				$prefillValue = $database->getVal($table, $id, $column, $key);
 			}
 
-			$html .= $field->getContent($prefillValue);
+			if($isReadOnly) {
+				$html .= $prefillValue . ' ';
+			} else {
+				$html .= $field->getContent($prefillValue);
+			}
 		}
 
-		$html .= '</fieldset></td></tr>';
+		if(!$isReadOnly) {
+			$html .= '</fieldset>';
+		}
+
+		$html .= '</td></tr>';
 		return $html;
 	}
 

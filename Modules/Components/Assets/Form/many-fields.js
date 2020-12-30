@@ -21,8 +21,8 @@ var getMaxFields = function(element) {
 };
 
 /* Add buttons to add and remove fieldsets */
-$('.sitebuilder-many-fields').append('<button type="button" class="sitebuilder-fieldset-adder"></button>');
-$('.sitebuilder-many-fields').append('<button type="button" class="sitebuilder-fieldset-remover"></button>');
+$('.sitebuilder-form .sitebuilder-many-fields').append('<button type="button" class="sitebuilder-fieldset-adder"></button>');
+$('.sitebuilder-form .sitebuilder-many-fields').append('<button type="button" class="sitebuilder-fieldset-remover"></button>');
 
 /* Adding fieldsets */
 $('.sitebuilder-fieldset-adder').click(function() {
@@ -95,7 +95,7 @@ $('.sitebuilder-fieldset-remover').click(function() {
 });
 
 /* Initially disable or enable adder and remover buttons */
-$('.sitebuilder-many-fields').each(function() {
+$('.sitebuilder-form .sitebuilder-many-fields').each(function() {
 	// Get minimum and maximum number of fieldsets
 	// and how many there already are
 	var minFields = getMinFields($(this));
