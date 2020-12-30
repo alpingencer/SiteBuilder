@@ -70,11 +70,13 @@ class FormComponent extends Component {
 		// Delete form
 		if(isset($_POST['__SiteBuilder_DeleteForm_' . $this->formName])) {
 			$this->delete();
+			header("Refresh:0");
 		}
 
 		// Proccess form
 		if(isset($_POST['__SiteBuilder_SubmitForm_' . $this->formName])) {
 			$this->process();
+			header("Refresh:0");
 		}
 
 		// Set id
