@@ -11,7 +11,6 @@ require_once 'Form/ManyFieldFormFieldset.php';
 require_once 'Form/FormField.php';
 require_once 'Form/FormFields/CheckboxFormField.php';
 require_once 'Form/FormFields/DatabaseSelectFormField.php';
-require_once 'Form/FormFields/DateFormField.php';
 require_once 'Form/FormFields/InputFormField.php';
 require_once 'Form/FormFields/RadioFormField.php';
 require_once 'Form/FormFields/SelectFormField.php';
