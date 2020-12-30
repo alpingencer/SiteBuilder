@@ -37,9 +37,9 @@ abstract class DatabaseController {
 
 	public abstract function getRowsByQuery(string $query): array;
 
-	public abstract function getVal(string $table, string $id, string $column, string $primaryKey = 'ID'): string;
+	public abstract function getVal(string $table, string $id, string $column, string $primaryKey = 'ID');
 
-	public abstract function getValByQuery(string $query): string;
+	public abstract function getValByQuery(string $query);
 
 	public abstract function insert(string $table, array $values, $primaryKey = 'ID'): int;
 

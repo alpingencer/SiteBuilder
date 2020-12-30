@@ -80,12 +80,12 @@ class MySQLDatabaseController extends DatabaseController {
 		return $result;
 	}
 
-	public function getVal(string $table, string $id, string $column, string $primaryKey = 'ID'): string {
+	public function getVal(string $table, string $id, string $column, string $primaryKey = 'ID') {
 		$query = "SELECT `$column` FROM $table WHERE `$primaryKey`='$id'";
 		return $this->getValByQuery($query);
 	}
 
-	public function getValByQuery(string $query): string {
+	public function getValByQuery(string $query) {
 		$statement = $this->query($query);
 
 		// Check if no results are returned
