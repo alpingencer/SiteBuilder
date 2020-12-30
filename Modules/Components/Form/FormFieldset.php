@@ -36,7 +36,7 @@ class FormFieldset extends AbstractFormFieldset {
 				$id = $this->getParentForm()->getObjectID();
 				$column = $field->getColumn();
 				$key = $this->getParentForm()->getPrimaryKey();
-				$prefillValue = $database->getVal($table, $id, $column, $key);
+				$prefillValue = $database->getVal($table, $id, $column, $key) ?? '';
 			}
 
 			if($isReadOnly) {
