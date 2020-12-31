@@ -5,9 +5,36 @@ namespace SiteBuilder\Modules\Security;
 use SiteBuilder\Core\MM\Module;
 use ErrorException;
 
+/**
+ * The SecurityModule is responsible for restricting access to higher-level pages and for
+ * authenticating users.
+ * It can handle differenty methods of authentication by creating a new AuthenticationController
+ * class.
+ * In order to use this module, initiate it using the ModuleManager, giving it a 'controller'
+ * configuration parameter to set how the authentication is handled.
+ *
+ * @author Alpin Gencer
+ * @namespace SiteBuilder\Modules\Security
+ * @see AuthenticationController
+ */
 class SecurityModule extends Module {
+	/**
+	 * The controller responsible for proccessing authentication
+	 *
+	 * @var AuthenticationController
+	 */
 	private $controller;
+	/**
+	 * Wether guest users should be redirected automatically to the login page
+	 *
+	 * @var bool
+	 */
 	private $isRedirectGuestToLogin;
+	/**
+	 * The page path of the login page
+	 *
+	 * @var string
+	 */
 	private $loginPagePath;
 
 	/**
@@ -86,6 +113,9 @@ class SecurityModule extends Module {
 		$this->authenticate();
 	}
 
+	/**
+	 * Checks to see if a users is authorized to view a page and takes action accordingly
+	 */
 	private function authorize(): void {
 		$wm = $GLOBALS['__SiteBuilder_WebsiteManager'];
 
@@ -122,6 +152,9 @@ class SecurityModule extends Module {
 		}
 	}
 
+	/**
+	 * Checks for and processes login and logout requests
+	 */
 	private function authenticate(): void {
 		$cm = $GLOBALS['__SiteBuilder_ContentManager'];
 
@@ -176,10 +209,20 @@ class SecurityModule extends Module {
 		}
 	}
 
+	/**
+	 * Returns wether the current user is logged in
+	 *
+	 * @return bool
+	 */
 	public function isUserLoggedIn(): bool {
 		return $_SESSION['__SiteBuilder_UserIsLoggedIn'] ?? false;
 	}
 
+	/**
+	 * Gets the current user ID
+	 *
+	 * @return int
+	 */
 	public function getCurrentUserID(): int {
 		// Check if user is logged in
 		// If no, throw error: Cannot get user ID if user is not logged in
@@ -190,30 +233,72 @@ class SecurityModule extends Module {
 		return $_SESSION['__SiteBuilder_UserID'];
 	}
 
+	/**
+	 * Gets the current user level
+	 *
+	 * @return int
+	 */
 	public function getCurrentUserLevel(): int {
 		return $_SESSION['__SiteBuilder_UserLevel'];
 	}
 
+	/**
+	 * Getter for the authentication controller
+	 *
+	 * @return AuthenticationController
+	 * @see SecurityModule::$controller
+	 */
 	public function getController(): AuthenticationController {
 		return $this->controller;
 	}
 
+	/**
+	 * Setter for the authentication controller
+	 *
+	 * @param AuthenticationController $controller
+	 * @see SecurityModule::$controller
+	 */
 	private function setController(AuthenticationController $controller): void {
 		$this->controller = $controller;
 	}
 
+	/**
+	 * Getter for wether guests will be redirected to the login page
+	 *
+	 * @return bool
+	 * @see SecurityModule::$isRedirectGuestToLogin
+	 */
 	public function isRedirectGuestToLogin(): bool {
 		return $this->isRedirectGuestToLogin;
 	}
 
+	/**
+	 * Setter for wether guests will be redirected to the login page
+	 *
+	 * @param bool $isRedirectGuestToLogin
+	 */
 	private function setIsRedirectGuestToLogin(bool $isRedirectGuestToLogin): void {
 		$this->isRedirectGuestToLogin = $isRedirectGuestToLogin;
 	}
 
+	/**
+	 * Getter for the login page path
+	 *
+	 * @return string
+	 * @see SecurityModule::$loginPagePath
+	 */
 	public function getLoginPagePath(): string {
 		return $this->loginPagePath;
 	}
 
+	/**
+	 * Setter for the login page path.
+	 * This will also automatically enable guest redirecting
+	 *
+	 * @param string $loginPagePath
+	 * @see SecurityModule::$loginPagePath
+	 * @see SecurityModule::$isRedirectGuestToLogin
+	 */
 	private function setLoginPagePath(string $loginPagePath): void {
 		$this->loginPagePath = $loginPagePath;
 		$this->setIsRedirectGuestToLogin(true);
