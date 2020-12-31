@@ -35,7 +35,10 @@ class RadioFormField extends FormField {
 	}
 
 	public function addButton(string $value, string $prompt): self {
-		array_push($this->buttons, array('value' => $value, 'prompt' => $prompt));
+		array_push($this->buttons, array(
+				'value' => $value,
+				'prompt' => $prompt
+		));
 		return $this;
 	}
 

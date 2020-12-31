@@ -2,7 +2,6 @@
 
 namespace SiteBuilder\Modules\Database;
 
-
 abstract class DatabaseController {
 	const LOGGING_NONE = 0;
 	const LOGGING_ERROR = 1;

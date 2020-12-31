@@ -36,7 +36,7 @@ class SecurityModule extends Module {
 				session_destroy();
 			}
 
-			$_SESSION ['__SiteBuilder_UserLastActivity']= time();
+			$_SESSION['__SiteBuilder_UserLastActivity'] = time();
 		}
 
 		// Start PHP session
