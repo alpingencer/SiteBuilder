@@ -34,8 +34,8 @@ abstract class SortableTableComponent extends Component {
 
 	/**
 	 * Constructor for the SortableTableComponent.
-	 * Please note that when extending this abstract class, it is convention to set the visibility
-	 * of the constructor to private and create a public static init() method. See
+	 * Please note that when extending this abstract class, it is convention to keep the visibility
+	 * of the constructor at protected and create a public static init() method. See
 	 * ListComponent for an example.
 	 *
 	 * @see ListComponent

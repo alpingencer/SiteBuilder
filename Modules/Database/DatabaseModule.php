@@ -7,7 +7,7 @@ use ErrorException;
 
 /**
  * The DatabaseModule is responsible for interfacing with databases.
- * It infinitely extendible to handle all database types by creating a new DatabaseController class.
+ * It is extendible to handle all database types by creating a new DatabaseController class.
  * In order to use this module, initiate it using the ModuleManager, giving it a 'controller'
  * configuration parameter to set what database type to use.
  *
