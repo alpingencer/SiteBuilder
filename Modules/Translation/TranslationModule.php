@@ -113,18 +113,42 @@ class TranslationModule extends Module {
 		}, $content);
 	}
 
+	/**
+	 * Getter for the translation controller
+	 *
+	 * @return TranslationController
+	 * @see TranslationModule::$controller
+	 */
 	public function getController(): TranslationController {
 		return $this->controller;
 	}
 
+	/**
+	 * Setter for the translation controller
+	 *
+	 * @param TranslationController $controller
+	 * @see TranslationModule::$controller
+	 */
 	private function setController(TranslationController $controller): void {
 		$this->controller = $controller;
 	}
 
+	/**
+	 * Getter for the language to translate to
+	 *
+	 * @return string
+	 * @see TranslationModule::$lang
+	 */
 	public function getLang(): string {
 		return $this->lang;
 	}
 
+	/**
+	 * Setter for the language to translate to
+	 *
+	 * @param string $lang
+	 * @see TranslationModule::$lang
+	 */
 	private function setLang(string $lang): void {
 		$this->lang = $lang;
 	}
