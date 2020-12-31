@@ -8,9 +8,25 @@ use PDO;
 use PDOException;
 use PDOStatement;
 
+/**
+ * The MySQLDatabaseController provides out-of-the-box support for MySQL databases.
+ *
+ * @author Alpin Gencer
+ * @namespace SiteBuilder\Modules\Datbase\Controllers
+ * @see DatabaseController
+ */
 class MySQLDatabaseController extends DatabaseController {
+	/**
+	 * The PDO object used to connect and interface with the database
+	 *
+	 * @var PDO
+	 */
 	private $pdo;
 
+	/**
+	 * {@inheritdoc}
+	 * @see \SiteBuilder\Modules\Database\DatabaseController::connect()
+	 */
 	public function connect(): void {
 		$server = $this->getServer();
 		$name = $this->getName();
@@ -25,6 +41,12 @@ class MySQLDatabaseController extends DatabaseController {
 		}
 	}
 
+	/**
+	 * Executes and logs a query, returning the resulting PDOStatement
+	 *
+	 * @param string $query The query to execute
+	 * @return PDOStatement
+	 */
 	private function query(string $query): PDOStatement {
 		try {
 			$this->log('Q', $query);
@@ -35,11 +57,19 @@ class MySQLDatabaseController extends DatabaseController {
 		}
 	}
 
+	/**
+	 * {@inheritdoc}
+	 * @see \SiteBuilder\Modules\Database\DatabaseController::getRow()
+	 */
 	public function getRow(string $table, string $id, string $columns = '*', string $primaryKey = 'ID'): array {
 		$query = "SELECT $columns FROM `$table` WHERE `$primaryKey`='$id'";
 		return $this->getRowByQuery($query);
 	}
 
+	/**
+	 * {@inheritdoc}
+	 * @see \SiteBuilder\Modules\Database\DatabaseController::getRowByQuery()
+	 */
 	public function getRowByQuery(string $query): array {
 		$statement = $this->query($query);
 
@@ -61,12 +91,20 @@ class MySQLDatabaseController extends DatabaseController {
 		return $statement->fetch(PDO::FETCH_ASSOC);
 	}
 
+	/**
+	 * {@inheritdoc}
+	 * @see \SiteBuilder\Modules\Database\DatabaseController::getRows()
+	 */
 	public function getRows(string $table, string $where, string $columns = '*', string $order = ''): array {
 		$query = "SELECT $columns FROM `$table` WHERE $where";
 		if(!empty($order)) $query .= " ORDER BY $order";
 		return $this->getRowsByQuery($query);
 	}
 
+	/**
+	 * {@inheritdoc}
+	 * @see \SiteBuilder\Modules\Database\DatabaseController::getRowsByQuery()
+	 */
 	public function getRowsByQuery(string $query): array {
 		$statement = $this->query($query);
 		$result = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -80,11 +118,19 @@ class MySQLDatabaseController extends DatabaseController {
 		return $result;
 	}
 
+	/**
+	 * {@inheritdoc}
+	 * @see \SiteBuilder\Modules\Database\DatabaseController::getVal()
+	 */
 	public function getVal(string $table, string $id, string $column, string $primaryKey = 'ID') {
 		$query = "SELECT `$column` FROM `$table` WHERE `$primaryKey`='$id'";
 		return $this->getValByQuery($query);
 	}
 
+	/**
+	 * {@inheritdoc}
+	 * @see \SiteBuilder\Modules\Database\DatabaseController::getValByQuery()
+	 */
 	public function getValByQuery(string $query) {
 		$statement = $this->query($query);
 
@@ -103,6 +149,10 @@ class MySQLDatabaseController extends DatabaseController {
 		return $statement->fetch(PDO::FETCH_NUM)[0];
 	}
 
+	/**
+	 * {@inheritdoc}
+	 * @see \SiteBuilder\Modules\Database\DatabaseController::insert()
+	 */
 	public function insert(string $table, array $values, $primaryKey = 'ID'): int {
 		$objectID = $this->query("SELECT MAX(DISTINCT `$primaryKey`) FROM $table")->fetch(PDO::FETCH_NUM)[0] + 1;
 		$fields = "`$primaryKey`";
@@ -131,6 +181,10 @@ class MySQLDatabaseController extends DatabaseController {
 		return $objectID;
 	}
 
+	/**
+	 * {@inheritdoc}
+	 * @see \SiteBuilder\Modules\Database\DatabaseController::update()
+	 */
 	public function update(string $table, array $values, string $where): int {
 		$fieldsValues = "";
 
@@ -149,6 +203,10 @@ class MySQLDatabaseController extends DatabaseController {
 		return $numAffectedRows;
 	}
 
+	/**
+	 * {@inheritdoc}
+	 * @see \SiteBuilder\Modules\Database\DatabaseController::delete()
+	 */
 	public function delete(string $table, string $where): int {
 		$query = "DELETE FROM `$table` WHERE $where";
 		$numAffectedRows = $this->pdo->exec($query);
@@ -156,25 +214,28 @@ class MySQLDatabaseController extends DatabaseController {
 		return $numAffectedRows;
 	}
 
+	/**
+	 * {@inheritdoc}
+	 * @see \SiteBuilder\Modules\Database\DatabaseController::log()
+	 */
 	public function log(string $type, string $query): bool {
+		// Check if logging for the current type is enabled
+		// If no, return: No logging enabled
 		switch($type) {
 			case 'Q':
-				$minLoggingLevel = DatabaseController::LOGGING_QUERY;
-				break;
+				if($this->getLoggedQueryTypes() & DatabaseController::LOGGING_QUERY == 0) {
+					return true;
+				}
 			case 'I':
 			case 'U':
 			case 'D':
-				$minLoggingLevel = DatabaseController::LOGGING_MODIFY;
-				break;
+				if($this->getLoggedQueryTypes() & DatabaseController::LOGGING_MODIFY == 0) {
+					return true;
+				}
 			case 'E':
-				$minLoggingLevel = DatabaseController::LOGGING_ERROR;
-				break;
-		}
-
-		// Check if current logging level is higher than minimum required level for current type
-		// If no, return: No logging enabled
-		if($minLoggingLevel > $this->getLoggingLevel()) {
-			return true;
+				if($this->getLoggedQueryTypes() & DatabaseController::LOGGING_ERROR == 0) {
+					return true;
+				}
 		}
 
 		$date = date('Y-m-d H:i:s');
