@@ -6,7 +6,8 @@ abstract class DatabaseController {
 	const LOGGING_NONE = 0;
 	const LOGGING_ERROR = 1;
 	const LOGGING_MODIFY = 2;
-	const LOGGING_ALL = 3;
+	const LOGGING_QUERY = 3;
+	const LOGGING_ALL = 4;
 	private $server;
 	private $name;
 	private $user;

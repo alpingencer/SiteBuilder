@@ -36,7 +36,7 @@ class MySQLDatabaseController extends DatabaseController {
 	}
 
 	public function getRow(string $table, string $id, string $columns = '*', string $primaryKey = 'ID'): array {
-		$query = "SELECT $columns FROM $table WHERE `$primaryKey`='$id'";
+		$query = "SELECT $columns FROM `$table` WHERE `$primaryKey`='$id'";
 		return $this->getRowByQuery($query);
 	}
 
@@ -62,7 +62,7 @@ class MySQLDatabaseController extends DatabaseController {
 	}
 
 	public function getRows(string $table, string $where, string $columns = '*', string $order = ''): array {
-		$query = "SELECT $columns FROM $table WHERE $where";
+		$query = "SELECT $columns FROM `$table` WHERE $where";
 		if(!empty($order)) $query .= " ORDER BY $order";
 		return $this->getRowsByQuery($query);
 	}
@@ -81,7 +81,7 @@ class MySQLDatabaseController extends DatabaseController {
 	}
 
 	public function getVal(string $table, string $id, string $column, string $primaryKey = 'ID') {
-		$query = "SELECT `$column` FROM $table WHERE `$primaryKey`='$id'";
+		$query = "SELECT `$column` FROM `$table` WHERE `$primaryKey`='$id'";
 		return $this->getValByQuery($query);
 	}
 
@@ -159,7 +159,7 @@ class MySQLDatabaseController extends DatabaseController {
 	public function log(string $type, string $query): bool {
 		switch($type) {
 			case 'Q':
-				$minLoggingLevel = DatabaseController::LOGGING_ALL;
+				$minLoggingLevel = DatabaseController::LOGGING_QUERY;
 				break;
 			case 'I':
 			case 'U':
