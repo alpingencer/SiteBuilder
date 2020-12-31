@@ -24,8 +24,8 @@ class RadioFormField extends FormField {
 
 		foreach($this->buttons as $button) {
 			$checked = ($prefillValue === $button['value']) ? ' checked' : '';
-			$html .= '<input type="radio" name="' . $name . '" value="' . $button['value'] . '"' . $checked . $attributes . '>';
-			$html .= '<span>' . $button['prompt'] . '</span>';
+			$html .= '<input type="radio" id="' . $name . '_' . $button['value'] . '" name="' . $name . '" value="' . $button['value'] . '"' . $checked . $attributes . '>';
+			$html .= '<label for="' . $name . '_' . $button['value'] . '">' . $button['prompt'] . '</label>';
 		}
 		return $html;
 	}
