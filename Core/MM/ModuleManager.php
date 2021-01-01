@@ -30,9 +30,14 @@ class ModuleManager {
 	 * @var array
 	 */
 	private $modules;
-	private $isRunEarly;
-	private $isRun;
-	private $isRunLate;
+	/**
+	 * Wether the respective run stages were done previously
+	 *
+	 * @var $isRunEarly bool
+	 * @var $isRun bool
+	 * @var $isRunLate bool
+	 */
+	private $isRunEarly, $isRun, $isRunLate;
 
 	/**
 	 * Returns an instance of ModuleManager
@@ -223,26 +228,62 @@ class ModuleManager {
 		}
 	}
 
+	/**
+	 * Getter for wether the first run stage was completed
+	 *
+	 * @return bool
+	 * @see ModuleManager::$isRunEarly
+	 */
 	public function isRunEarly(): bool {
 		return $this->isRunEarly;
 	}
 
+	/**
+	 * Setter for wether the first run stage was completed
+	 *
+	 * @param bool $isRunEarly
+	 * @see ModuleManager::$isRunEarly
+	 */
 	private function setIsRunEarly(bool $isRunEarly): void {
 		$this->isRunEarly = $isRunEarly;
 	}
 
+	/**
+	 * Getter for wether the second run stage was completed
+	 *
+	 * @return bool
+	 * @see ModuleManager::$isRun
+	 */
 	public function isRun(): bool {
 		return $this->isRun;
 	}
 
+	/**
+	 * Setter for wether the second run stage was completed
+	 *
+	 * @param bool $isRunEarly
+	 * @see ModuleManager::$isRun
+	 */
 	private function setIsRun(bool $isRun): void {
 		$this->isRun = $isRun;
 	}
 
+	/**
+	 * Getter for wether the third run stage was completed
+	 *
+	 * @return bool
+	 * @see ModuleManager::$isRunLate
+	 */
 	public function isRunLate(): bool {
 		return $this->isRunLate;
 	}
 
+	/**
+	 * Setter for wether the third run stage was completed
+	 *
+	 * @param bool $isRunEarly
+	 * @see ModuleManager::$isRunLate
+	 */
 	private function setIsRunLate(bool $isRunLate): void {
 		$this->isRunLate = $isRunLate;
 	}
