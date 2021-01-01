@@ -27,23 +27,24 @@ class SelectFormField extends FormField {
 			return array(
 					JSDependency::init('External/jQuery/jquery-3.5.1.min.js'),
 					JSDependency::init('External/jQuery/jquery.actual.min.js'),
-					JSDependency::init('SelectFormField/searchable-select.js', 'defer'),
-					CSSDependency::init('SelectFormField/searchable-select.css')
+					JSDependency::init('Form/SelectFormField/searchable-select.js', 'defer'),
+					CSSDependency::init('Form/SelectFormField/searchable-select.css')
 			);
 		} else {
 			return array();
 		}
 	}
 
-	public function getContent(string $prefillValue, string $formFieldNameSuffix = ''): string {
+	public function getContent(string $prefillValue, bool $isReadOnly, string $formFieldNameSuffix = ''): string {
 		$name = $this->getFormFieldName() . $formFieldNameSuffix;
 		$classes = ($this->isSearchable) ? ' class="sitebuilder-searchable-select"' : '';
+		$disabled = ($isReadOnly) ? ' disabled' : '';
 		$attributes = $this->getHTMLAttributesAsString();
 
-		$html = '<select name="' . $name . '"' . $classes . $attributes . '>';
+		$html = '<select name="' . $name . '"' . $classes . $disabled . $attributes . '>';
 
 		foreach($this->options as $option) {
-			$selected = ($prefillValue === $option['value']) ? ' selected="selected"' : '';
+			$selected = ($prefillValue === $option['value']) ? ' selected' : '';
 			$html .= '<option value="' . $option['value'] . '"' . $selected . '>' . $option['prompt'] . '</option>';
 		}
 

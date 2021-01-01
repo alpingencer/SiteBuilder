@@ -36,7 +36,9 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 		return array_merge($manyFieldDependencies, parent::getDependencies());
 	}
 
-	public function getContent(bool $isReadOnly): string {
+	public function getContent(): string {
+		$isReadOnly = $this->getParentForm()->isReadOnly();
+
 		// Generate prompt HTML
 		$html = '<tr><td>' . $this->getPrompt() . ':</td>';
 
@@ -52,7 +54,7 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 			$html .= '<fieldset class="sitebuilder-template-fieldset">';
 
 			foreach($this->getFormFields() as $field) {
-				$html .= $field->getContent($field->getDefaultValue());
+				$html .= $field->getContent($field->getDefaultValue(), $isReadOnly);
 			}
 
 			$html .= '</fieldset>';
@@ -81,15 +83,12 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 					$prefillValue = $rows[$i][$field->getColumn()];
 				}
 
-				if($isReadOnly) {
-					$html .= $prefillValue . ' ';
-				} else {
-					$html .= $field->getContent($prefillValue, '_' . ($i + 1));
-				}
+				$html .= $field->getContent($prefillValue, $isReadOnly, '_' . ($i + 1));
 			}
 
 			$html .= '</fieldset>';
 		}
+
 
 		$html .= '</td></tr>';
 		return $html;

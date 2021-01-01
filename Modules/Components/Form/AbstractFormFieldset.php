@@ -27,7 +27,7 @@ abstract class AbstractFormFieldset {
 		return $formFieldDependencies;
 	}
 
-	public abstract function getContent(bool $isReadOnly): string;
+	public abstract function getContent(): string;
 
 	public abstract function process(): array;
 

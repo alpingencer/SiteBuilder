@@ -22,7 +22,7 @@ var searchBoxSelector = '.' + searchBoxClass;
 var optionsSelector = '.' + optionsClass;
 
 
-$(selectSelector).each(function() {
+$(selectSelector + ':not([disabled])').each(function() {
 	// Create DOM nodes
 	var select = $(this);
 	var container = $('<div class="' + containerClass + '"></div>');
@@ -40,6 +40,9 @@ $(selectSelector).each(function() {
 	container.append(textBoxWrapper, dropdown);
 	container.insertAfter(select);
 	
+	// Hide select
+	select.hide();
+	
 	// Hide dropdown initially
 	dropdown.hide();
 	
@@ -53,7 +56,7 @@ $(selectSelector).each(function() {
 	searchBox.attr('placeholder', placeholderText);
 	
 	// Set textBox text
-	var defaultOption = select.children('option[selected="selected"]');
+	var defaultOption = select.children('option[selected]');
 	if(defaultOption.length == 0) defaultOption = select.children('option:first');
 	textBox.text(defaultOption.text());
 	textBox.attr('data-selected-option-index', defaultOption.index() + 1);
@@ -88,7 +91,7 @@ $(selectSelector).each(function() {
 			
 			// Set the selected="selected" attribute for the selectOption
 			var selectedOption = select.children('option:nth-child(' + dropdownOption.attr('data-option-index') + ')');
-			select.children('option[selected="selected"]').removeAttr('selected');
+			select.children('option[selected]').removeAttr('selected');
 			selectedOption.attr('selected', 'selected');
 			
 			// Hide the dropdown and focus the textBoxWrapper

@@ -20,7 +20,7 @@ abstract class FormField {
 		return array();
 	}
 
-	public abstract function getContent(string $prefillValue, string $formFieldNameSuffix = ''): string;
+	public abstract function getContent(string $prefillValue, bool $isReadOnly, string $formFieldNameSuffix = ''): string;
 
 	public final function getFormFieldName(): string {
 		return $this->formFieldName;

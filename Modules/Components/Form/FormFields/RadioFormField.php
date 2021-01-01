@@ -16,15 +16,16 @@ class RadioFormField extends FormField {
 		$this->clearButtons();
 	}
 
-	public function getContent(string $prefillValue, string $formFieldNameSuffix = ''): string {
+	public function getContent(string $prefillValue, bool $isReadOnly, string $formFieldNameSuffix = ''): string {
 		$name = $this->getFormFieldName() . $formFieldNameSuffix;
+		$disabled = ($isReadOnly) ? ' disabled' : '';
 		$attributes = $this->getHTMLAttributesAsString();
 
 		$html = '';
 
 		foreach($this->buttons as $button) {
 			$checked = ($prefillValue === $button['value']) ? ' checked' : '';
-			$html .= '<input type="radio" id="' . $name . '_' . $button['value'] . '" name="' . $name . '" value="' . $button['value'] . '"' . $checked . $attributes . '>';
+			$html .= '<input type="radio" id="' . $name . '_' . $button['value'] . '" name="' . $name . '" value="' . $button['value'] . '"' . $checked . $disabled . $attributes . '>';
 			$html .= '<label for="' . $name . '_' . $button['value'] . '">' . $button['prompt'] . '</label>';
 		}
 		return $html;

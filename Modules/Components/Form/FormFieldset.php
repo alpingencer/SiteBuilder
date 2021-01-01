@@ -14,7 +14,9 @@ class FormFieldset extends AbstractFormFieldset {
 		parent::__construct($prompt);
 	}
 
-	public function getContent(bool $isReadOnly): string {
+	public function getContent(): string {
+		$isReadOnly = $this->getParentForm()->isReadOnly();
+
 		// Generate prompt HTML
 		$html = '<tr><td>' . $this->getPrompt() . ':</td>';
 
@@ -39,11 +41,7 @@ class FormFieldset extends AbstractFormFieldset {
 				$prefillValue = $database->getVal($table, $id, $column, $key) ?? '';
 			}
 
-			if($isReadOnly) {
-				$html .= $prefillValue . ' ';
-			} else {
-				$html .= $field->getContent($prefillValue);
-			}
+			$html .= $field->getContent($prefillValue, $isReadOnly);
 		}
 
 		if(!$isReadOnly) {

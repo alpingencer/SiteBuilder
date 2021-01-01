@@ -16,11 +16,12 @@ class InputFormField extends FormField {
 		$this->setType($type);
 	}
 
-	public function getContent(string $prefillValue, string $formFieldNameSuffix = ''): string {
+	public function getContent(string $prefillValue, bool $isReadOnly, string $formFieldNameSuffix = ''): string {
 		$name = $this->getFormFieldName() . $formFieldNameSuffix;
+		$disabled = ($isReadOnly) ? ' disabled' : '';
 		$attributes = $this->getHTMLAttributesAsString();
 
-		$html = '<input type="' . $this->type . '" name="' . $name . '" value="' . $prefillValue . '"' . $attributes . '>';
+		$html = '<input type="' . $this->type . '" name="' . $name . '" value="' . $prefillValue . '"' . $disabled . $attributes . '>';
 		return $html;
 	}
 

@@ -90,6 +90,9 @@ class FormComponent extends Component {
 
 		// Set classes
 		$classes = 'sitebuilder-form';
+		if($this->isReadOnly) {
+			$classes .= ' sitebuilder-form--read-only';
+		}
 		if(!empty($this->getHTMLClasses())) {
 			$classes .= ' ' . $this->getHTMLClasses();
 		}
@@ -97,16 +100,13 @@ class FormComponent extends Component {
 		// Generate form HTML
 		$html = '';
 
-		if(!$this->isReadOnly) {
-			$html .= '<form' . $id . ' class="' . $classes . '" method="POST" enctype="multipart/form-data">';
-		}
-
+		$html .= '<form' . $id . ' class="' . $classes . '" method="POST" enctype="multipart/form-data">';
 		$html .= '<table class="sitebuilder-form--table">';
 
 		// Generate fieldset html
 		$html .= '<tbody>';
 		foreach($this->fieldsets as $fieldset) {
-			$html .= $fieldset->getContent($this->isReadOnly);
+			$html .= $fieldset->getContent();
 		}
 		$html .= '</tbody>';
 
@@ -127,16 +127,18 @@ class FormComponent extends Component {
 		}
 
 		// Generate end of form HTML
-		$html .= '</table>';
-
-		if(!$this->isReadOnly) {
-			$html .= '</form>';
-		}
+		$html .= '</table></form>';
 
 		return $html;
 	}
 
 	public function process(): void {
+		// Check if form is read only
+		// If yes, throw error: Should not have reached this state
+		if($this->isReadOnly) {
+			throw new ErrorException('A read-only form has somehow been submitted!');
+		}
+
 		// Get values from fieldsets that aren't manyField
 		$values = array();
 		foreach($this->fieldsets as $fieldset) {
@@ -166,6 +168,12 @@ class FormComponent extends Component {
 	}
 
 	public function delete(): void {
+		// Check if form is read only
+		// If yes, throw error: Should not have reached this state
+		if($this->isReadOnly) {
+			throw new ErrorException('A read-only form has somehow been deleted!');
+		}
+
 		// Check if this form corresponds to a new entry in the database
 		// If yes, throw error: Cannot delete a new form
 		if($this->isNewObject) {

@@ -14,11 +14,12 @@ class TextAreaFormField extends FormField {
 		parent::__construct($formFieldName, $column, $defaultValue);
 	}
 
-	public function getContent(string $prefillValue, string $formFieldNameSuffix = ''): string {
+	public function getContent(string $prefillValue, bool $isReadOnly, string $formFieldNameSuffix = ''): string {
 		$name = $this->getFormFieldName() . $formFieldNameSuffix;
+		$disabled = ($isReadOnly) ? ' disabled' : '';
 		$attributes = $this->getHTMLAttributesAsString();
 
-		$html = '<textarea name="' . $name . '"' . $attributes . '>' . $prefillValue . '</textarea>';
+		$html = '<textarea name="' . $name . '"' . $disabled . $attributes . '>' . $prefillValue . '</textarea>';
 		return $html;
 	}
 
