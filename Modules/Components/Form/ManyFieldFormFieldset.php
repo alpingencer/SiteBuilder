@@ -13,6 +13,7 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 	private $maxNumFields;
 	private $primaryKey;
 	private $foreignKey;
+	private $fieldsetOrder;
 
 	public static function init(string $prompt, string $secondaryTableDatabaseName): ManyFieldFormFieldset {
 		return new self($prompt, $secondaryTableDatabaseName);
@@ -25,6 +26,7 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 		$this->clearMaxNumFields();
 		$this->clearPrimaryKey();
 		$this->clearForeignKey();
+		$this->clearFieldsetOrder();
 	}
 
 	public function getDependencies(): array {
@@ -68,7 +70,7 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 			$database = $GLOBALS['__SiteBuilder_ModuleManager']->getModuleByClass(DatabaseModule::class)->db();
 			$table = $this->secondaryTableDatabaseName;
 			$where = '`' . $this->getForeignKey() . '`="' . $this->getParentForm()->getObjectID() . '"';
-			$order = $this->primaryKey;
+			$order = (empty($this->fieldsetOrder)) ? $this->primaryKey : $this->fieldsetOrder;
 			$rows = $database->getRows($table, $where, '*', $order);
 			$count = max($this->minNumFields, sizeof($rows));
 		}
@@ -212,6 +214,19 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 	public function clearForeignKey(): self {
 		$this->setForeignKey('FID');
 		return $this;
+	}
+
+	public function getFieldsetOrder(): string {
+		return $this->fieldsetOrder;
+	}
+
+	public function setFieldsetOrder(string $fieldsetOrder): self {
+		$this->fieldsetOrder = $fieldsetOrder;
+		return $this;
+	}
+
+	public function clearFieldsetOrder(): self {
+		$this->setFieldsetOrder('');
 	}
 
 }
