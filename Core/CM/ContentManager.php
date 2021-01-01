@@ -250,9 +250,11 @@ class ContentManager {
 	 * Add a component to the manager
 	 *
 	 * @param Component $component The component to add
+	 * @return Component The newly added component
 	 */
-	public function addComponent(Component $component): void {
+	public function addComponent(Component $component): Component {
 		$this->components->attach($component);
+		return $component;
 	}
 
 	/**
@@ -270,8 +272,9 @@ class ContentManager {
 	 * Remove a component from the manager
 	 *
 	 * @param Component $component The component to remove
+	 * @return Component The newly removed component
 	 */
-	public function removeComponent(Component $component): void {
+	public function removeComponent(Component $component): Component {
 		// Check if component has been added
 		// If no, trigger warning: Component not found
 		if($this->components->contains($component)) {
@@ -279,6 +282,8 @@ class ContentManager {
 		} else {
 			trigger_error("The given component was not found!", E_USER_WARNING);
 		}
+
+		return $component;
 	}
 
 	/**
