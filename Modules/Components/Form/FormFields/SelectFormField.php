@@ -83,7 +83,7 @@ class SelectFormField extends FormField {
 		return $this;
 	}
 
-	public function addOptionsByQuery(string $valueColumn, string $promptColumn, string $query): self {
+	public function addOptionsByQuery(string $query): self {
 		$mm = $GLOBALS['__SiteBuilder_ModuleManager'];
 
 		// Check if DatabaseModule is initialized
@@ -93,6 +93,8 @@ class SelectFormField extends FormField {
 		}
 
 		$result = $mm->getModuleByClass(DatabaseModule::class)->db()->getRowsByQuery($query);
+		$valueColumn = array_key_first($result);
+		$promptColumn = array_key_last($result);
 
 		foreach($result as $res) {
 			$this->addOption($res[$promptColumn], $res[$valueColumn]);
