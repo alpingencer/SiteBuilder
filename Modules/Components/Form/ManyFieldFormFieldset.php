@@ -80,7 +80,7 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 					$prefillValue = $field->getDefaultValue();
 				} else {
 					// Fetch existing data from database
-					$prefillValue = $rows[$i][$field->getColumn()];
+					$prefillValue = $rows[$i][$field->getColumn()] ?? '';
 				}
 
 				$html .= $field->getContent($prefillValue, $isReadOnly, '_' . ($i + 1));
