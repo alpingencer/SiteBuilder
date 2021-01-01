@@ -38,11 +38,10 @@ class LinkComponent extends Component {
 	 * Returns an instance of LinkComponent
 	 *
 	 * @param string $linkPath The path to link to
-	 * @param string $innerHTML The inner content of the HTML anchor tag
 	 * @return LinkComponent The initialized instance
 	 */
-	public static function init(string $linkPath, string $innerHTML = ''): LinkComponent {
-		return new self($linkPath, $innerHTML);
+	public static function init(string $linkPath): LinkComponent {
+		return new self($linkPath);
 	}
 
 	/**
@@ -50,10 +49,9 @@ class LinkComponent extends Component {
 	 * To get an instance of this class, use LinkComponent::init()
 	 *
 	 * @param string $linkPath The path to link to
-	 * @param string $innerHTML The inner content of the HTML anchor tag
 	 * @see LinkComponent::init()
 	 */
-	protected function __construct(string $linkPath, string $innerHTML) {
+	protected function __construct(string $linkPath) {
 		parent::__construct();
 
 		// Check if website manager has been initialized
@@ -63,7 +61,7 @@ class LinkComponent extends Component {
 		}
 
 		$this->setLinkPath($linkPath);
-		$this->setInnerHTML($innerHTML);
+		$this->clearInnerHTML();
 	}
 
 	/**
@@ -206,10 +204,23 @@ class LinkComponent extends Component {
 	 * Setter for the inner HTML
 	 *
 	 * @param string $innerHTML
+	 * @return self Returns itself for chaining other functions
 	 * @see LinkComponent::$innerHTML
 	 */
-	private function setInnerHTML(string $innerHTML): void {
+	public function setInnerHTML(string $innerHTML): self {
 		$this->innerHTML = $innerHTML;
+		return $this;
+	}
+
+	/**
+	 * Clears the inner HTML
+	 *
+	 * @return self Returns itself for chaining other functions
+	 * @see LinkComponent::$innerHTML
+	 */
+	public function clearInnerHTML(): self {
+		$this->setInnerHTML('');
+		return $this;
 	}
 
 }
