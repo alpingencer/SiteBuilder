@@ -19,6 +19,8 @@ class FormComponent extends Component {
 	private $showDelete;
 	private $deleteButtonText;
 	private $submitButtonText;
+	private $postProcessFunction;
+	private $postDeleteFunction;
 
 	public static function init(string $formName, string $mainTableDatabaseName): FormComponent {
 		return new self($formName, $mainTableDatabaseName);
@@ -34,6 +36,8 @@ class FormComponent extends Component {
 		$this->clearFieldsets();
 		$this->clearDeleteButtonText();
 		$this->clearSubmitButtonText();
+		$this->clearPostProcessFunction();
+		$this->clearPostDeleteFunction();
 
 		// Check if database module is initialized
 		// If no, throw error: Cannot use FormComponent without DatabaseModule
@@ -165,6 +169,8 @@ class FormComponent extends Component {
 				$fieldset->process();
 			}
 		}
+
+		$this->getPostProcessFunction()($this);
 	}
 
 	public function delete(): void {
@@ -190,6 +196,8 @@ class FormComponent extends Component {
 		// Delete entry in main table
 		$database = $GLOBALS['__SiteBuilder_ModuleManager']->getModuleByClass(DatabaseModule::class)->db();
 		$database->delete($this->mainTableDatabaseName, $this->primaryKey . "='" . $this->objectID . "'");
+
+		$this->getPostDeleteFunction()($this);
 	}
 
 	public function isNewObject(): bool {
@@ -306,6 +314,34 @@ class FormComponent extends Component {
 
 	public function clearSubmitButtonText(): self {
 		$this->setSubmitButtonText('Submit');
+		return $this;
+	}
+
+	public function getPostProcessFunction(): callable {
+		return $this->postProcessFunction;
+	}
+
+	public function setPostProcessFunction(callable $postProcessFunction): self {
+		$this->postProcessFunction = $postProcessFunction;
+		return $this;
+	}
+
+	public function clearPostProcessFunction(): self {
+		$this->postProcessFunction = function (FormComponent $form) {};
+		return $this;
+	}
+
+	public function getPostDeleteFunction(): callable {
+		return $this->postDeleteFunction;
+	}
+
+	public function setPostDeleteFunction(callable $postDeleteFunction): self {
+		$this->postDeleteFunction = $postDeleteFunction;
+		return $this;
+	}
+
+	public function clearPostDeleteFunction(): self {
+		$this->postDeleteFunction = function (FormComponent $form) {};
 		return $this;
 	}
 
