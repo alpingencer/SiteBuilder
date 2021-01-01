@@ -16,9 +16,10 @@ class FormFieldset extends AbstractFormFieldset {
 
 	public function getContent(): string {
 		$isReadOnly = $this->getParentForm()->isReadOnly();
+		$prompt = (empty($this->getPrompt())) ? '' : $this->getPrompt() . ':';
 
 		// Generate prompt HTML
-		$html = '<tr><td>' . $this->getPrompt() . ':</td>';
+		$html = '<tr><td>' . $prompt . '</td>';
 
 		// Generate fieldset HTML
 		$html .= '<td>';
