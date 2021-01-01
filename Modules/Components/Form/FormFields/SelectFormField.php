@@ -93,10 +93,10 @@ class SelectFormField extends FormField {
 		}
 
 		$result = $mm->getModuleByClass(DatabaseModule::class)->db()->getRowsByQuery($query);
-		$valueColumn = array_key_first($result);
-		$promptColumn = array_key_last($result);
 
 		foreach($result as $res) {
+			$valueColumn = array_key_first($res);
+			$promptColumn = array_key_last($res);
 			$this->addOption($res[$promptColumn], $res[$valueColumn]);
 		}
 
