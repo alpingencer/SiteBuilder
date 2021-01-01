@@ -227,6 +227,7 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 
 	public function clearFieldsetOrder(): self {
 		$this->setFieldsetOrder('');
+		return $this;
 	}
 
 }
