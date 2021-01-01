@@ -30,6 +30,9 @@ class ModuleManager {
 	 * @var array
 	 */
 	private $modules;
+	private $isRunEarly;
+	private $isRun;
+	private $isRunLate;
 
 	/**
 	 * Returns an instance of ModuleManager
@@ -58,6 +61,9 @@ class ModuleManager {
 	protected function __construct() {
 		$GLOBALS['__SiteBuilder_ModuleManager'] = &$this;
 		$this->modules = array();
+		$this->setIsRunEarly(false);
+		$this->setIsRun(false);
+		$this->setIsRunLate(false);
 	}
 
 	/**
@@ -81,6 +87,15 @@ class ModuleManager {
 	 * @see Module::runLate()
 	 */
 	public function runEarly(): void {
+		// Check if the manager was run already
+		// If yes, trigger warning and return: Cannot run manager multiple times
+		if($this->isRunEarly) {
+			trigger_error("The module manager has already been run early!", E_USER_WARNING);
+			return;
+		}
+
+		$this->setIsRunEarly(true);
+
 		foreach($this->modules as $module) {
 			$module->runEarly();
 		}
@@ -94,6 +109,15 @@ class ModuleManager {
 	 * @see Module::runLate()
 	 */
 	public function run(): void {
+		// Check if the manager was run already
+		// If yes, trigger warning and return: Cannot run manager multiple times
+		if($this->isRun) {
+			trigger_error("The module manager has already been run!", E_USER_WARNING);
+			return;
+		}
+
+		$this->setIsRun(true);
+
 		foreach($this->modules as $module) {
 			$module->run();
 		}
@@ -107,6 +131,15 @@ class ModuleManager {
 	 * @see Module::run()
 	 */
 	public function runLate(): void {
+		// Check if the manager was run already
+		// If yes, trigger warning and return: Cannot run manager multiple times
+		if($this->isRunLate) {
+			trigger_error("The module manager has already been run late!", E_USER_WARNING);
+			return;
+		}
+
+		$this->setIsRunLate(true);
+
 		foreach($this->modules as $module) {
 			$module->runLate();
 		}
@@ -188,6 +221,30 @@ class ModuleManager {
 		foreach(array_keys($this->modules) as $moduleClass) {
 			$this->uninitModule($moduleClass);
 		}
+	}
+
+	public function isRunEarly(): bool {
+		return $this->isRunEarly;
+	}
+
+	private function setIsRunEarly(bool $isRunEarly): void {
+		$this->isRunEarly = $isRunEarly;
+	}
+
+	public function isRun(): bool {
+		return $this->isRun;
+	}
+
+	private function setIsRun(bool $isRun): void {
+		$this->isRun = $isRun;
+	}
+
+	public function isRunLate(): bool {
+		return $this->isRunLate;
+	}
+
+	private function setIsRunLate(bool $isRunLate): void {
+		$this->isRunLate = $isRunLate;
 	}
 
 }
