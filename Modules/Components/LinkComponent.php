@@ -33,6 +33,12 @@ class LinkComponent extends Component {
 	 * @var string
 	 */
 	private $innerHTML;
+	/**
+	 * Any additional $_GET parameters to add to the end of the URI
+	 *
+	 * @var string
+	 */
+	private $additionalGETParams;
 
 	/**
 	 * Returns an instance of LinkComponent
@@ -62,6 +68,7 @@ class LinkComponent extends Component {
 
 		$this->setLinkPath($linkPath);
 		$this->clearInnerHTML();
+		$this->clearAdditionalGETParams();
 	}
 
 	/**
@@ -89,7 +96,10 @@ class LinkComponent extends Component {
 
 		// Set href
 		$href = $this->linkPath;
-		if($this->linkPath !== '#') $href = '?p=' . $href;
+		if($this->linkPath !== '#') {
+			$href = '?p=' . $href;
+			if(!empty($this->additionalGETParams)) $href .= '&' . $this->additionalGETParams;
+		}
 
 		// Set id
 		if(empty($this->getHTMLID())) {
@@ -220,6 +230,38 @@ class LinkComponent extends Component {
 	 */
 	public function clearInnerHTML(): self {
 		$this->setInnerHTML('');
+		return $this;
+	}
+
+	/*
+	 * Getter for the additional $_GET params
+	 * @return string
+	 * @see LinkComponent::$additionalGETParams
+	 */
+	public function getAdditionalGETParams(): string {
+		return $this->additionalGETParams;
+	}
+
+	/**
+	 * Setter for the additional $_GET params
+	 *
+	 * @param string $innerHTML
+	 * @return self Returns itself for chaining other functions
+	 * @see LinkComponent::$additionalGETParams
+	 */
+	public function setAdditionalGETParams(string $additionalGETParams): self {
+		$this->additionalGETParams = trim($additionalGETParams, '&');
+		return $this;
+	}
+
+	/**
+	 * Clears the additional $_GET params
+	 *
+	 * @return self Returns itself for chaining other functions
+	 * @see LinkComponent::$additionalGETParams
+	 */
+	public function clearAdditionalGETParams(): self {
+		$this->setAdditionalGETParams('');
 		return $this;
 	}
 

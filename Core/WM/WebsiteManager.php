@@ -220,14 +220,15 @@ class WebsiteManager {
 	}
 
 	/**
-	 * Redirect the user to a given page path, optionally also keeping other GET parameters.
+	 * Redirect the user to a given page path, optionally also keeping other $_GET parameters.
 	 * The redirection works using a HTTP 303 redirect header sent to the browser.
 	 * Please note that this will also halt the script after execution.
 	 *
 	 * @param string $pagePath The page path to redirect to
-	 * @param bool $keepGETParams Wether to keep the GET parameters
+	 * @param bool $keepGETParams Wether to keep the $_GET parameters
+	 * @param string $additionalGETParams Any additional $_GET parameters to add to the end of the URI
 	 */
-	public function redirectToPage(string $pagePath, bool $keepGETParams = false): void {
+	public function redirectToPage(string $pagePath, bool $keepGETParams = false, string $additionalGETParams = ""): void {
 		$pagePath = PageHierarchy::normalizePathString($pagePath);
 
 		if($keepGETParams) {
@@ -240,6 +241,8 @@ class WebsiteManager {
 		} else {
 			$params = '';
 		}
+
+		if(!empty($additionalGETParams)) $params .= '&' . trim($additionalGETParams, '&');
 
 		$uri = '?p=' . $pagePath . $params;
 
