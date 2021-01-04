@@ -13,6 +13,7 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 	private $maxNumFields;
 	private $primaryKey;
 	private $foreignKey;
+	private $queryCriteria;
 	private $fieldsetOrder;
 
 	public static function init(string $prompt, string $secondaryTableDatabaseName): ManyFieldFormFieldset {
@@ -26,6 +27,7 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 		$this->clearMaxNumFields();
 		$this->clearPrimaryKey();
 		$this->clearForeignKey();
+		$this->clearQueryCriteria();
 		$this->clearFieldsetOrder();
 	}
 
@@ -70,6 +72,7 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 			$database = $GLOBALS['__SiteBuilder_ModuleManager']->getModuleByClass(DatabaseModule::class)->db();
 			$table = $this->secondaryTableDatabaseName;
 			$where = '`' . $this->getForeignKey() . '`="' . $this->getParentForm()->getObjectID() . '"';
+			if(!empty($this->queryCriteria)) $where .= ' AND ' . $this->queryCriteria;
 			$order = (empty($this->fieldsetOrder)) ? $this->primaryKey : $this->fieldsetOrder;
 			$rows = $database->getRows($table, $where, '*', $order);
 			$count = max($this->minNumFields, sizeof($rows));
@@ -137,7 +140,10 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 	public function delete(): void {
 		// Delete entries in secondary table
 		$database = $GLOBALS['__SiteBuilder_ModuleManager']->getModuleByClass(DatabaseModule::class)->db();
-		$database->delete($this->secondaryTableDatabaseName, $this->foreignKey . "='" . $this->getParentForm()->getObjectID() . "'");
+		$table = $this->secondaryTableDatabaseName;
+		$where = $this->foreignKey . "='" . $this->getParentForm()->getObjectID() . "'";
+		if(!empty($this->queryCriteria)) $where .= ' AND ' . $this->queryCriteria;
+		$database->delete($table, $where);
 	}
 
 	public function getSecondaryTableDatabaseName(): string {
@@ -213,6 +219,20 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 
 	public function clearForeignKey(): self {
 		$this->setForeignKey('FID');
+		return $this;
+	}
+
+	public function getQueryCriteria(): string {
+		return $this->queryCriteria;
+	}
+
+	public function setQueryCriteria(string $queryCriteria): self {
+		$this->queryCriteria = $queryCriteria;
+		return $this;
+	}
+
+	public function clearQueryCriteria(): self {
+		$this->setQueryCriteria('');
 		return $this;
 	}
 
