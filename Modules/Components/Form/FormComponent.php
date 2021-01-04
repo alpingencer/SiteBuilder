@@ -151,16 +151,18 @@ class FormComponent extends Component {
 			}
 		}
 
-		$database = $GLOBALS['__SiteBuilder_ModuleManager']->getModuleByClass(DatabaseModule::class)->db();
+		if(!empty($values)) {
+			$database = $GLOBALS['__SiteBuilder_ModuleManager']->getModuleByClass(DatabaseModule::class)->db();
 
-		if($this->isNewObject) {
-			// Create new object
-			$objectID = $database->insert($this->mainTableDatabaseName, $values, $this->primaryKey);
-			$this->setObjectID($objectID);
-		} else {
-			// Update old object
-			$where = '`' . $this->primaryKey . "`='" . $this->objectID . "'";
-			$database->update($this->mainTableDatabaseName, $values, $where);
+			if($this->isNewObject) {
+				// Create new object
+				$objectID = $database->insert($this->mainTableDatabaseName, $values, $this->primaryKey);
+				$this->setObjectID($objectID);
+			} else {
+				// Update old object
+				$where = '`' . $this->primaryKey . "`='" . $this->objectID . "'";
+				$database->update($this->mainTableDatabaseName, $values, $where);
+			}
 		}
 
 		// Proccess fieldsets that are manyField
