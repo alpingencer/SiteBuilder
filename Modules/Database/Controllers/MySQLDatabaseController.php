@@ -49,11 +49,12 @@ class MySQLDatabaseController extends DatabaseController {
 	 */
 	private function query(string $query): PDOStatement {
 		try {
+			$statement = $this->pdo->query($query);
 			$this->log('Q', $query);
-			return $this->pdo->query($query);
+			return $statement;
 		} catch(PDOException $e) {
 			$this->log('E', $query);
-			return new PDOStatement();
+			throw new ErrorException("Failed while executing the given query: $query");
 		}
 	}
 
@@ -85,7 +86,6 @@ class MySQLDatabaseController extends DatabaseController {
 		if($statement->rowCount() > 1) {
 			$this->log('E', $query);
 			throw new ErrorException('Get row returned multiple rows!');
-			return array();
 		}
 
 		return $statement->fetch(PDO::FETCH_ASSOC);
@@ -223,17 +223,17 @@ class MySQLDatabaseController extends DatabaseController {
 		// If no, return: No logging enabled
 		switch($type) {
 			case 'Q':
-				if($this->getLoggedQueryTypes() & DatabaseController::LOGGING_QUERY == 0) {
+				if(($this->getLoggedQueryTypes() & DatabaseController::LOGGING_QUERY) == 0) {
 					return true;
 				}
 			case 'I':
 			case 'U':
 			case 'D':
-				if($this->getLoggedQueryTypes() & DatabaseController::LOGGING_MODIFY == 0) {
+				if(($this->getLoggedQueryTypes() & DatabaseController::LOGGING_MODIFY) == 0) {
 					return true;
 				}
 			case 'E':
-				if($this->getLoggedQueryTypes() & DatabaseController::LOGGING_ERROR == 0) {
+				if(($this->getLoggedQueryTypes() & DatabaseController::LOGGING_ERROR) == 0) {
 					return true;
 				}
 		}
