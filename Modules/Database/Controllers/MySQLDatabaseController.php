@@ -170,14 +170,9 @@ class MySQLDatabaseController extends DatabaseController {
 		}
 
 		$query = "INSERT INTO `$table` ($fields) VALUES ($fieldValues)";
-		$numAffectedRows = $this->pdo->exec($query);
+		$this->query($query);
 
-		if($numAffectedRows === 0) {
-			$this->log('E', $query);
-		} else {
-			$this->log('I', $query);
-		}
-
+		$this->log('I', $query);
 		return $objectID;
 	}
 
@@ -197,10 +192,10 @@ class MySQLDatabaseController extends DatabaseController {
 		}
 
 		$query = "UPDATE `$table` SET $fieldsValues WHERE $where";
-		$numAffectedRows = $this->pdo->exec($query);
+		$statement = $this->query($query);
 
 		$this->log('U', $query);
-		return $numAffectedRows;
+		return $statement->rowCount();
 	}
 
 	/**
@@ -209,9 +204,10 @@ class MySQLDatabaseController extends DatabaseController {
 	 */
 	public function delete(string $table, string $where): int {
 		$query = "DELETE FROM `$table` WHERE $where";
-		$numAffectedRows = $this->pdo->exec($query);
+		$statement = $this->query($query);
+
 		$this->log('D', $query);
-		return $numAffectedRows;
+		return $statement->rowCount();
 	}
 
 	/**
