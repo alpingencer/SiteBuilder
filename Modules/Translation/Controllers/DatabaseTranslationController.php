@@ -59,7 +59,7 @@ class DatabaseTranslationController extends TranslationController {
 	 * {@inheritdoc}
 	 * @see \SiteBuilder\Modules\Translation\TranslationController::translate()
 	 */
-	public function translate($id, $lang): string {
+	public function translate(int $id, string $lang): string {
 		$database = $GLOBALS['__SiteBuilder_ModuleManager']->getModuleByClass(DatabaseModule::class)->db();
 		$token = $database->getVal($this->tokenTableName, $id, $lang, $this->primaryKey);
 

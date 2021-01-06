@@ -107,15 +107,53 @@ abstract class DatabaseController {
 	public abstract function connect(): void;
 
 	/**
+	 * Infers the column name of the primary key of a given table from the database structure
+	 *
+	 * @param string $table The table to get the primary key of
+	 * @return string The primary key of the table
+	 */
+	public abstract function getPrimaryKey(string $table): string;
+
+	/**
+	 * Infers the name of the foreign key of a table that references the primary key of another
+	 * table
+	 *
+	 * @param string $table The table linking to another table
+	 * @param string $referenced_table The table being linked to
+	 * @return string The foreign key of the linking table
+	 */
+	public abstract function getForeignKey(string $table, string $referenced_table): string;
+
+	/**
 	 * Fetches a single row from the database
 	 *
 	 * @param string $table The table to fetch from
-	 * @param string $id The unique ID of the row to fetch
+	 * @param int $id The unique ID of the row to fetch
 	 * @param string $columns The keys of the columns to fetch
-	 * @param string $primaryKey The name of the primary key of the table
 	 * @return array The fetched result
 	 */
-	public abstract function getRow(string $table, string $id, string $columns = '*', string $primaryKey = 'ID'): array;
+	public abstract function getRow(string $table, int $id, string $columns = '*'): array;
+
+	/**
+	 * Fetches multiple rows from the database
+	 *
+	 * @param string $table The table to fetch from
+	 * @param string $condition The condition to filter the rows by
+	 * @param string $columns The keys of the columns to fetch
+	 * @param string $order The key to sort the rows by
+	 * @return array The fetched result
+	 */
+	public abstract function getRows(string $table, string $condition, string $columns = '*', string $order = ''): array;
+
+	/**
+	 * Fetches a single value from the database
+	 *
+	 * @param string $table The table to fetch from
+	 * @param int $id The unique ID of the row to fetch from
+	 * @param string $column The key of the column to fetch
+	 * @return mixed The fetched result
+	 */
+	public abstract function getVal(string $table, int $id, string $column);
 
 	/**
 	 * Fetches a signle row from the database with a custom query
@@ -126,34 +164,12 @@ abstract class DatabaseController {
 	public abstract function getRowByQuery(string $query): array;
 
 	/**
-	 * Fetches multiple rows from the database
-	 *
-	 * @param string $table The table to fetch from
-	 * @param string $where The condition to filter the rows by
-	 * @param string $columns The keys of the columns to fetch
-	 * @param string $order The key to sort the rows by
-	 * @return array The fetched result
-	 */
-	public abstract function getRows(string $table, string $where, string $columns = '*', string $order = ''): array;
-
-	/**
 	 * Fetches multiple rows from the database with a custom query
 	 *
 	 * @param string $query The query to execute
 	 * @return array The fetched result
 	 */
 	public abstract function getRowsByQuery(string $query): array;
-
-	/**
-	 * Fetches a single value from the database
-	 *
-	 * @param string $table The table to fetch from
-	 * @param string $id The unique ID of the row to fetch from
-	 * @param string $column The key of the column to fetch
-	 * @param string $primaryKey The name of the primary key of the table
-	 * @return mixed The fetched result
-	 */
-	public abstract function getVal(string $table, string $id, string $column, string $primaryKey = 'ID');
 
 	/**
 	 * Fetches a single value from the database with a custom query
@@ -167,38 +183,37 @@ abstract class DatabaseController {
 	 *
 	 * @param string $table The table to insert into
 	 * @param array $values An associative array of key-value pairs to insert
-	 * @param string $primaryKey The name of the primary key of the table
 	 * @return int The number of inserted rows
 	 */
-	public abstract function insert(string $table, array $values, $primaryKey = 'ID'): int;
+	public abstract function insert(string $table, array $values): int;
 
 	/**
 	 * Updates multiple rows in a table
 	 *
 	 * @param string $table The table to update
 	 * @param array $values An associative array of key-value pairs to insert
-	 * @param string $where The condition to filter the rows by
+	 * @param string $condition The condition to filter the rows by
 	 * @return int The number of affected rows
 	 */
-	public abstract function update(string $table, array $values, string $where): int;
+	public abstract function update(string $table, array $values, string $condition): void;
 
 	/**
 	 * Deletes multiple rows from the database
 	 *
 	 * @param string $table The table to delete from
-	 * @param string $where The condition to filter the rows by
+	 * @param string $condition The condition to filter the rows by
 	 * @return int The number of deleted rows
 	 */
-	public abstract function delete(string $table, string $where): int;
+	public abstract function delete(string $table, string $condition): void;
 
 	/**
-	 * Logs a querry into the log table
+	 * Logs a query into the log table
 	 *
-	 * @param string $type The type of the querry
-	 * @param string $query The querry to log
+	 * @param string $query The query to log
+	 * @param string $type The type of the query
 	 * @return bool Wether the operation was successful
 	 */
-	public abstract function log(string $type, string $query): bool;
+	public abstract function log(string $query, string $type): void;
 
 	/**
 	 * Getter for the hosting server

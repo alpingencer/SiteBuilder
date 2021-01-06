@@ -84,11 +84,11 @@ class TranslationModule extends Module {
 	 * @param string $content The string to process
 	 */
 	private function replaceContentWithTokens(string &$content): void {
-		// Replace TOKEN([token]) by token ID or tag
-		// [token] must contain only word characters (a-z, A-Z, 0-9, _) or -
-		$content = preg_replace_callback("/TOKEN\( *(?'id'[\w-]*) *\)/", function ($match) {
+		// Replace TOKEN([token]) by token ID
+		// [token] must contain only numbers (0-9)
+		$content = preg_replace_callback("/TOKEN\( *(?'id'[0-9]+) *\)/", function ($match) {
 			// Get translation
-			$translation = $this->controller->translate($match['id'], $this->lang);
+			$translation = $this->controller->translate((int) $match['id'], $this->lang);
 
 			// Replace tokens in tokens recursively
 			$this->replaceContentWithTokens($translation);

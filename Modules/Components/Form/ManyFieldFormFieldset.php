@@ -11,8 +11,6 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 	private $secondaryTableDatabaseName;
 	private $minNumFields;
 	private $maxNumFields;
-	private $primaryKey;
-	private $foreignKey;
 	private $queryCriteria;
 	private $fieldsetOrder;
 
@@ -25,8 +23,6 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 		$this->setSecondaryTableDatabaseName($secondaryTableDatabaseName);
 		$this->clearMinNumFields();
 		$this->clearMaxNumFields();
-		$this->clearPrimaryKey();
-		$this->clearForeignKey();
 		$this->clearQueryCriteria();
 		$this->clearFieldsetOrder();
 	}
@@ -71,11 +67,13 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 		} else {
 			$database = $GLOBALS['__SiteBuilder_ModuleManager']->getModuleByClass(DatabaseModule::class)->db();
 			$table = $this->secondaryTableDatabaseName;
-			$where = '`' . $this->getForeignKey() . '`="' . $this->getParentForm()->getObjectID() . '"';
-			if(!empty($this->queryCriteria)) $where .= ' AND ' . $this->queryCriteria;
-			$order = (empty($this->fieldsetOrder)) ? $this->primaryKey : $this->fieldsetOrder;
-			$rows = $database->getRows($table, $where, '*', $order);
-			$count = max($this->minNumFields, sizeof($rows));
+			$primaryKey = $database->getPrimaryKey($table);
+			$foreignKey = $database->getForeignKey($table, $this->getParentForm()->getMainTableDatabaseName());
+			$condition = "`$foreignKey`='" . $this->getParentForm()->getObjectID() . "'";
+			if(!empty($this->queryCriteria)) $condition .= ' AND ' . $this->queryCriteria;
+			$order = (empty($this->fieldsetOrder)) ? $primaryKey : $this->fieldsetOrder;
+			$rows = $database->getRows($table, $condition, '*', $order);
+			$count = max($this->minNumFields, count($rows));
 		}
 
 		for($i = 0; $i < $count; $i++ ) {
@@ -106,20 +104,21 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 			$this->delete();
 		}
 
-		// Get database controller
-		$database = $GLOBALS['__SiteBuilder_ModuleManager']->getModuleByClass(DatabaseModule::class)->db();
-
 		// If there are no form fields, return
 		if(empty($this->getFormFields())) {
 			return array();
 		}
+
+		// Get database controller
+		$database = $GLOBALS['__SiteBuilder_ModuleManager']->getModuleByClass(DatabaseModule::class)->db();
+		$foreignKey = $database->getForeignKey($this->secondaryTableDatabaseName, $this->getParentForm()->getMainTableDatabaseName());
 
 		// For each defined fieldset
 		// Check first added form field post variable to search for additional fieldsets
 		for($i = 1; isset($_POST[$this->getFormFields()[0]->getFormFieldName() . '_' . $i]); $i++ ) {
 			// Add foreign ID
 			$values = array(
-					$this->foreignKey => $this->getParentForm()->getObjectID()
+					$foreignKey => $this->getParentForm()->getObjectID()
 			);
 
 			// Add form field values
@@ -130,7 +129,7 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 			}
 
 			// Insert new entries
-			$database->insert($this->secondaryTableDatabaseName, $values, $this->primaryKey);
+			$database->insert($this->secondaryTableDatabaseName, $values);
 		}
 
 		// Parent form has nothing to process, return empty array
@@ -141,9 +140,10 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 		// Delete entries in secondary table
 		$database = $GLOBALS['__SiteBuilder_ModuleManager']->getModuleByClass(DatabaseModule::class)->db();
 		$table = $this->secondaryTableDatabaseName;
-		$where = $this->foreignKey . "='" . $this->getParentForm()->getObjectID() . "'";
-		if(!empty($this->queryCriteria)) $where .= ' AND ' . $this->queryCriteria;
-		$database->delete($table, $where);
+		$foreignKey = $database->getForeignKey($table, $this->getParentForm()->getMainTableDatabaseName());
+		$condition = "`$foreignKey`='" . $this->getParentForm()->getObjectID() . "'";
+		if(!empty($this->queryCriteria)) $condition .= ' AND ' . $this->queryCriteria;
+		$database->delete($table, $condition);
 	}
 
 	public function getSecondaryTableDatabaseName(): string {
@@ -191,34 +191,6 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 
 	public function clearMaxNumFields(): self {
 		$this->setMaxNumFields(0);
-		return $this;
-	}
-
-	public function getPrimaryKey(): string {
-		return $this->primaryKey;
-	}
-
-	public function setPrimaryKey(string $primaryKey): self {
-		$this->primaryKey = $primaryKey;
-		return $this;
-	}
-
-	public function clearPrimaryKey(): self {
-		$this->setPrimaryKey('ID');
-		return $this;
-	}
-
-	public function getForeignKey(): string {
-		return $this->foreignKey;
-	}
-
-	public function setForeignKey(string $foreignKey): self {
-		$this->foreignKey = $foreignKey;
-		return $this;
-	}
-
-	public function clearForeignKey(): self {
-		$this->setForeignKey('FID');
 		return $this;
 	}
 

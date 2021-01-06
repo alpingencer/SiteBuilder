@@ -65,7 +65,7 @@ class SelectFormField extends FormField {
 		return $this;
 	}
 
-	public function addOptionsFromDatabase(string $table, string $valueColumn, string $promptColumn, string $where = '1', string $order = ''): self {
+	public function addOptionsFromDatabase(string $table, string $valueColumn, string $promptColumn, string $condition = '1', string $order = ''): self {
 		$mm = $GLOBALS['__SiteBuilder_ModuleManager'];
 
 		// Check if DatabaseModule is initialized
@@ -74,7 +74,8 @@ class SelectFormField extends FormField {
 			throw new ErrorException("Cannot add select options from database if DatabaseModule is not initialized!");
 		}
 
-		$result = $mm->getModuleByClass(DatabaseModule::class)->db()->getRows($table, $where, "$valueColumn,$promptColumn", $order);
+		$database = $mm->getModuleByClass(DatabaseModule::class)->db();
+		$result = $database->getRows($table, $condition, "$valueColumn,$promptColumn", $order);
 
 		foreach($result as $res) {
 			$this->addOption($res[$promptColumn], $res[$valueColumn]);

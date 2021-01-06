@@ -13,7 +13,6 @@ class FormComponent extends Component {
 	private $isReadOnly;
 	private $objectID;
 	private $mainTableDatabaseName;
-	private $primaryKey;
 	private $formName;
 	private $fieldsets;
 	private $showDelete;
@@ -31,7 +30,6 @@ class FormComponent extends Component {
 		$this->setIsNewObject(true);
 		$this->setIsReadOnly(false);
 		$this->setMainTableDatabaseName($mainTableDatabaseName);
-		$this->clearPrimaryKey();
 		$this->setFormName($formName);
 		$this->clearFieldsets();
 		$this->clearDeleteButtonText();
@@ -156,12 +154,13 @@ class FormComponent extends Component {
 
 			if($this->isNewObject) {
 				// Create new object
-				$objectID = $database->insert($this->mainTableDatabaseName, $values, $this->primaryKey);
+				$objectID = $database->insert($this->mainTableDatabaseName, $values);
 				$this->setObjectID($objectID);
 			} else {
 				// Update old object
-				$where = '`' . $this->primaryKey . "`='" . $this->objectID . "'";
-				$database->update($this->mainTableDatabaseName, $values, $where);
+				$primaryKey = $database->getPrimaryKey($this->mainTableDatabaseName);
+				$condition = "`$primaryKey`='" . $this->objectID . "'";
+				$database->update($this->mainTableDatabaseName, $values, $condition);
 			}
 		}
 
@@ -197,7 +196,9 @@ class FormComponent extends Component {
 
 		// Delete entry in main table
 		$database = $GLOBALS['__SiteBuilder_ModuleManager']->getModuleByClass(DatabaseModule::class)->db();
-		$database->delete($this->mainTableDatabaseName, $this->primaryKey . "='" . $this->objectID . "'");
+		$primaryKey = $database->getPrimaryKey($this->mainTableDatabaseName);
+		$condition = "`$primaryKey`='" . $this->objectID . "'";
+		$database->delete($this->mainTableDatabaseName, $condition);
 
 		$this->getPostDeleteFunction()($this);
 	}
@@ -243,20 +244,6 @@ class FormComponent extends Component {
 
 	private function setMainTableDatabaseName(string $mainTableDatabaseName) {
 		$this->mainTableDatabaseName = $mainTableDatabaseName;
-	}
-
-	public function getPrimaryKey(): string {
-		return $this->primaryKey;
-	}
-
-	public function setPrimaryKey(string $primaryKey): self {
-		$this->primaryKey = $primaryKey;
-		return $this;
-	}
-
-	public function clearPrimaryKey(): self {
-		$this->setPrimaryKey('ID');
-		return $this;
 	}
 
 	public function getFormName(): string {

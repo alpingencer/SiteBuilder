@@ -28,18 +28,20 @@ class FormFieldset extends AbstractFormFieldset {
 			$html .= '<fieldset>';
 		}
 
+		if(!$this->getParentForm()->isNewObject()) {
+			// Fetch existing data from database
+			$database = $GLOBALS['__SiteBuilder_ModuleManager']->getModuleByClass(DatabaseModule::class)->db();
+			$table = $this->getParentForm()->getMainTableDatabaseName();
+			$id = $this->getParentForm()->getObjectID();
+			$prefillValues = $database->getRow($table, $id);
+		}
+
 		// Generate form field HTML
 		foreach($this->getFormFields() as $field) {
 			if($this->getParentForm()->isNewObject()) {
 				$prefillValue = $field->getDefaultValue();
 			} else {
-				// Fetch existing data from database
-				$database = $GLOBALS['__SiteBuilder_ModuleManager']->getModuleByClass(DatabaseModule::class)->db();
-				$table = $this->getParentForm()->getMainTableDatabaseName();
-				$id = $this->getParentForm()->getObjectID();
-				$column = $field->getColumn();
-				$key = $this->getParentForm()->getPrimaryKey();
-				$prefillValue = $database->getVal($table, $id, $column, $key) ?? '';
+				$prefillValue = $prefillValues[$field->getColumn()] ?? '';
 			}
 
 			$html .= $field->getContent($prefillValue, $isReadOnly);
@@ -58,7 +60,7 @@ class FormFieldset extends AbstractFormFieldset {
 		$values = array();
 		foreach($this->getFormFields() as $formField) {
 			$values = array_merge($values, array(
-					$formField->getColumn() => $_POST[$formField->getFormFieldName()]
+					$formField->getColumn() => $_POST[$formField->getFormFieldName()] ?? null
 			));
 		}
 

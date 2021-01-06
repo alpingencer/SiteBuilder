@@ -56,7 +56,7 @@ class FileTranslationController extends TranslationController {
 	 * {@inheritdoc}
 	 * @see \SiteBuilder\Modules\Translation\TranslationController::translate()
 	 */
-	public function translate(string $id, string $lang): string {
+	public function translate(int $id, string $lang): string {
 		// Check if ID and language are defined in the given translations file
 		// If no, return error: Translation not defined!
 		if(!isset($this->translations[$id]) || !isset($this->translations[$id][$lang])) {

@@ -16,11 +16,11 @@ abstract class TranslationController {
 	/**
 	 * Translate the given token ID into the given language
 	 *
-	 * @param string $id The ID to search for
+	 * @param int $id The ID to search for
 	 * @param string $lang The language to get
 	 * @return string The translated string
 	 */
-	public abstract function translate(string $id, string $lang): string;
+	public abstract function translate(int $id, string $lang): string;
 
 }
 
