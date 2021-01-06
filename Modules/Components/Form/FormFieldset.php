@@ -2,8 +2,6 @@
 
 namespace SiteBuilder\Modules\Components\Form;
 
-use SiteBuilder\Modules\Database\DatabaseModule;
-
 class FormFieldset extends AbstractFormFieldset {
 
 	public static function init(string $prompt): FormFieldset {
@@ -28,20 +26,14 @@ class FormFieldset extends AbstractFormFieldset {
 			$html .= '<fieldset>';
 		}
 
-		if(!$this->getParentForm()->isNewObject()) {
-			// Fetch existing data from database
-			$database = $GLOBALS['__SiteBuilder_ModuleManager']->getModuleByClass(DatabaseModule::class)->db();
-			$table = $this->getParentForm()->getMainTableDatabaseName();
-			$id = $this->getParentForm()->getObjectID();
-			$prefillValues = $database->getRow($table, $id);
-		}
-
 		// Generate form field HTML
 		foreach($this->getFormFields() as $field) {
 			if($this->getParentForm()->isNewObject()) {
+				// Show default value
 				$prefillValue = $field->getDefaultValue();
 			} else {
-				$prefillValue = $prefillValues[$field->getColumn()] ?? '';
+				// Fetch existing data from the database
+				$prefillValue = $this->getParentForm()->getPrefillValues()[$field->getColumn()] ?? '';
 			}
 
 			$html .= $field->getContent($prefillValue, $isReadOnly);

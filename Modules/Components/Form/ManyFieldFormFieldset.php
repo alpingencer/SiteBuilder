@@ -4,7 +4,6 @@ namespace SiteBuilder\Modules\Components\Form;
 
 use SiteBuilder\Core\CM\Dependencies\CSSDependency;
 use SiteBuilder\Core\CM\Dependencies\JSDependency;
-use SiteBuilder\Modules\Database\DatabaseModule;
 use ErrorException;
 
 class ManyFieldFormFieldset extends AbstractFormFieldset {
@@ -13,6 +12,8 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 	private $maxNumFields;
 	private $queryCriteria;
 	private $fieldsetOrder;
+	private $primaryKey;
+	private $foreignKey;
 
 	public static function init(string $prompt, string $secondaryTableDatabaseName): ManyFieldFormFieldset {
 		return new self($prompt, $secondaryTableDatabaseName);
@@ -65,14 +66,11 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 		if($this->getParentForm()->isNewObject()) {
 			$count = $this->minNumFields;
 		} else {
-			$database = $GLOBALS['__SiteBuilder_ModuleManager']->getModuleByClass(DatabaseModule::class)->db();
 			$table = $this->secondaryTableDatabaseName;
-			$primaryKey = $database->getPrimaryKey($table);
-			$foreignKey = $database->getForeignKey($table, $this->getParentForm()->getMainTableDatabaseName());
-			$condition = "`$foreignKey`='" . $this->getParentForm()->getObjectID() . "'";
+			$condition = "`" . $this->getForeignKey() . "`='" . $this->getParentForm()->getObjectID() . "'";
 			if(!empty($this->queryCriteria)) $condition .= ' AND ' . $this->queryCriteria;
-			$order = (empty($this->fieldsetOrder)) ? $primaryKey : $this->fieldsetOrder;
-			$rows = $database->getRows($table, $condition, '*', $order);
+			$order = (empty($this->fieldsetOrder)) ? $this->getPrimaryKey() : $this->fieldsetOrder;
+			$rows = $this->getParentForm()->getDatabase()->getRows($table, $condition, '*', $order);
 			$count = max($this->minNumFields, count($rows));
 		}
 
@@ -109,16 +107,12 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 			return array();
 		}
 
-		// Get database controller
-		$database = $GLOBALS['__SiteBuilder_ModuleManager']->getModuleByClass(DatabaseModule::class)->db();
-		$foreignKey = $database->getForeignKey($this->secondaryTableDatabaseName, $this->getParentForm()->getMainTableDatabaseName());
-
 		// For each defined fieldset
 		// Check first added form field post variable to search for additional fieldsets
 		for($i = 1; isset($_POST[$this->getFormFields()[0]->getFormFieldName() . '_' . $i]); $i++ ) {
 			// Add foreign ID
 			$values = array(
-					$foreignKey => $this->getParentForm()->getObjectID()
+					$this->getForeignKey() => $this->getParentForm()->getObjectID()
 			);
 
 			// Add form field values
@@ -129,7 +123,7 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 			}
 
 			// Insert new entries
-			$database->insert($this->secondaryTableDatabaseName, $values);
+			$this->getParentForm()->getDatabase()->insert($this->secondaryTableDatabaseName, $values);
 		}
 
 		// Parent form has nothing to process, return empty array
@@ -138,12 +132,10 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 
 	public function delete(): void {
 		// Delete entries in secondary table
-		$database = $GLOBALS['__SiteBuilder_ModuleManager']->getModuleByClass(DatabaseModule::class)->db();
 		$table = $this->secondaryTableDatabaseName;
-		$foreignKey = $database->getForeignKey($table, $this->getParentForm()->getMainTableDatabaseName());
-		$condition = "`$foreignKey`='" . $this->getParentForm()->getObjectID() . "'";
+		$condition = "`" . $this->getForeignKey() . "`='" . $this->getParentForm()->getObjectID() . "'";
 		if(!empty($this->queryCriteria)) $condition .= ' AND ' . $this->queryCriteria;
-		$database->delete($table, $condition);
+		$this->getParentForm()->getDatabase()->delete($table, $condition);
 	}
 
 	public function getSecondaryTableDatabaseName(): string {
@@ -220,6 +212,22 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 	public function clearFieldsetOrder(): self {
 		$this->setFieldsetOrder('');
 		return $this;
+	}
+
+	private function getPrimaryKey(): string {
+		if(!isset($this->primaryKey)) {
+			$this->primaryKey = $this->getParentForm()->getDatabase()->getPrimaryKey($this->secondaryTableDatabaseName);
+		}
+
+		return $this->primaryKey;
+	}
+
+	private function getForeignKey(): string {
+		if(!isset($this->foreignKey)) {
+			$this->foreignKey = $this->getParentForm()->getDatabase()->getForeignKey($this->secondaryTableDatabaseName, $this->getParentForm()->getMainTableDatabaseName());
+		}
+
+		return $this->foreignKey;
 	}
 
 }

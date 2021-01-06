@@ -6,7 +6,6 @@ use SiteBuilder\Core\CM\Dependencies\CSSDependency;
 use SiteBuilder\Core\CM\Dependencies\JSDependency;
 use SiteBuilder\Modules\Components\Form\FormField;
 use SiteBuilder\Modules\Database\DatabaseModule;
-use ErrorException;
 
 class SelectFormField extends FormField {
 	private $options;
@@ -66,39 +65,23 @@ class SelectFormField extends FormField {
 	}
 
 	public function addOptionsFromDatabase(string $table, string $valueColumn, string $promptColumn, string $condition = '1', string $order = ''): self {
-		$mm = $GLOBALS['__SiteBuilder_ModuleManager'];
-
-		// Check if DatabaseModule is initialized
-		// If no, throw error: Cannot fetch from uninitialized database
-		if(!$mm->isModuleInitialized(DatabaseModule::class)) {
-			throw new ErrorException("Cannot add select options from database if DatabaseModule is not initialized!");
-		}
-
-		$database = $mm->getModuleByClass(DatabaseModule::class)->db();
+		$database = $GLOBALS['__SiteBuilder_ModuleManager']->getModuleByClass(DatabaseModule::class)->db();
 		$result = $database->getRows($table, $condition, "$valueColumn,$promptColumn", $order);
 
-		foreach($result as $res) {
-			$this->addOption($res[$promptColumn], $res[$valueColumn]);
+		foreach($result as $row) {
+			$this->addOption($row[$promptColumn], $row[$valueColumn]);
 		}
 
 		return $this;
 	}
 
 	public function addOptionsByQuery(string $query): self {
-		$mm = $GLOBALS['__SiteBuilder_ModuleManager'];
+		$result = $GLOBALS['__SiteBuilder_ModuleManager']->getModuleByClass(DatabaseModule::class)->db()->getRowsByQuery($query);
 
-		// Check if DatabaseModule is initialized
-		// If no, throw error: Cannot fetch from uninitialized database
-		if(!$mm->isModuleInitialized(DatabaseModule::class)) {
-			throw new ErrorException("Cannot add select options from database if DatabaseModule is not initialized!");
-		}
-
-		$result = $mm->getModuleByClass(DatabaseModule::class)->db()->getRowsByQuery($query);
-
-		foreach($result as $res) {
-			$valueColumn = array_key_first($res);
-			$promptColumn = array_key_last($res);
-			$this->addOption($res[$promptColumn], $res[$valueColumn]);
+		foreach($result as $row) {
+			$valueColumn = array_key_first($row);
+			$promptColumn = array_key_last($row);
+			$this->addOption($row[$promptColumn], $row[$valueColumn]);
 		}
 
 		return $this;

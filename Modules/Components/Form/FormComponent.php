@@ -5,6 +5,7 @@ namespace SiteBuilder\Modules\Components\Form;
 use SiteBuilder\Core\CM\Component;
 use SiteBuilder\Core\CM\Dependency;
 use SiteBuilder\Core\CM\Dependencies\CSSDependency;
+use SiteBuilder\Modules\Database\DatabaseController;
 use SiteBuilder\Modules\Database\DatabaseModule;
 use ErrorException;
 
@@ -20,6 +21,9 @@ class FormComponent extends Component {
 	private $submitButtonText;
 	private $postProcessFunction;
 	private $postDeleteFunction;
+	private $database;
+	private $primaryKey;
+	private $prefillValues;
 
 	public static function init(string $formName, string $mainTableDatabaseName): FormComponent {
 		return new self($formName, $mainTableDatabaseName);
@@ -27,6 +31,15 @@ class FormComponent extends Component {
 
 	protected function __construct(string $formName, string $mainTableDatabaseName) {
 		parent::__construct();
+
+		// Check if database module is initialized
+		// If no, throw error: Cannot use FormComponent without DatabaseModule
+		if(!$GLOBALS['__SiteBuilder_ModuleManager']->isModuleInitialized(DatabaseModule::class)) {
+			throw new ErrorException("The DatabaseModule must be initialized when using a FormComponent!");
+		}
+
+		$this->database = $GLOBALS['__SiteBuilder_ModuleManager']->getModuleByClass(DatabaseModule::class)->db();
+
 		$this->setIsNewObject(true);
 		$this->setIsReadOnly(false);
 		$this->setMainTableDatabaseName($mainTableDatabaseName);
@@ -36,12 +49,6 @@ class FormComponent extends Component {
 		$this->clearSubmitButtonText();
 		$this->clearPostProcessFunction();
 		$this->clearPostDeleteFunction();
-
-		// Check if database module is initialized
-		// If no, throw error: Cannot use FormComponent without DatabaseModule
-		if(!$GLOBALS['__SiteBuilder_ModuleManager']->isModuleInitialized(DatabaseModule::class)) {
-			throw new ErrorException("The DatabaseModule must be initialized when using a FormComponent!");
-		}
 	}
 
 	/**
@@ -150,17 +157,14 @@ class FormComponent extends Component {
 		}
 
 		if(!empty($values)) {
-			$database = $GLOBALS['__SiteBuilder_ModuleManager']->getModuleByClass(DatabaseModule::class)->db();
-
 			if($this->isNewObject) {
 				// Create new object
-				$objectID = $database->insert($this->mainTableDatabaseName, $values);
+				$objectID = $this->database->insert($this->mainTableDatabaseName, $values);
 				$this->setObjectID($objectID);
 			} else {
 				// Update old object
-				$primaryKey = $database->getPrimaryKey($this->mainTableDatabaseName);
-				$condition = "`$primaryKey`='" . $this->objectID . "'";
-				$database->update($this->mainTableDatabaseName, $values, $condition);
+				$condition = "`$this->primaryKey`='$this->objectID'";
+				$this->database->update($this->mainTableDatabaseName, $values, $condition);
 			}
 		}
 
@@ -195,10 +199,8 @@ class FormComponent extends Component {
 		}
 
 		// Delete entry in main table
-		$database = $GLOBALS['__SiteBuilder_ModuleManager']->getModuleByClass(DatabaseModule::class)->db();
-		$primaryKey = $database->getPrimaryKey($this->mainTableDatabaseName);
-		$condition = "`$primaryKey`='" . $this->objectID . "'";
-		$database->delete($this->mainTableDatabaseName, $condition);
+		$condition = "`$this->primaryKey`='$this->objectID'";
+		$this->database->delete($this->mainTableDatabaseName, $condition);
 
 		$this->getPostDeleteFunction()($this);
 	}
@@ -332,6 +334,26 @@ class FormComponent extends Component {
 	public function clearPostDeleteFunction(): self {
 		$this->postDeleteFunction = function (FormComponent $form) {};
 		return $this;
+	}
+
+	public function getDatabase(): DatabaseController {
+		return $this->database;
+	}
+
+	public function getPrimaryKey(): string {
+		if(!isset($this->primaryKey)) {
+			$this->primaryKey = $this->database->getPrimaryKey($this->mainTableDatabaseName);
+		}
+
+		return $this->primaryKey;
+	}
+
+	public function getPrefillValues(): array {
+		if(!isset($this->prefillValues)) {
+			$this->prefillValues = $this->database->getRow($this->mainTableDatabaseName, $this->objectID);
+		}
+
+		return $this->prefillValues;
 	}
 
 }
