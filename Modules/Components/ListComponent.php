@@ -35,6 +35,12 @@ class ListComponent extends SortableTableComponent {
 	 */
 	private $primaryColumnName;
 	/**
+	 * The database name of the primary ID column in the database
+	 *
+	 * @var string
+	 */
+	private $primaryKey;
+	/**
 	 * Wether to generate HTML for the primary column
 	 *
 	 * @var bool
@@ -99,6 +105,7 @@ class ListComponent extends SortableTableComponent {
 		parent::__construct();
 		$this->setTableDatabaseName($tableDatabaseName);
 		$this->clearPrimaryColumnName();
+		$this->clearPrimaryKey();
 		$this->setShowPrimaryColumn(true);
 		$this->clearColumns();
 		$this->setShowRowCount(false);
@@ -122,8 +129,8 @@ class ListComponent extends SortableTableComponent {
 
 		// Query database
 		$database = $mm->getModuleByClass(DatabaseModule::class)->db();
-		$primaryKey = $database->getPrimaryKey($this->tableDatabaseName);
-		$columns = $primaryKey . ', ' . implode(', ', $this->columnKeys);
+		if(empty($this->primaryKey)) $this->primaryKey = $database->getPrimaryKey($this->tableDatabaseName);
+		$columns = $this->primaryKey . ', ' . implode(', ', $this->columnKeys);
 		$result = $database->getRows($this->tableDatabaseName, $this->queryCriteria, $columns, $this->defaultSort);
 
 		// Set rows
@@ -132,7 +139,7 @@ class ListComponent extends SortableTableComponent {
 			if(empty($this->rowOnClickPath)) {
 				$onClick = '';
 			} else {
-				$id = $res[$primaryKey];
+				$id = $res[$this->primaryKey];
 				$onClick = "window.location.href='?p=$this->rowOnClickPath&amp;id=$id'";
 			}
 
@@ -141,7 +148,7 @@ class ListComponent extends SortableTableComponent {
 
 			// If show primary column is true, add ID column
 			if($this->showPrimaryColumn) {
-				$row->addCell($res[$primaryKey]);
+				$row->addCell($res[$this->primaryKey]);
 			}
 
 			foreach($this->columnKeys as $columnKey) {
@@ -260,6 +267,39 @@ class ListComponent extends SortableTableComponent {
 	 */
 	public function clearPrimaryColumnName(): self {
 		$this->setPrimaryColumnName('ID');
+		return $this;
+	}
+
+	/**
+	 * Getter for the primary database key
+	 *
+	 * @return string
+	 * @see ListComponent::$primaryKey
+	 */
+	public function getPrimaryKey(): string {
+		return $this->primaryKey;
+	}
+
+	/**
+	 * Setter for the primary database key
+	 *
+	 * @param string $primaryKey
+	 * @return self Returns itself for chaining other functions
+	 * @see ListComponent::$primaryKey
+	 */
+	public function setPrimaryKey(string $primaryKey): self {
+		$this->primaryKey = $primaryKey;
+		return $this;
+	}
+
+	/**
+	 * Resets the primary database key to the SiteBuilder default value '';
+	 *
+	 * @return self Returns itself for chaining other functions
+	 * @see ListComponent::$primaryKey
+	 */
+	public function clearPrimaryKey(): self {
+		$this->setPrimaryKey('');
 		return $this;
 	}
 
