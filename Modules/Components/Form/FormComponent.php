@@ -163,7 +163,7 @@ class FormComponent extends Component {
 				$this->setObjectID($objectID);
 			} else {
 				// Update old object
-				$condition = "`$this->primaryKey`='$this->objectID'";
+				$condition = "`$this->getPrimaryKey()`='$this->objectID'";
 				$this->database->update($this->mainTableDatabaseName, $values, $condition);
 			}
 		}
