@@ -18,15 +18,15 @@ class CheckboxFormField extends FormField {
 
 	public function getContent(string $prefillValue, bool $isReadOnly, string $formFieldNameSuffix = ''): string {
 		$name = $this->getFormFieldName() . $formFieldNameSuffix;
-		$checked = ($prefillValue === '1') ? ' checked' : '';
+		$checked = ($prefillValue === 'YES') ? ' checked' : '';
 		$disabled = ($isReadOnly) ? ' disabled' : '';
 		$attributes = $this->getHTMLAttributesAsString();
 
-		$html = '<input type="hidden" name="' . $name . '" value="0">';
-		$html .= '<input type="checkbox" name="' . $name . '" value="1"' . $checked . $disabled . $attributes . '>';
+		$html = '<input type="hidden" name="' . $name . '" value="NO">';
+		$html .= '<input type="checkbox" id="' . $name . '" name="' . $name . '" value="YES"' . $checked . $disabled . $attributes . '>';
 
 		if(!empty($this->prompt)) {
-			$html .= '<span>' . $this->prompt . '</span>';
+			$html .= '<label for="' . $name . '">' . $this->prompt . '</label>';
 		}
 		return $html;
 	}
