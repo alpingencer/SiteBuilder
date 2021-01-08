@@ -163,7 +163,7 @@ class FormComponent extends Component {
 				$this->setObjectID($objectID);
 			} else {
 				// Update old object
-				$condition = "`$this->getPrimaryKey()`='$this->objectID'";
+				$condition = "`$this->primaryKey`='$this->objectID'";
 				$this->database->update($this->mainTableDatabaseName, $values, $condition);
 			}
 		}
@@ -246,6 +246,7 @@ class FormComponent extends Component {
 
 	private function setMainTableDatabaseName(string $mainTableDatabaseName) {
 		$this->mainTableDatabaseName = $mainTableDatabaseName;
+		$this->primaryKey = $this->database->getPrimaryKey($this->mainTableDatabaseName);
 	}
 
 	public function getFormName(): string {
@@ -341,10 +342,6 @@ class FormComponent extends Component {
 	}
 
 	public function getPrimaryKey(): string {
-		if(!isset($this->primaryKey)) {
-			$this->primaryKey = $this->database->getPrimaryKey($this->mainTableDatabaseName);
-		}
-
 		return $this->primaryKey;
 	}
 
