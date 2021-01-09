@@ -214,10 +214,8 @@ class FormComponent extends Component {
 
 		if(!$this->isNewObject) {
 			$this->setObjectID($objectID);
-			$this->setShowDelete(true);
 		} else {
 			unset($this->objectID);
-			$this->setShowDelete(false);
 		}
 
 		return $this;
