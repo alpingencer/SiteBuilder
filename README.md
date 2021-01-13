@@ -1,4 +1,4 @@
-<h1 style="text-align: center">SiteBuilder</h1>
+<h1 align="center">SiteBuilder</h1>
 
 ## About SiteBuilder
 
