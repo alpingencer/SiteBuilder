@@ -2,9 +2,9 @@
 
 namespace SiteBuilder\Core\Module;
 
-use SiteBuilder\Core\Utils\ManagedObject;
-use SiteBuilder\Core\Utils\Runnable;
-use SiteBuilder\Core\Utils\Singleton;
+use SiteBuilder\Utils\Traits\ManagedObject;
+use SiteBuilder\Utils\Traits\Runnable;
+use SiteBuilder\Utils\Traits\Singleton;
 
 class Module {
 	use ManagedObject;
@@ -12,7 +12,7 @@ class Module {
 	use Singleton;
 
 	public final function __construct() {
-		$this->setManager(ModuleManager::instanceOrNull())->assertCallerIsManager();
+		$this->setAndAssertManager(ModuleManager::instanceOrNull());
 		$this->assertSingleton();
 	}
 

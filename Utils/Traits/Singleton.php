@@ -1,6 +1,6 @@
 <?php
 
-namespace SiteBuilder\Core\Utils;
+namespace SiteBuilder\Utils\Traits;
 
 use ErrorException;
 use ReflectionClass;

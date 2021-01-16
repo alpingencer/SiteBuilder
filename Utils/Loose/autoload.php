@@ -7,10 +7,10 @@
  * namespace structure exactly. Otherwise, the autoloader will fail, throwing a PHP ErrorException.
  *
  * @author    Alpin Gencer
- * @namespace SiteBuilder\FrameworkManager\Utils
+ * @namespace SiteBuilder\Utils
  */
 
-namespace SiteBuilder\Core\Utils;
+namespace SiteBuilder\Utils;
 
 use ErrorException;
 
@@ -23,7 +23,7 @@ spl_autoload_register(
 		$class_file .= '.php';
 
 		// 3. Make path absolute using the server document root
-		$class_file = $_SERVER['DOCUMENT_ROOT'] . '/' . $class_file;
+		$class_file = $_SERVER['DOCUMENT_ROOT'] . "/$class_file";
 
 		// Check if file exists
 		// If yes, require it
@@ -35,3 +35,7 @@ spl_autoload_register(
 		}
 	}
 );
+
+foreach(File::files('/SiteBuilder/Utils/Loose') as $file) {
+	require_once $file;
+}

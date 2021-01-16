@@ -4,6 +4,6 @@ namespace SiteBuilder;
 
 use SiteBuilder\Core\FrameworkManager;
 
-require_once 'Core/Utils/Autoloader.php';
+require_once 'Utils/Loose/autoload.php';
 
 new FrameworkManager();

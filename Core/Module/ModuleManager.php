@@ -4,9 +4,9 @@ namespace SiteBuilder\Core\Module;
 
 use ErrorException;
 use SiteBuilder\Core\FrameworkManager;
-use SiteBuilder\Core\Utils\ManagedObject;
-use SiteBuilder\Core\Utils\Runnable;
-use SiteBuilder\Core\Utils\Singleton;
+use SiteBuilder\Utils\Traits\ManagedObject;
+use SiteBuilder\Utils\Traits\Runnable;
+use SiteBuilder\Utils\Traits\Singleton;
 
 class ModuleManager {
 	use ManagedObject;
@@ -16,7 +16,7 @@ class ModuleManager {
 	private array $modules;
 
 	public function __construct() {
-		$this->setManager(FrameworkManager::instanceOrNull())->assertCallerIsManager();
+		$this->setAndAssertManager(FrameworkManager::instanceOrNull());
 		$this->assertSingleton();
 		$this->modules = array();
 	}

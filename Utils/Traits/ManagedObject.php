@@ -1,6 +1,6 @@
 <?php
 
-namespace SiteBuilder\Core\Utils;
+namespace SiteBuilder\Utils\Traits;
 
 use ErrorException;
 use ReflectionClass;
@@ -23,6 +23,11 @@ trait ManagedObject {
 
 		$this->manager = $manager;
 		return $this;
+	}
+
+	private function setAndAssertManager(?object $manager): void {
+		$this->setManager($manager);
+		$this->assertCallerIsManager();
 	}
 
 	private function assertManagerIsset(): void {
