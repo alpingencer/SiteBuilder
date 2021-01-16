@@ -51,8 +51,11 @@ class FormFieldset extends AbstractFormFieldset {
 		// Get values from form fields
 		$values = array();
 		foreach($this->getFormFields() as $formField) {
+			$value = $_POST[$formField->getFormFieldName()] ?? null;
+			if(empty($value)) $value = null;
+
 			$values = array_merge($values, array(
-					$formField->getColumn() => $_POST[$formField->getFormFieldName()] ?? null
+					$formField->getColumn() => $value
 			));
 		}
 

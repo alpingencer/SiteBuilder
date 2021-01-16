@@ -12,7 +12,7 @@ use PDOStatement;
  * The MySQLDatabaseController provides out-of-the-box support for MySQL databases.
  *
  * @author Alpin Gencer
- * @namespace SiteBuilder\Modules\Datbase\Controllers
+ * @namespace SiteBuilder\Modules\Database\Controllers
  * @see DatabaseController
  */
 class MySQLDatabaseController extends DatabaseController {
@@ -107,7 +107,7 @@ class MySQLDatabaseController extends DatabaseController {
 				'boolean' => array('boolean'),
 				'integer' => array('tinyint', 'smallint', 'mediumint', 'int', 'bigint', 'decimal'),
 				'double' => array('float', 'double'),
-				'string' => array('char', 'varchar', 'tinytext', 'text', 'mediumtext', 'longtext', 'date', 'datetime', 'timestamp', 'time', 'year'),
+				'string' => array('char', 'varchar', 'tinytext', 'text', 'mediumtext', 'longtext', 'date', 'datetime', 'timestamp', 'time', 'year', 'int'),
 		);
 		// @formatter:on
 
@@ -149,44 +149,42 @@ class MySQLDatabaseController extends DatabaseController {
 				if(!in_array($column_data_type, $php_to_mysql_types[$value_data_type])) {
 					throw new ErrorException("Invalid value type '$value_data_type' specified for column '$column_name' in table '$table'!");
 				}
-			}
 
-			// Check if values for special cases are formatted correctly
-			// If no, throw error: Some MySQL types require special formatting to be inserted into
-			// the
-			// database
-			switch($column_data_type) {
-				case 'date':
-					$value_is_formatted_validly = (preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2}/', $value) === 1);
-					break;
-				case 'datetime':
-					$value_is_formatted_validly = (preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}/', $value) === 1);
-					break;
-				case 'timestamp':
-					$value_is_formatted_validly = (preg_match('/[0-9]{14}/', $value) === 1);
-					break;
-				case 'time':
-					$value_is_formatted_validly = (preg_match('/[0-9]{2}:[0-9]{2}:[0-9]{2}/', $value) === 1);
-					break;
-				case 'year':
-					$num_digits = strlen($value);
+				// Check if values for special cases are formatted correctly
+				// If no, throw error: Some MySQL types require special formatting to be inserted into the database
+				switch($column_data_type) {
+					case 'date':
+						$value_is_formatted_validly = (preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2}/', $value) === 1);
+						break;
+					case 'datetime':
+						$value_is_formatted_validly = (preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}/', $value) === 1);
+						break;
+					case 'timestamp':
+						$value_is_formatted_validly = (preg_match('/[0-9]{14}/', $value) === 1);
+						break;
+					case 'time':
+						$value_is_formatted_validly = (preg_match('/[0-9]{2}:[0-9]{2}:[0-9]{2}/', $value) === 1);
+						break;
+					case 'year':
+						$num_digits = strlen($value);
 
-					if($num_digits === 2) {
+						if($num_digits === 2) {
+							$value_is_formatted_validly = true;
+						} else if($num_digits === 4) {
+							$int_value = (int) $value;
+							$value_is_formatted_validly = (1900 < $int_value && $int_value < 2156) || $value === '0000';
+						} else {
+							$value_is_formatted_validly = false;
+						}
+						break;
+					default:
 						$value_is_formatted_validly = true;
-					} else if($num_digits === 4) {
-						$int_value = (int) $value;
-						$value_is_formatted_validly = (1900 < $int_value && $int_value < 2156) || $value === '0000';
-					} else {
-						$value_is_formatted_validly = false;
-					}
-					break;
-				default:
-					$value_is_formatted_validly = true;
-					break;
-			}
+						break;
+				}
 
-			if(!$value_is_formatted_validly) {
-				throw new ErrorException("The given value '$value' is not formatted properly for the column '$column_name' in table '$table', expected '$column_data_type'!");
+				if(!$value_is_formatted_validly) {
+					throw new ErrorException("The given value '$value' is not formatted properly for the column '$column_name' in table '$table', expected '$column_data_type'!");
+				}
 			}
 
 			// Check if a maximum character length is specified and the given string value is too

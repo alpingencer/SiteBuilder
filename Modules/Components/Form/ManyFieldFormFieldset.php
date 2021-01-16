@@ -117,8 +117,10 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 
 			// Add form field values
 			foreach($this->getFormFields() as $field) {
+				$value = $_POST[$field->getFormFieldName() . '_' . $i] ?? null;
+				if(empty($value)) $value = null;
 				$values = array_merge($values, array(
-						$field->getColumn() => $_POST[$field->getFormFieldName() . '_' . $i] ?? null
+						$field->getColumn() => $value
 				));
 			}
 
