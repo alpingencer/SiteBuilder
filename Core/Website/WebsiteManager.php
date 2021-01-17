@@ -20,7 +20,7 @@ class WebsiteManager {
 	private string $subsite;
 
 	public function __construct() {
-		$this->setAndAssertManager(FrameworkManager::instanceOrNull());
+		$this->setAndAssertManager(FrameworkManager::class);
 		$this->assertSingleton();
 
 		$this->hierarchy = new PageHierarchy();
@@ -45,7 +45,7 @@ class WebsiteManager {
 			$this->currentPage = $_GET['p'];
 		} else {
 			// Redirect to set 'p' GET parameter
-			$this->redirect($this->defaultPage, keepGETParams: true);
+//			$this->redirect($this->defaultPage, keepGETParams: true);
 		}
 	}
 

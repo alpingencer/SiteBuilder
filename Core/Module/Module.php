@@ -12,7 +12,7 @@ class Module {
 	use Singleton;
 
 	public final function __construct() {
-		$this->setAndAssertManager(ModuleManager::instanceOrNull());
+		$this->setAndAssertManager(ModuleManager::class);
 		$this->assertSingleton();
 	}
 

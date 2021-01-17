@@ -24,10 +24,6 @@ trait Singleton {
 		return static::$instance;
 	}
 
-	public static function instanceOrNull(): object|null {
-		return static::initialized() ? static::$instance : null;
-	}
-
 	private function assertSingleton(): void {
 		// Check if Singleton class is initialized
 		// If yes, throw error: Cannot reinitialize Singleton class

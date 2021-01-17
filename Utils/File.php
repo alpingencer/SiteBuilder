@@ -52,7 +52,7 @@ class File {
 		// Check if the file is readable
 		// If no, throw error: Failed while getting file contents
 		if(($file_contents = file_get_contents($file)) === false) {
-			throw new ErrorException("Error while reading the JSON file '$file'!");
+			throw new ErrorException("Error while reading the file '$file'!");
 		}
 
 		return $file_contents;

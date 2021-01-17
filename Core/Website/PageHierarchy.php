@@ -14,7 +14,7 @@ class PageHierarchy {
 	private array $data;
 
 	public function __construct() {
-		$this->setAndAssertManager(WebsiteManager::instanceOrNull());
+		$this->setAndAssertManager(WebsiteManager::class);
 		$this->assertSingleton();
 
 		$this->data = JsonDecoder::read('/Content/hierarchy.json');

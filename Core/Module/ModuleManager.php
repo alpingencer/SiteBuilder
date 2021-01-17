@@ -16,7 +16,7 @@ class ModuleManager {
 	private array $modules;
 
 	public function __construct() {
-		$this->setAndAssertManager(FrameworkManager::instanceOrNull());
+		$this->setAndAssertManager(FrameworkManager::class);
 		$this->assertSingleton();
 		$this->modules = array();
 	}

@@ -3,6 +3,7 @@
 namespace SiteBuilder\Core;
 
 use ErrorException;
+use SiteBuilder\Core\Content\ContentManager;
 use SiteBuilder\Core\Module\ModuleManager;
 use SiteBuilder\Core\Session\SessionManager;
 use SiteBuilder\Core\Website\WebsiteManager;
@@ -15,6 +16,7 @@ class FrameworkManager {
 	use Singleton;
 
 	private array $config;
+	private ContentManager $content;
 	private ModuleManager $module;
 	private SessionManager $session;
 	private WebsiteManager $website;
@@ -23,6 +25,7 @@ class FrameworkManager {
 		$this->assertSingleton();
 		$this->config = JsonDecoder::read('/sitebuilder.json');
 
+		$this->content = new ContentManager();
 		$this->module = new ModuleManager();
 		$this->session = new SessionManager();
 		$this->website = new WebsiteManager();
@@ -41,6 +44,10 @@ class FrameworkManager {
 		} else {
 			return $default;
 		}
+	}
+
+	public function content(): ContentManager {
+		return $this->content;
 	}
 
 	public function module(): ModuleManager {
@@ -62,6 +69,11 @@ class FrameworkManager {
 
 		$this->module->runEarly();
 		$this->module->run();
+
+		$this->content->run();
+
 		$this->module->runLate();
+
+		$this->content->output();
 	}
 }

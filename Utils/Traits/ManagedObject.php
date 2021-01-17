@@ -2,6 +2,7 @@
 
 namespace SiteBuilder\Utils\Traits;
 
+use Error;
 use ErrorException;
 use ReflectionClass;
 
@@ -13,19 +14,21 @@ trait ManagedObject {
 		return $this->manager;
 	}
 
-	private function setManager(?object $manager): static {
-		// Check if the given argument is null
-		// If yes, throw error: The given manager must be initialized
-		if($manager === null) {
-			$class_short_name = (new ReflectionClass($this))->getShortName();
-			throw new ErrorException("The given manager for this object of class '$class_short_name' has not been initialized!");
+	private function setManager(object|string $manager): static {
+		if(is_string($manager)) {
+			try {
+				/** @var $manager Singleton */
+				$manager = $manager::instance();
+			} catch(Error) {
+				throw new ErrorException("The given class '$manager' must be a singleton class!");
+			}
 		}
 
 		$this->manager = $manager;
 		return $this;
 	}
 
-	private function setAndAssertManager(?object $manager): void {
+	private function setAndAssertManager(object|string $manager): void {
 		$this->setManager($manager);
 		$this->assertCallerIsManager();
 	}
