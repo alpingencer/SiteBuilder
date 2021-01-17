@@ -8,7 +8,7 @@ use SiteBuilder\Core\Website\WebsiteManager;
 use SiteBuilder\Utils\Traits\ManagedObject;
 use SiteBuilder\Utils\Traits\Singleton;
 
-class SessionManager {
+final class SessionManager {
 	public const SESSION_LAST_ACTIVITY = 'LastActivity';
 	public const CONFIG_TIMEOUT = 'session-timeout';
 

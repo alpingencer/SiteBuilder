@@ -8,7 +8,7 @@ use SiteBuilder\Utils\Traits\ManagedObject;
 use SiteBuilder\Utils\Traits\Runnable;
 use SiteBuilder\Utils\Traits\Singleton;
 
-class WebsiteManager {
+final class WebsiteManager {
 	use ManagedObject;
 	use Runnable;
 	use Singleton;

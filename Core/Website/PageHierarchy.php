@@ -7,7 +7,7 @@ use SiteBuilder\Utils\JsonDecoder;
 use SiteBuilder\Utils\Traits\ManagedObject;
 use SiteBuilder\Utils\Traits\Singleton;
 
-class PageHierarchy {
+final class PageHierarchy {
 	use ManagedObject;
 	use Singleton;
 

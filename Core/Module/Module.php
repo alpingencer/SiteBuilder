@@ -6,7 +6,7 @@ use SiteBuilder\Utils\Traits\ManagedObject;
 use SiteBuilder\Utils\Traits\Runnable;
 use SiteBuilder\Utils\Traits\Singleton;
 
-class Module {
+abstract class Module {
 	use ManagedObject;
 	use Runnable;
 	use Singleton;
