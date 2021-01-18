@@ -33,4 +33,5 @@ SiteBuilder is a page management and HTML auto-generation framework for PHP writ
 
 ## License
 
-The SiteBuilder framework is open-sourced software licensed under the [MIT license](LICENSE.md).
+The SiteBuilder framework is open-sourced software licensed under
+the [GNU Lesser General Public License](LICENSE.md).
