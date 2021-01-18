@@ -45,14 +45,19 @@ class File {
 		return $temp_file_path;
 	}
 
-	public static function read(string $file): string {
+	public static function exists(string $file): string {
 		$file = static::path($file);
+		return file_exists($file);
+	}
 
+	public static function read(string $file): string {
 		// Check if the computed file path exists
 		// If no, throw error: File not found
-		if(!file_exists($file)) {
+		if(!static::exists($file)) {
 			throw new ErrorException("The given file path '$file' was not found!");
 		}
+
+		$file = static::path($file);
 
 		// Check if the file is readable
 		// If no, throw error: Failed while getting file contents
