@@ -9,7 +9,7 @@ namespace SiteBuilder\Core\Content\Dependencies;
 
 use SiteBuilder\Core\Content\Dependency;
 
-class JSDependency extends Dependency {
+final class JSDependency extends Dependency {
 	public function html(): string {
 		$source = Dependency::path($this->source());
 		$params = $this->paramsAsString();
