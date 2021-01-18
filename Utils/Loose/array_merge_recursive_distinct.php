@@ -1,4 +1,9 @@
 <?php
+/**************************************************
+ *          The SiteBuilder PHP Framework         *
+ *         Copyright (c) 2021 Alpin Gencer        *
+ *      Refer to LICENSE.md for a full notice     *
+ **************************************************/
 
 function array_merge_recursive_distinct(array $array1, array $array2): array {
 	$merged = $array1;

@@ -1,4 +1,9 @@
 <?php
+/**************************************************
+ *          The SiteBuilder PHP Framework         *
+ *         Copyright (c) 2021 Alpin Gencer        *
+ *      Refer to LICENSE.md for a full notice     *
+ **************************************************/
 
 namespace SiteBuilder\Core;
 
@@ -20,6 +25,16 @@ final class FrameworkManager {
 	private ModuleManager $module;
 	private SessionManager $session;
 	private WebsiteManager $website;
+
+	public static function managers(): array {
+		return array(
+			FrameworkManager::instance(),
+			ContentManager::instance(),
+			ModuleManager::instance(),
+			SessionManager::instance(),
+			WebsiteManager::instance(),
+		);
+	}
 
 	public function __construct() {
 		$this->assertSingleton();
