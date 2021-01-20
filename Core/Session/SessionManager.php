@@ -35,9 +35,9 @@ final class SessionManager {
 		session_start();
 
 		// Restart user session if timed out
-		$session_timeout = FrameworkManager::instance()->config(static::CONFIG_TIMEOUT, null, expected_type: 'integer');
+		$session_timeout = FrameworkManager::instance()->config(SessionManager::CONFIG_TIMEOUT, null, expected_type: 'integer');
 		if($session_timeout !== null) {
-			$last_activity = $this->get(static::SESSION_LAST_ACTIVITY, true);
+			$last_activity = $this->get(SessionManager::SESSION_LAST_ACTIVITY, global: true);
 
 			if(isset($last_activity) && (time() - $last_activity + 1) > $session_timeout) {
 				session_unset();
@@ -46,7 +46,7 @@ final class SessionManager {
 			}
 		}
 
-		$this->set(static::SESSION_LAST_ACTIVITY, time(), true);
+		$this->set(SessionManager::SESSION_LAST_ACTIVITY, time(), global: true);
 	}
 
 	public function variableName(string $variable_name, bool $global = false): string {
@@ -55,14 +55,14 @@ final class SessionManager {
 	}
 
 	public function get(string $variable_name, bool $global = false): mixed {
-		return $_SESSION[$this->variableName($variable_name, $global)] ?? null;
+		return $_SESSION[$this->variableName($variable_name, global: $global)] ?? null;
 	}
 
 	public function set(string $variable_name, mixed $value, bool $global = false): void {
-		$_SESSION[$this->variableName($variable_name, $global)] = $value;
+		$_SESSION[$this->variableName($variable_name, global: $global)] = $value;
 	}
 
 	public function unset(string $variable_name, bool $global = false): void {
-		unset($_SESSION[$this->variableName($variable_name, $global)]);
+		unset($_SESSION[$this->variableName($variable_name, global: $global)]);
 	}
 }

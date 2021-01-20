@@ -14,7 +14,7 @@ use SiteBuilder\Utils\Traits\StaticOnly;
 class File {
 	use StaticOnly;
 
-	public static function path(string $path): string {
+	public static function path(string $path, bool $from_document_root = false): string {
 		$temp_file_path = str_replace('\\', '/', $path);
 
 		$parts = array_filter(explode('/', $temp_file_path), 'strlen');
@@ -34,19 +34,21 @@ class File {
 
 		$temp_file_path = implode('/', $absolutes);
 
-		if(substr($path, 0, 1) === '/') {
-			// Absolute path
-			$temp_file_path = $_SERVER['DOCUMENT_ROOT'] . "/$temp_file_path";
-		} else {
-			// Relative path
-			$temp_file_path = dirname($_SERVER['SCRIPT_FILENAME']) . "/$temp_file_path";
+		if($from_document_root) {
+			if(substr($path, 0, 1) === '/') {
+				// Absolute path
+				$temp_file_path = $_SERVER['DOCUMENT_ROOT'] . "/$temp_file_path";
+			} else {
+				// Relative path
+				$temp_file_path = dirname($_SERVER['SCRIPT_FILENAME']) . "/$temp_file_path";
+			}
 		}
 
 		return $temp_file_path;
 	}
 
 	public static function exists(string $file): string {
-		$file = static::path($file);
+		$file = static::path($file, from_document_root: true);
 		return file_exists($file);
 	}
 

@@ -43,7 +43,7 @@ final class PageConstructor {
 		if(!str_contains($this->head, '</title>')) {
 			// No <title> tag found in page head
 			$hierarchy = PageHierarchy::instance();
-			$title = $hierarchy->currentAttribute('title') . ' - ' . $hierarchy->globalAttribute('title', 'shared');
+			$title = $hierarchy->currentAttribute('title') . ' - ' . $hierarchy->globalAttribute('title');
 			$content .= "<title>$title</title>";
 		}
 

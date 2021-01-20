@@ -20,7 +20,6 @@ final class WebsiteManager {
 
 	private PageHierarchy $hierarchy;
 	private string $currentPage;
-	private string $defaultPage;
 	private array $errorPages;
 	private string $subsite;
 
@@ -50,7 +49,7 @@ final class WebsiteManager {
 			$this->currentPage = $_GET['p'];
 		} else {
 			// Redirect to set 'p' GET parameter
-//			$this->redirect($this->defaultPage, keepGETParams: true);
+			$this->redirect($this->defaultPage(), keep_get_params: true);
 		}
 	}
 
@@ -59,8 +58,41 @@ final class WebsiteManager {
 		$this->assertCurrentRunStage(1);
 	}
 
-	public function redirect(string $page, string|array $GETParams = '', bool $keepGETParams = false): void {
+	public function redirect(string $page, string|array $get_params = '', bool $keep_get_params = false): void {
+		if(is_string($get_params)) {
+			$parsed_params = array();
+			parse_str($get_params, $parsed_params);
+			$get_params = $parsed_params;
+		}
 
+		if($keep_get_params) {
+			// Get HTTP query without 'p' parameter
+			$kept_params = http_build_query(array_diff_key($_GET, array_merge(array('p' => ''), $get_params)));
+			if(!empty($kept_params)) {
+				$kept_params = '&' . $kept_params;
+			}
+		} else {
+			$kept_params = '';
+		}
+
+		$get_params = implode(' ', array_map(fn(string $param_name, string $param) => "$param_name=\"$param\"", $get_params));
+
+		if(!empty($kept_params)) {
+			$get_params .= '&' . $kept_params;
+		}
+
+		$uri = '?p=' . $page . $get_params;
+
+		// If redirecting to the same URI, show 508 page to avoid infinite redirecting
+//		$requestURIWithoutGETParameters = explode('?', $_SERVER['REQUEST_URI'], 2)[0];
+//		if($requestURIWithoutGETParameters . $uri === $_SERVER['REQUEST_URI']) {
+//			trigger_error('Infinite loop detected while redirecting! Showing the default error 508 page to avoid infinite redirecting.', E_USER_WARNING);
+//			$this->showDefaultErrorPage(508);
+//		}
+
+		// Redirect and die
+		header('Location:' . $uri, replace: true, response_code: 303);
+		die();
 	}
 
 	public function refresh(): void {
@@ -81,7 +113,7 @@ final class WebsiteManager {
 	}
 
 	public function defaultPage(): string {
-		return $this->defaultPage;
+		return $this->hierarchy->globalAttribute('default-page');
 	}
 
 	public function errorPage(int $error_code): string {

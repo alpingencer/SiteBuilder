@@ -23,19 +23,56 @@ final class PageHierarchy {
 		$this->assertSingleton();
 
 		$this->data = JsonDecoder::read('/Content/hierarchy.json');
-		$this->assertValid();
 		$this->prepare();
 	}
 
-	private function assertValid(): void {
+	private function prepare(): void {
+		$this->assertRequiredAttributesIsset();
+
+		// Copy and destroy 'shared'
+		if(isset($this->data['shared'])) {
+			foreach($this->data as $subsite_name => &$subsite) {
+				if($subsite_name === 'shared') {
+					continue;
+				}
+
+				$subsite = array_merge_recursive_distinct($this->data['shared'], $subsite);
+			}
+
+			unset($this->data['shared']);
+		}
+
+		// Cascade
+		foreach($this->data as &$subsite) {
+			$this->cascade($subsite);
+		}
+
+		// Check if default page is a valid page
+		foreach(array_keys($this->data) as $subsite_name) {
+			$default_page = $this->globalAttribute('default-page', subsite_name: $subsite_name);
+			try {
+				$this->page($default_page, subsite_name: $subsite_name);
+			} catch(ErrorException) {
+				throw new ErrorException("The given default page '$default_page' is not a valid page in the subsite '$subsite_name'!");
+			}
+		}
+	}
+
+	private function assertRequiredAttributesIsset(): void {
 		foreach($this->data as $subsite_name => $subsite) {
+			$required_attributes = array('title', 'entry-point', 'default-page');
+
 			if($subsite_name === 'shared') {
-				if(isset($subsite['title']) || isset($subsite['entry-point'])) {
-					throw new ErrorException("The 'shared' subsite cannot define the 'title' or 'entry-point' attributes!");
+				foreach($required_attributes as $required_attribute) {
+					if(isset($subsite[$required_attribute])) {
+						throw new ErrorException("The 'shared' subsite cannot define the '$required_attribute' attribute!");
+					}
 				}
 			} else {
-				if(!isset($subsite['title']) || !isset($subsite['entry-point'])) {
-					throw new ErrorException("The subsite '$subsite_name' must define the 'title' and 'entry-point' attributes!");
+				foreach($required_attributes as $required_attribute) {
+					if(!isset($subsite[$required_attribute])) {
+						throw new ErrorException("The subsite '$subsite_name' must define the '$required_attribute' attribute!");
+					}
 				}
 			}
 
@@ -55,26 +92,6 @@ final class PageHierarchy {
 		}
 	}
 
-	private function prepare(): void {
-		// Copy and destroy 'shared'
-		if(isset($this->data['shared'])) {
-			foreach($this->data as $subsite_name => &$subsite) {
-				if($subsite_name === 'shared') {
-					continue;
-				}
-
-				$subsite = array_merge_recursive_distinct($this->data['shared'], $subsite);
-			}
-
-			unset($this->data['shared']);
-		}
-
-		// Cascade
-		foreach($this->data as &$subsite) {
-			$this->cascade($subsite);
-		}
-	}
-
 	private function cascade(array &$data): void {
 		if(!isset($data['children'])) {
 			return;
@@ -91,12 +108,20 @@ final class PageHierarchy {
 		}
 	}
 
-	public function subsite() {
-		return $this->data[WebsiteManager::instance()->subsite()];
+	public function subsite(string $subsite_name): array {
+		if(!isset($this->data[$subsite_name])) {
+			throw new ErrorException("Undefined subsite '$subsite_name'!");
+		}
+
+		return $this->data[$subsite_name];
 	}
 
-	public function page(string $path): array {
-		$subsite = $this->subsite();
+	public function page(string $path, string $subsite_name = null): array {
+		if($subsite_name === null) {
+			$subsite_name = WebsiteManager::instance()->subsite();
+		}
+
+		$subsite = $this->subsite($subsite_name);
 
 		// Start with subsite root
 		$current_page = &$subsite;
@@ -117,8 +142,12 @@ final class PageHierarchy {
 		return $current_page;
 	}
 
-	public function attribute(string $attribute_name, string $page): mixed {
-		$page = $this->page($page);
+	public function attribute(string $attribute_name, string $page, string $subsite_name = null): mixed {
+		if($subsite_name === null) {
+			$subsite_name = WebsiteManager::instance()->subsite();
+		}
+
+		$page = $this->page($page, subsite_name: $subsite_name);
 
 		if(!isset($page[$attribute_name])) {
 			throw new ErrorException("The given attribute '$attribute_name' is not defined for the given page '$page'!");
@@ -128,11 +157,15 @@ final class PageHierarchy {
 	}
 
 	public function currentAttribute(string $attribute_name): mixed {
-		return $this->attribute($attribute_name, WebsiteManager::instance()->currentPage());
+		return $this->attribute($attribute_name, WebsiteManager::instance()->currentPage(), subsite_name: null);
 	}
 
-	public function globalAttribute(string $attribute_name): mixed {
-		$subsite = $this->subsite();
+	public function globalAttribute(string $attribute_name, string $subsite_name = null): mixed {
+		if($subsite_name === null) {
+			$subsite_name = WebsiteManager::instance()->subsite();
+		}
+
+		$subsite = $this->subsite($subsite_name);
 
 		if(!isset($subsite[$attribute_name])) {
 			throw new ErrorException("The given attribute '$attribute_name' is not defined for the current subsite!");

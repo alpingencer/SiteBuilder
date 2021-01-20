@@ -54,14 +54,14 @@ final class ContentManager {
 
 		// Add dependencies to page
 		if(!empty($dependencies)) {
-			$dependencyHTML = '<!-- SiteBuilder Generated Dependencies -->';
+			$dependency_html = '<!-- SiteBuilder Generated Dependencies -->';
 
 			foreach($dependencies as $dependency) {
-				$dependencyHTML .= $dependency->html();
+				$dependency_html .= $dependency->html();
 			}
 
-			$dependencyHTML .= '<!-- End SiteBuilder Generated Dependencies -->';
-			$this->page->head .= $dependencyHTML;
+			$dependency_html .= '<!-- End SiteBuilder Generated Dependencies -->';
+			$this->page->head .= $dependency_html;
 		}
 	}
 
@@ -128,7 +128,7 @@ final class ContentManager {
 		// Check if components of the given class have been added
 		// If no, trigger warning: Components of given class not found
 		if($this->hasComponent($class)) {
-			foreach($this->components($class) as $component) {
+			foreach($this->components(class: $class) as $component) {
 				/** @var $component Component */
 				$this->removeComponent($component);
 			}
