@@ -9,9 +9,9 @@ namespace SiteBuilder\Core\Content;
 
 use ErrorException;
 use SiteBuilder\Core\FrameworkManager;
-use SiteBuilder\Utils\Traits\ManagedObject;
-use SiteBuilder\Utils\Traits\Runnable;
-use SiteBuilder\Utils\Traits\Singleton;
+use SiteBuilder\Utils\Bundled\Traits\ManagedObject;
+use SiteBuilder\Utils\Bundled\Traits\Runnable;
+use SiteBuilder\Utils\Bundled\Traits\Singleton;
 use SplObjectStorage;
 
 final class ContentManager {

@@ -5,10 +5,10 @@
  *      Refer to LICENSE.md for a full notice     *
  **************************************************/
 
-namespace SiteBuilder\Utils;
+namespace SiteBuilder\Utils\Bundled\Classes;
 
 use ErrorException;
-use SiteBuilder\Utils\Traits\StaticOnly;
+use SiteBuilder\Utils\Bundled\Traits\StaticOnly;
 
 class JsonDecoder {
 	use StaticOnly;

@@ -5,7 +5,7 @@
  *      Refer to LICENSE.md for a full notice     *
  **************************************************/
 
-namespace SiteBuilder\Utils\Traits;
+namespace SiteBuilder\Utils\Bundled\Traits;
 
 use ErrorException;
 use ReflectionClass;

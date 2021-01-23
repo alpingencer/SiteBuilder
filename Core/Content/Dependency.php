@@ -8,7 +8,7 @@
 namespace SiteBuilder\Core\Content;
 
 use ErrorException;
-use SiteBuilder\Utils\File;
+use SiteBuilder\Utils\Bundled\Classes\File;
 
 abstract class Dependency {
 	private string $source;

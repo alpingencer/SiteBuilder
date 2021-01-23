@@ -10,8 +10,8 @@ namespace SiteBuilder\Core\Session;
 use ErrorException;
 use SiteBuilder\Core\FrameworkManager;
 use SiteBuilder\Core\Website\WebsiteManager;
-use SiteBuilder\Utils\Traits\ManagedObject;
-use SiteBuilder\Utils\Traits\Singleton;
+use SiteBuilder\Utils\Bundled\Traits\ManagedObject;
+use SiteBuilder\Utils\Bundled\Traits\Singleton;
 
 final class SessionManager {
 	public const SESSION_LAST_ACTIVITY = 'LastActivity';
@@ -27,15 +27,16 @@ final class SessionManager {
 		// Check if PHP sessions are disabled on the server
 		// If yes, throw error: PHP sessions must be enabled
 		if(session_status() === PHP_SESSION_DISABLED) {
-			throw new ErrorException('Cannot use the SiteBuilder framework if PHP sessions are disabled by the server!');
+			throw new ErrorException('PHP sessions must be enabled by the server to use the SiteBuilder framework!');
 		}
 
 		// Start session
 		session_set_cookie_params(['samesite' => 'Lax']);
 		session_start();
 
-		// Restart user session if timed out
-		$session_timeout = FrameworkManager::instance()->config(SessionManager::CONFIG_TIMEOUT, null, expected_type: 'integer');
+		// Session timeout logic
+		$session_timeout = FrameworkManager::config(option_name: SessionManager::CONFIG_TIMEOUT, expected_type: 'integer');
+
 		if($session_timeout !== null) {
 			$last_activity = $this->get(SessionManager::SESSION_LAST_ACTIVITY, global: true);
 
@@ -49,7 +50,7 @@ final class SessionManager {
 		$this->set(SessionManager::SESSION_LAST_ACTIVITY, time(), global: true);
 	}
 
-	public function variableName(string $variable_name, bool $global = false): string {
+	private function variableName(string $variable_name, bool $global = false): string {
 		$subsite = $global ? 'shared' : WebsiteManager::instance()->subsite();
 		return '__SiteBuilder_' . $subsite . '_' . $variable_name;
 	}

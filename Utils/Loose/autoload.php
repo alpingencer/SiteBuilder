@@ -18,6 +18,7 @@
 namespace SiteBuilder\Utils;
 
 use ErrorException;
+use SiteBuilder\Utils\Bundled\Classes\File;
 
 spl_autoload_register(
 	function(string $class) {
