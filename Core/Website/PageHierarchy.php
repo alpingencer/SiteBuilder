@@ -27,7 +27,7 @@ final class PageHierarchy {
 	}
 
 	private function prepare(): void {
-		$this->assertRequiredAttributesIsset();
+		$this->assertValid();
 
 		// Copy and destroy 'shared'
 		if(isset($this->data['shared'])) {
@@ -58,9 +58,17 @@ final class PageHierarchy {
 		}
 	}
 
-	private function assertRequiredAttributesIsset(): void {
+	private function assertValid(): void {
 		foreach($this->data as $subsite_name => $subsite) {
 			$required_attributes = array('title', 'entry-point', 'default-page');
+
+			if($subsite_name === '..' || $subsite_name === '.') {
+				throw new ErrorException("'..' and '.' are not valid subsite names!");
+			}
+
+			if(str_contains($subsite_name, '/')) {
+				throw new ErrorException("The subsite '$subsite_name' cannot contain the character '/'!");
+			}
 
 			if($subsite_name === 'shared') {
 				foreach($required_attributes as $required_attribute) {
@@ -76,18 +84,26 @@ final class PageHierarchy {
 				}
 			}
 
-			$this->assertSubpageValid($subsite, $subsite_name);
+			$this->assertSubpageValid($subsite, $subsite_name, $subsite_name);
 		}
 	}
 
-	private function assertSubpageValid(array $subpage, string $current_path): void {
+	private function assertSubpageValid(array $subpage, string $page_name, string $current_path): void {
+		if($page_name === '..' || $page_name === '.') {
+			throw new ErrorException("'..' and '.' in the path '$current_path' are not valid page names!");
+		}
+
+		if(str_contains($page_name, '/')) {
+			throw new ErrorException("The page '$page_name' cannot contain the character '/' in the path '$current_path'!");
+		}
+
 		if(!isset($subpage['title']) && $current_path !== 'shared') {
 			throw new ErrorException("The required attribute 'title' is not defined for the path '$current_path' in the hierarchy!");
 		}
 
 		if(isset($subpage['children'])) {
 			foreach($subpage['children'] as $child_name => $child) {
-				$this->assertSubpageValid($child, "$current_path/$child_name");
+				$this->assertSubpageValid($child, $child_name, "$current_path/$child_name");
 			}
 		}
 	}

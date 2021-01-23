@@ -9,6 +9,7 @@ namespace SiteBuilder\Core\Website;
 
 use ErrorException;
 use SiteBuilder\Core\FrameworkManager;
+use SiteBuilder\Utils\Bundled\Classes\Normalizer;
 use SiteBuilder\Utils\Bundled\Traits\ManagedObject;
 use SiteBuilder\Utils\Bundled\Traits\Runnable;
 use SiteBuilder\Utils\Bundled\Traits\Singleton;
@@ -33,7 +34,7 @@ final class WebsiteManager {
 		$current_entry_point = ltrim($_SERVER['SCRIPT_NAME'], '/');
 
 		foreach($this->hierarchy->data() as $subsite_name => $subsite) {
-			if($subsite['entry-point'] === $current_entry_point) {
+			if(Normalizer::filePath($subsite['entry-point']) === $current_entry_point) {
 				$this->subsite = $subsite_name;
 			}
 		}
