@@ -2,8 +2,8 @@
 
 namespace SiteBuilder\Modules\Security;
 
-use SiteBuilder\Core\MM\Module;
 use ErrorException;
+use SiteBuilder\Core\MM\Module;
 
 /**
  * The SecurityModule is responsible for restricting access to higher-level pages and for
@@ -71,7 +71,6 @@ class SecurityModule extends Module {
 			case PHP_SESSION_DISABLED:
 				// Sessions are disabled by the server
 				throw new ErrorException('SecurityModule cannot be used if PHP sessions are disabled on the server!');
-				break;
 			case PHP_SESSION_NONE:
 				// No session has been started yet
 				session_start();
@@ -102,15 +101,8 @@ class SecurityModule extends Module {
 				$this->setIsRedirectGuestToLogin(false);
 			}
 		}
-	}
 
-	/**
-	 * {@inheritdoc}
-	 * @see \SiteBuilder\Core\MM\Module::runEarly()
-	 */
-	public function runEarly(): void {
 		$this->authorize();
-		$this->authenticate();
 	}
 
 	/**
@@ -142,14 +134,24 @@ class SecurityModule extends Module {
 				// User is not logged in and login page specified
 				$_SESSION['__SiteBuilder_RedirectURI'] = $_SERVER['REQUEST_URI'];
 				$wm->redirectToPage($this->loginPagePath);
-			} else if($userLevel === 0) {
-				// User is not logged in, show 401 page
-				$wm->showErrorPage(401, 403, 400);
 			} else {
-				// User is logged in but doesn't have clearance, show 403
-				$wm->showErrorPage(403, 400);
+				if($userLevel === 0) {
+					// User is not logged in, show 401 page
+					$wm->showErrorPage(401, 403, 400);
+				} else {
+					// User is logged in but doesn't have clearance, show 403
+					$wm->showErrorPage(403, 400);
+				}
 			}
 		}
+	}
+
+	/**
+	 * {@inheritdoc}
+	 * @see \SiteBuilder\Core\MM\Module::runEarly()
+	 */
+	public function runEarly(): void {
+		$this->authenticate();
 	}
 
 	/**
