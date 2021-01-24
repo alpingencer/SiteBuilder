@@ -38,10 +38,10 @@ $('.sitebuilder-fieldset-adder').click(function() {
 		clonedField.removeClass('sitebuilder-template-fieldset');
 		
 		// Set name attribute (number each fieldset), if one is defined
-		var parent = $(this).parent();
+		var siblings = $(this).siblings('fieldset:not(.sitebuilder-template-fieldset)');
 		clonedField.children().each(function() {
 			if($(this).attr('name') !== undefined) {
-				var childIndex = parent.find('[name^="' + $(this).attr('name') + '"]').length;
+				var childIndex = siblings.length + 1;
 				$(this).attr('name', $(this).attr('name') + '_' + childIndex);
 			}
 		});
