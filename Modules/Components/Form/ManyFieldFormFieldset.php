@@ -2,9 +2,9 @@
 
 namespace SiteBuilder\Modules\Components\Form;
 
+use ErrorException;
 use SiteBuilder\Core\CM\Dependencies\CSSDependency;
 use SiteBuilder\Core\CM\Dependencies\JSDependency;
-use ErrorException;
 
 class ManyFieldFormFieldset extends AbstractFormFieldset {
 	private $secondaryTableDatabaseName;
@@ -232,5 +232,9 @@ class ManyFieldFormFieldset extends AbstractFormFieldset {
 		return $this->foreignKey;
 	}
 
+	public function setForeignKey(string $foreignKey): self {
+		$this->foreignKey = $foreignKey;
+		return $this;
+	}
 }
 
