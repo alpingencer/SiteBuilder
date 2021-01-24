@@ -2,11 +2,11 @@
 
 namespace SiteBuilder\Modules\Database\Controllers;
 
-use SiteBuilder\Modules\Database\DatabaseController;
 use ErrorException;
 use PDO;
 use PDOException;
 use PDOStatement;
+use SiteBuilder\Modules\Database\DatabaseController;
 
 /**
  * The MySQLDatabaseController provides out-of-the-box support for MySQL databases.
@@ -46,6 +46,7 @@ class MySQLDatabaseController extends DatabaseController {
 	 *
 	 * @param string $query The query to execute
 	 * @param string $type The type of the query
+	 *
 	 * @return PDOStatement
 	 */
 	private function query(string $query, string $type): PDOStatement {
@@ -410,7 +411,7 @@ class MySQLDatabaseController extends DatabaseController {
 			if($value === null) {
 				return "NULL";
 			} else {
-				return "'$value'";
+				return $this->pdo->quote($value);
 			}
 		}, array_values($values)));
 
@@ -446,7 +447,7 @@ class MySQLDatabaseController extends DatabaseController {
 			if($value === null) {
 				return "`$key`=NULL";
 			} else {
-				return "`$key`='$value'";
+				return "`$key`=" . $this->pdo->quote($value);
 			}
 		}, array_keys($values)));
 
@@ -480,16 +481,19 @@ class MySQLDatabaseController extends DatabaseController {
 				if(($this->getLoggedQueryTypes() & DatabaseController::LOGGING_QUERY) == 0) {
 					return;
 				}
+				break;
 			case 'I':
 			case 'U':
 			case 'D':
 				if(($this->getLoggedQueryTypes() & DatabaseController::LOGGING_MODIFY) == 0) {
 					return;
 				}
+				break;
 			case 'E':
 				if(($this->getLoggedQueryTypes() & DatabaseController::LOGGING_ERROR) == 0) {
 					return;
 				}
+				break;
 		}
 
 		if(isset($_SESSION['__SiteBuilder_UserID'])) {
