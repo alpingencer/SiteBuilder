@@ -72,7 +72,7 @@ abstract class FormField {
 		return $this;
 	}
 
-	public final function getParentFieldset(): FormFieldset {
+	public final function getParentFieldset(): AbstractFormFieldset {
 		return $this->parentFieldset;
 	}
 
