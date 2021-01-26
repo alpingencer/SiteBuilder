@@ -16,7 +16,7 @@ use SiteBuilder\Utils\Bundled\Classes\JsonDecoder;
 use SiteBuilder\Utils\Bundled\Traits\Runnable;
 use SiteBuilder\Utils\Bundled\Traits\Singleton;
 
-class FrameworkManager {
+final class FrameworkManager {
 	use Runnable;
 	use Singleton;
 
