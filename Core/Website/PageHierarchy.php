@@ -28,20 +28,8 @@ final class PageHierarchy {
 	}
 
 	private function prepare(): void {
+		// Assert valid
 		$this->assertValid();
-
-		// Copy and destroy 'shared'
-		if(isset($this->data['shared'])) {
-			foreach($this->data as $subsite_name => &$subsite) {
-				if($subsite_name === 'shared') {
-					continue;
-				}
-
-				$subsite = array_merge_recursive_distinct($this->data['shared'], $subsite);
-			}
-
-			unset($this->data['shared']);
-		}
 
 		// Cascade
 		foreach($this->data as &$subsite) {
@@ -50,6 +38,10 @@ final class PageHierarchy {
 
 		// Check if default page is a valid page
 		foreach(array_keys($this->data) as $subsite_name) {
+			if($subsite_name === 'shared') {
+				continue;
+			}
+
 			$default_page = $this->globalAttribute('default-page', subsite_name: $subsite_name);
 			try {
 				$this->page($default_page, subsite_name: $subsite_name);
@@ -60,6 +52,10 @@ final class PageHierarchy {
 	}
 
 	private function assertValid(): void {
+		// Check if keys in hierarchy contain '/'
+		// If yes, throw error: Invalid subsite or page names
+		JsonDecoder::assertTraversable($this->data, '/');
+
 		foreach($this->data as $subsite_name => $subsite) {
 			// Check if type of the subsite is an array
 			// If no, throw error: Subsite must be an array
@@ -71,12 +67,6 @@ final class PageHierarchy {
 			// If yes, throw error: Invalid subsite name
 			if($subsite_name === '..' || $subsite_name === '.') {
 				throw new ErrorException("'..' and '.' are not valid subsite names!");
-			}
-
-			// Check if subsite name contains '/'
-			// If yes, throw error: invalid subsite name
-			if(str_contains($subsite_name, '/')) {
-				throw new ErrorException("The subsite '$subsite_name' cannot contain the character '/'!");
 			}
 
 			// Check if 'global' global attribute is set
@@ -91,24 +81,19 @@ final class PageHierarchy {
 			$required_global_attributes = array('title', 'entry-point', 'default-page');
 
 			if($subsite_name === 'shared') {
-				foreach($required_global_attributes as $required_attribute) {
-					if(isset($subsite['global'][$required_attribute])) {
-						throw new ErrorException("The 'shared' subsite cannot define the '$required_attribute' global attribute!");
+				foreach($required_global_attributes as $attribute_name) {
+					if(isset($subsite['global'][$attribute_name])) {
+						throw new ErrorException("The 'shared' subsite cannot define the '$attribute_name' global attribute!");
 					}
 				}
 			} else {
-				foreach($required_global_attributes as $required_attribute) {
-					if(!isset($subsite['global'][$required_attribute])) {
-						throw new ErrorException("The subsite '$subsite_name' must define the '$required_attribute' global attribute!");
-					}
-
-					if(!is_string(gettype($subsite['global'][$required_attribute]))) {
-						throw new ErrorException();
+				foreach($required_global_attributes as $attribute_name) {
+					if(!isset($subsite['global'][$attribute_name])) {
+						throw new ErrorException("The subsite '$subsite_name' must define the '$attribute_name' global attribute!");
 					}
 				}
 			}
 
-			// Validate subpages
 			if(isset($subsite['children'])) {
 				// Check if 'children' attribute is an array
 				// If no, throw error: 'children' must be an array
@@ -116,6 +101,7 @@ final class PageHierarchy {
 					throw new ErrorException("The 'children' attribute of the subsite '$subsite_name' must be an array!");
 				}
 
+				// Validate subpages
 				foreach($subsite['children'] as $subpage_name => $subpage) {
 					$this->assertSubpageValid($subpage, $subpage_name, "$subsite_name/$subpage_name");
 				}
@@ -136,12 +122,6 @@ final class PageHierarchy {
 			throw new ErrorException("'..' and '.' in the path '$current_path' are not valid page names!");
 		}
 
-		// Check if page name contains '/'
-		// If yes, throw error: Invalid page name
-		if(str_contains($page_name, '/')) {
-			throw new ErrorException("The page '$page_name' cannot contain the character '/' in the path '$current_path'!");
-		}
-
 		// Check if page name is 'global'
 		// If yes, throw error: Invalid page name
 		if($page_name === 'global') {
@@ -160,13 +140,6 @@ final class PageHierarchy {
 			throw new ErrorException("The required attribute 'title' is not defined for the path '$current_path' in the hierarchy!");
 		}
 
-		// Check if the given title is a string
-		// If no, throw error: Unexpected type
-		if(!is_string($subpage['title'])) {
-			throw new ErrorException("Expected type 'string' for the attribute 'title' for the page '$current_path' in the hierarchy!");
-		}
-
-		// Validate children of page
 		if(isset($subpage['children'])) {
 			// Check if 'children' attribute is an array
 			// If no, throw error: 'children' must be an array
@@ -174,6 +147,7 @@ final class PageHierarchy {
 				throw new ErrorException("The 'children' attribute of the subsite '$page_name' must be an array!");
 			}
 
+			// Validate children
 			foreach($subpage['children'] as $child_name => $child) {
 				$this->assertSubpageValid($child, $child_name, "$current_path/$child_name");
 			}
@@ -188,10 +162,10 @@ final class PageHierarchy {
 		}
 
 		foreach($data['children'] as &$child) {
-			foreach(array_keys($data) as $key) {
+			foreach($data as $attribute_name => $attribute) {
 				// Skip 'children' and 'global' attributes
-				if($key !== 'children' && $key !== 'global') {
-					$child[$key] ??= $data[$key];
+				if($attribute_name !== 'children' && $attribute_name !== 'global') {
+					$child[$attribute_name] ??= $attribute;
 				}
 
 				$this->cascade($child);
@@ -218,60 +192,63 @@ final class PageHierarchy {
 		$subsite = $this->subsite(subsite_name: $subsite_name);
 		$path = Normalizer::filePath($path);
 
-		// Start with subsite root
-		$current_page = $subsite;
+		$page = JsonDecoder::traverse($subsite, $path, '/', group: 'children');
 
-		// Split page path into segments
-		$segments = explode('/', $path);
-
-		// Traverse page hierarchy and find current page
-		foreach($segments as $segment) {
-			if(isset($current_page['children'][$segment])) {
-				$current_page = $current_page['children'][$segment];
-			} else {
-				throw new ErrorException("The given page path '$path' was not found in the hierarchy!");
-			}
+		if($page === null && $subsite_name !== 'shared') {
+			// Look for page in 'shared' subsite
+			$page = $this->page($path, subsite_name: 'shared');
 		}
 
-		// Return the found page
-		return $current_page;
+		if($page !== null) {
+			// Page found, return it
+			return $page;
+		} else {
+			// Page not found
+			throw new ErrorException("The given page path '$path' was not found in the hierarchy!");
+		}
 	}
 
-	public function attribute(string $attribute_name, string $page, string $subsite_name = null, mixed $default = null, string $expected_type = null): mixed {
-		$page = $this->page($page, subsite_name: $subsite_name);
+	public function attribute(string $attribute_name, string $page, string $subsite_name = null, string $expected_type = null): mixed {
+		$page_data = $this->page($page, subsite_name: $subsite_name);
 
-		if(isset($page[$attribute_name])) {
-			$attribute = $page[$attribute_name];
-			$attribute_type = gettype($attribute);
+		if(isset($page_data[$attribute_name])) {
+			$attribute = $page_data[$attribute_name];
 
-			if($expected_type !== null && $attribute_type !== $expected_type) {
+			try {
+				Normalizer::assertExpectedType($attribute, $expected_type);
+			} catch(ErrorException) {
+				$attribute_type = gettype($attribute);
 				throw new ErrorException("Expected type '$expected_type' for the attribute '$attribute_name' for the page '$page', received '$attribute_type'!");
 			}
 
 			return $attribute;
 		} else {
-			return $default;
+			return null;
 		}
 	}
 
-	public function currentAttribute(string $attribute_name, mixed $default = null, string $expected_type = null): mixed {
-		return $this->attribute($attribute_name, WebsiteManager::instance()->currentPage(), default: $default, expected_type: $expected_type);
+	public function currentAttribute(string $attribute_name, string $expected_type = null): mixed {
+		return $this->attribute($attribute_name, WebsiteManager::instance()->currentPage(), expected_type: $expected_type);
 	}
 
-	public function globalAttribute(string $attribute_name, string $subsite_name = null, mixed $default = null, string $expected_type = null): mixed {
+	public function globalAttribute(string $attribute_name, string $subsite_name = null, string $expected_type = null): mixed {
 		$subsite = $this->subsite(subsite_name: $subsite_name);
 
 		if(isset($subsite['global'][$attribute_name])) {
 			$attribute = $subsite['global'][$attribute_name];
-			$attribute_type = gettype($attribute);
 
-			if($expected_type !== null && $attribute_type !== $expected_type) {
+			try {
+				Normalizer::assertExpectedType($attribute, $expected_type);
+			} catch(ErrorException) {
+				$attribute_type = gettype($attribute);
 				throw new ErrorException("Expected type '$expected_type' for the global attribute '$attribute_name', received '$attribute_type'!");
 			}
 
 			return $attribute;
+		} else if($subsite_name !== 'shared') {
+			return $this->globalAttribute($attribute_name, subsite_name: 'shared', expected_type: $expected_type);
 		} else {
-			return $default;
+			return null;
 		}
 	}
 

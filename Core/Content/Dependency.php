@@ -33,7 +33,7 @@ abstract class Dependency {
 	public final static function path(string $source): string {
 		// Check if source starts with '/'
 		// If yes, return unedited string: Absolute path given
-		if(substr($source, 0, 1) === '/') {
+		if(File::isAbsolutePath($source)) {
 			return $source;
 		}
 
@@ -85,7 +85,7 @@ abstract class Dependency {
 	}
 
 	public final function paramsAsString(): string {
-		$params_string = implode(
+		return implode(
 			' ',
 			array_map(
 				fn(string $param_name, string $param) => "$param_name=\"$param\"",
@@ -93,11 +93,5 @@ abstract class Dependency {
 				array_values($this->params)
 			)
 		);
-
-		if(!empty($params_string)) {
-			$params_string .= ' ';
-		}
-
-		return $params_string;
 	}
 }

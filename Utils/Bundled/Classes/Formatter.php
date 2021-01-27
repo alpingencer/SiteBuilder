@@ -86,4 +86,8 @@ class Formatter {
 
 		return $result;
 	}
+
+	public static function doubleSpace(string $content): string {
+		return preg_replace('/ {2,}/', ' ', $content);
+	}
 }

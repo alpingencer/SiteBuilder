@@ -15,7 +15,7 @@ use SiteBuilder\Utils\Bundled\Traits\Singleton;
 
 final class SessionManager {
 	public const SESSION_LAST_ACTIVITY = 'LastActivity';
-	public const CONFIG_TIMEOUT = 'session-timeout';
+	public const CONFIG_TIMEOUT = 'sitebuilder.core.session.timeout';
 
 	use ManagedObject;
 	use Singleton;
@@ -50,20 +50,20 @@ final class SessionManager {
 		$this->set(SessionManager::SESSION_LAST_ACTIVITY, time(), global: true);
 	}
 
-	private function variableName(string $variable_name, bool $global = false): string {
+	private function varName(string $var_name, bool $global = false): string {
 		$subsite = $global ? 'shared' : WebsiteManager::instance()->subsite();
-		return '__SiteBuilder_' . $subsite . '_' . $variable_name;
+		return '__SiteBuilder_' . $subsite . '_' . $var_name;
 	}
 
-	public function get(string $variable_name, bool $global = false): mixed {
-		return $_SESSION[$this->variableName($variable_name, global: $global)] ?? null;
+	public function get(string $var_name, bool $global = false): mixed {
+		return $_SESSION[$this->varName($var_name, global: $global)] ?? null;
 	}
 
-	public function set(string $variable_name, mixed $value, bool $global = false): void {
-		$_SESSION[$this->variableName($variable_name, global: $global)] = $value;
+	public function set(string $var_name, mixed $value, bool $global = false): void {
+		$_SESSION[$this->varName($var_name, global: $global)] = $value;
 	}
 
-	public function unset(string $variable_name, bool $global = false): void {
-		unset($_SESSION[$this->variableName($variable_name, global: $global)]);
+	public function unset(string $var_name, bool $global = false): void {
+		unset($_SESSION[$this->varName($var_name, global: $global)]);
 	}
 }

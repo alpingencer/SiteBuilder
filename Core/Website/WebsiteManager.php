@@ -36,8 +36,15 @@ final class WebsiteManager {
 		// Fetch the current subsite name from the hierarchy data
 		$current_entry_point = ltrim($_SERVER['SCRIPT_NAME'], '/');
 
-		foreach($this->hierarchy->data() as $subsite_name => $subsite) {
-			if(Normalizer::filePath($subsite['global']['entry-point']) === $current_entry_point) {
+		foreach(array_keys($this->hierarchy->data()) as $subsite_name) {
+			if($subsite_name === 'shared') {
+				continue;
+			}
+
+			$subsite_entry_point = $this->hierarchy->globalAttribute('entry-point', subsite_name: $subsite_name, expected_type: 'string');
+			$subsite_entry_point = Normalizer::filePath($subsite_entry_point);
+
+			if($subsite_entry_point === $current_entry_point) {
 				$this->subsite = $subsite_name;
 			}
 		}
@@ -60,6 +67,7 @@ final class WebsiteManager {
 			}
 
 			$last_char_in_uri = substr($_SERVER['REQUEST_URI'], -1);
+
 			if($last_char_in_uri === '&') {
 				// Redirect to remove trailing '&' in request URI
 				$this->redirect($current_page, keep_get_params: true);
@@ -85,47 +93,37 @@ final class WebsiteManager {
 		}
 
 
-		/*
-		// Include content files for the page, the global header and footer, and the page header and footer
+		// Include content files for the page and the global header and footer
 		// Global header and footer paths are relative to page content directory
-		// Page header and footer paths are relative to current page path
-		$requirePaths = array();
+		$require_paths = array();
 
 		$global_header = $this->hierarchy->globalAttribute('header', expected_type: 'string');
-
 		if($global_header !== null) {
-
+			array_push($require_paths, $global_header);
 		}
 
-		if($this->hierarchy->isGlobalAttributeDefined('global-header')) {
-			array_push($requirePaths, $this->hierarchy->getGlobalAttribute('global-header'));
-		}
-		if($this->hierarchy->isPageAttributeDefined($this->currentPagePath, 'header')) {
-			array_push($requirePaths, dirname($this->currentPagePath) . '/' . $this->hierarchy->getPageAttribute($this->currentPagePath, 'header'));
-		}
+		array_push($require_paths, $this->currentPage);
 
-		array_push($requirePaths, $this->currentPagePath);
-
-		if($this->hierarchy->isPageAttributeDefined($this->currentPagePath, 'footer')) {
-			array_push($requirePaths, dirname($this->currentPagePath) . '/' . $this->hierarchy->getPageAttribute($this->currentPagePath, 'footer'));
-		}
-		if($this->hierarchy->isGlobalAttributeDefined('global-footer')) {
-			array_push($requirePaths, $this->hierarchy->getGlobalAttribute('global-footer'));
+		$global_footer = $this->hierarchy->globalAttribute('footer', expected_type: 'string');
+		if($global_footer !== null) {
+			array_push($require_paths, $global_footer);
 		}
 
-
-		foreach($requirePaths as $path) {
+		foreach($require_paths as $path) {
 			// Check if content file exists
 			// If yes, include it
 			// If no, show error 501: Page not implemented
-			if($this->isContentFileDefined($path)) {
-				require $this->getContentFilePath($path);
-			} else {
+			try {
+				$content_file = $this->contentFile($path);
+			} catch(ErrorException) {
 				trigger_error("The path '" . $path . "' does not have a corresponding content file!", E_USER_WARNING);
 				$this->showErrorPage(501, 500);
 			}
+
+			require $content_file;
 		}
 
+		/*
 		// Restore default exception handler
 		$this->setShowErrorPageOnException(false);
 		*/
@@ -179,23 +177,24 @@ final class WebsiteManager {
 		die();
 	}
 
-	public function contentFile(string $page, string $subsite = null): string {
-		// Default to current subsite
-		if($subsite === null) {
-			$subsite = $this->subsite;
-		}
-
+	public function contentFile(string $page): string {
 		$page = Normalizer::filePath($page);
-		$file_path = "/Content/$subsite/$page.php";
 
-		// Check if content file exists
-		// If no, throw error: Content file not found
-		if(!File::exists($file_path)) {
-			throw new ErrorException("Undefined content file for the given path '$page' in the subsite '$subsite'!");
+		foreach(array($this->subsite, 'shared') as $subsite) {
+			$file_path = "/Content/$subsite/$page.php";
+
+			// Check if content file exists
+			// If no, continue: Check next subsite
+			if(!File::exists($file_path)) {
+				continue;
+			}
+
+			$file_path = File::fullPath($file_path);
+			return $file_path;
 		}
 
-		$file_path = File::fullPath($file_path);
-		return $file_path;
+		// If here, throw error: Content file not found
+		throw new ErrorException("Undefined content file for the given path '$page' in the subsite '$subsite'!");
 	}
 
 	public function hierarchy(): PageHierarchy {
@@ -216,13 +215,15 @@ final class WebsiteManager {
 			// If no, check if the SiteBuilder default path for error pages is defined in the hierarchy
 			// If also no, throw error: No error page path defined
 			if(!isset($this->errorPages[$error_code])) {
+				$error_page = "error/$error_code";
+
 				try {
-					$error_page = "error/$error_code";
 					$this->hierarchy->page($error_page);
-					$this->errorPages[$error_code] = $error_page;
 				} catch(ErrorException) {
 					throw new ErrorException("The page path for the error code '$error_code' is undefined!");
 				}
+
+				$this->errorPages[$error_code] = $error_page;
 			}
 
 			return $this->errorPages[$error_code];

@@ -18,7 +18,6 @@
 namespace SiteBuilder\Utils;
 
 use ErrorException;
-use SiteBuilder\Utils\Bundled\Classes\File;
 
 spl_autoload_register(
 	function(string $class) {
@@ -41,7 +40,3 @@ spl_autoload_register(
 		}
 	}
 );
-
-foreach(File::files('/SiteBuilder/Utils/Loose') as $file) {
-	require_once $file;
-}

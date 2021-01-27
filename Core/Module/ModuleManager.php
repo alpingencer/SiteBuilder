@@ -66,8 +66,7 @@ final class ModuleManager {
 			return;
 		}
 
-		$module = $this->modules[$module_class];
-		$module->uninit();
+		$this->modules[$module_class]->uninit();
 		unset($this->modules[$module_class]);
 	}
 

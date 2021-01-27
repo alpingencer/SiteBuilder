@@ -1,7 +1,13 @@
 <?php
+/**************************************************
+ *          The SiteBuilder PHP Framework         *
+ *         Copyright (c) 2021 Alpin Gencer        *
+ *      Refer to LICENSE.md for a full notice     *
+ **************************************************/
 
 namespace SiteBuilder\Utils\Bundled\Classes;
 
+use ErrorException;
 use SiteBuilder\Utils\Bundled\Traits\StaticOnly;
 
 class Normalizer {
@@ -26,5 +32,17 @@ class Normalizer {
 		}
 
 		return implode('/', $absolutes);
+	}
+
+	public static function assertExpectedType(mixed $variable, string $expected_type = null): void {
+		if($expected_type === null) {
+			return;
+		}
+
+		$variable_type = gettype($variable);
+
+		if($variable_type !== $expected_type) {
+			throw new ErrorException("Unexpected variable type '$variable_type', expected '$expected_type'!");
+		}
 	}
 }

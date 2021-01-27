@@ -61,7 +61,7 @@ final class ContentManager {
 			}
 
 			$dependency_html .= '<!-- End SiteBuilder Generated Dependencies -->';
-			$this->page->head .= $dependency_html;
+			$this->appendToHead($dependency_html);
 		}
 	}
 
