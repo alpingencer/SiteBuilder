@@ -7,6 +7,6 @@
 
 namespace SiteBuilder;
 
-require_once 'Utils/autoload.php';
+require_once 'Utils/Bundled/autoload.php';
 
 new Core\FrameworkManager();
