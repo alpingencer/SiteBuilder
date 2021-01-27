@@ -15,7 +15,7 @@ use SiteBuilder\Utils\Bundled\Traits\Singleton;
 
 final class SessionManager {
 	public const SESSION_LAST_ACTIVITY = 'LastActivity';
-	public const CONFIG_TIMEOUT = 'sitebuilder.core.session.timeout';
+	public const CONFIG_TIMEOUT = 'core.session.timeout';
 
 	use ManagedObject;
 	use Singleton;
