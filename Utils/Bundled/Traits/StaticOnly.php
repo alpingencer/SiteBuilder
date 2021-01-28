@@ -7,12 +7,12 @@
 
 namespace SiteBuilder\Utils\Bundled\Traits;
 
-use ErrorException;
+use LogicException;
 use ReflectionClass;
 
 trait StaticOnly {
 	public function __construct() {
 		$class_short_name = (new ReflectionClass($this))->getShortName();
-		throw new ErrorException("Cannot initialize instance of the static only class '$class_short_name'!");
+		throw new LogicException("Cannot initialize instance of the static only class '$class_short_name'!");
 	}
 }

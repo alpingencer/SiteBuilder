@@ -14,6 +14,10 @@ use SiteBuilder\Utils\Bundled\Traits\StaticOnly;
 class File {
 	use StaticOnly;
 
+	public static function isAbsolutePath(string $path): bool {
+		return substr($path, 0, 1) === '/';
+	}
+
 	public static function fullPath(string $path): string {
 		if(static::isAbsolutePath($path)) {
 			// Absolute path
@@ -22,10 +26,6 @@ class File {
 			// Relative path
 			return dirname($_SERVER['SCRIPT_FILENAME']) . "/$path";
 		}
-	}
-
-	public static function isAbsolutePath(string $path): bool {
-		return substr($path, 0, 1) === '/';
 	}
 
 	public static function exists(string $file): bool {

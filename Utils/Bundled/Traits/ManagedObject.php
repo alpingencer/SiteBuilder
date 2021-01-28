@@ -7,14 +7,16 @@
 
 namespace SiteBuilder\Utils\Bundled\Traits;
 
+use BadMethodCallException;
 use Error;
-use ErrorException;
+use LogicException;
 use ReflectionClass;
+use ValueError;
 
 trait ManagedObject {
-	private object $manager;
+	private ?object $manager;
 
-	public function manager(): object {
+	public function manager(): ?object {
 		$this->manager ??= null;
 		return $this->manager;
 	}
@@ -25,7 +27,10 @@ trait ManagedObject {
 				/** @var $manager Singleton */
 				$manager = $manager::instance();
 			} catch(Error) {
-				throw new ErrorException("The given class '$manager' must be a singleton class!");
+				throw new LogicException("The given manager class '$manager' must be a singleton class!");
+			} catch(LogicException) {
+				$manager_short_name = (new ReflectionClass($manager))->getShortName();
+				throw new LogicException("Cannot be managed by the singleton class '$manager_short_name' before it has been initialized!");
 			}
 		}
 
@@ -39,11 +44,8 @@ trait ManagedObject {
 	}
 
 	private function assertManagerIsset(): void {
-		// Check if the manager class is null
-		// If yes, throw error: Manager class has not been set
-		if($this->manager() === null) {
-			throw new ErrorException("Cannot assert initializer if manager class has not been set!");
-		}
+		// Assert that the manager has been set: Cannot assert caller if manager is unknown
+		assert($this->manager() !== null, new ValueError("Cannot assert manager before manager has been set!"));
 	}
 
 	private function assertCallerIsManager(): void {
@@ -61,12 +63,10 @@ trait ManagedObject {
 		// The next step in the iteration will be the first external caller
 		$caller = $trace[$iteration]['object'] ?? null;
 
-		// Check if the method call was from the manager
-		// If no, throw error: Object must be managed by manager
-		if($caller !== $this->manager) {
-			$class_short_name = (new ReflectionClass($this))->getShortName();
-			$manager_short_name = (new ReflectionClass($this->manager))->getShortName();
-			throw new ErrorException("The managed class '$class_short_name' must be managed by the class '$manager_short_name'!");
-		}
+		// Assert that the method call was from the manager: Object must be managed by manager
+		$class_short_name = (new ReflectionClass($this))->getShortName();
+		$manager_short_name = (new ReflectionClass($this->manager))->getShortName();
+		$method = $trace[$iteration - 1]['function'];
+		assert($caller === $this->manager, new BadMethodCallException("The method '$class_short_name::$method()' must be called by the manager class '$manager_short_name'!'"));
 	}
 }

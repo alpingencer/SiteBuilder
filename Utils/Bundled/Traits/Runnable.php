@@ -7,8 +7,8 @@
 
 namespace SiteBuilder\Utils\Bundled\Traits;
 
-use ErrorException;
-use ReflectionClass;
+use LogicException;
+use ValueError;
 
 trait Runnable {
 	private int $currentRunStage;
@@ -21,21 +21,16 @@ trait Runnable {
 	private function assertCurrentRunStage(int $run_stage): void {
 		$this->currentRunStage();
 
-		// Check if the given run stage was completed previously
-		// If yes, throw error: Cannot re-run previous stage
-		if($this->currentRunStage > $run_stage) {
-			$class_short_name = (new ReflectionClass($this))->getShortName();
-			$current_stage = $this->currentRunStage;
-			throw new ErrorException("The given run stage #$run_stage has already been run in the class '$class_short_name', currently on run stage #$current_stage!");
-		}
+		// Assert the given run stage is greater than 0: Run stages are 1-indexed
+		assert($run_stage > 0, new ValueError("The given run stage must be greater than 0!"));
 
-		// Check if the given run stage skips a stage
-		// If yes, throw error: Cannot run non-sequential stage
-		if($this->currentRunStage + 1 <= $run_stage) {
-			$class_short_name = (new ReflectionClass($this))->getShortName();
-			$current_stage = $this->currentRunStage;
-			throw new ErrorException("The given run stage #$run_stage has not yet been reached in the class '$class_short_name', currently on run stage #$current_stage!");
-		}
+		// Assert run stage wasn't run previously: Cannot re-run run stages
+		$current_stage = $this->currentRunStage;
+		assert($this->currentRunStage <= $run_stage, new LogicException("Cannot re-run the stage #$run_stage! Currently on stage #$current_stage"));
+
+		// Assert run stage doesn't skip ahead: Must run run stages in order
+		$current_stage = $this->currentRunStage;
+		assert($this->currentRunStage >= $run_stage, new LogicException("Cannot skip to the run stage #$run_stage! Currently on stage #$current_stage"));
 
 		$this->currentRunStage++;
 	}

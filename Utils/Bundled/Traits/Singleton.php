@@ -7,7 +7,7 @@
 
 namespace SiteBuilder\Utils\Bundled\Traits;
 
-use ErrorException;
+use LogicException;
 use ReflectionClass;
 
 trait Singleton {
@@ -19,23 +19,17 @@ trait Singleton {
 	}
 
 	public static function instance(): object {
-		// Check if Singleton class is initialized
-		// If no, throw error: Cannot return uninitialized instance
-		if(!static::initialized()) {
-			$class_short_name = (new ReflectionClass(static::class))->getShortName();
-			throw new ErrorException("The singleton class '$class_short_name' has not been initialized!");
-		}
+		// Assert Singleton is initialized: Cannot return uninitialized instance
+		$class_short_name = (new ReflectionClass(static::class))->getShortName();
+		assert(static::initialized(), new LogicException("Cannot access singleton class '$class_short_name' before initialization!"));
 
 		return static::$instance;
 	}
 
 	private function assertSingleton(): void {
-		// Check if Singleton class is initialized
-		// If yes, throw error: Cannot reinitialize Singleton class
-		if(static::initialized()) {
-			$class_short_name = (new ReflectionClass($this))->getShortName();
-			throw new ErrorException("Cannot initialize multiple instances of the singleton class '$class_short_name'!");
-		}
+		// Assert Singleton is uninitialized: Cannot reinitialize Singleton
+		$class_short_name = (new ReflectionClass($this))->getShortName();
+		assert(!static::initialized(), "Cannot initialize multiple instances of the singleton class '$class_short_name'!");
 
 		static::$instance = $this;
 	}
