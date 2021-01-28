@@ -1,0 +1,21 @@
+{
+    "name": "sitebuilder/sitebuilder",
+    "description": "The SiteBuilder PHP Framework",
+    "type": "library",
+    "license": "LGPL-3.0-or-later",
+    "minimum-stability": "stable",
+    "authors": [
+        {
+            "name": "Alpin Gencer",
+            "email": "alpin@gencer.us"
+        }
+    ],
+    "require": {
+        "php": "^8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "SiteBuilder\\": "src/"
+        }
+    }
+}
