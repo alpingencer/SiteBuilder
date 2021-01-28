@@ -10,11 +10,6 @@
 			"email": "alpin@gencer.us"
 		}
 	],
-	"config": {
-		"platform": {
-			"php": "^8.0"
-		}
-	},
 	"autoload": {
 		"psr-4": {
 			"SiteBuilder\\": "src/"
