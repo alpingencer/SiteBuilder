@@ -23,7 +23,7 @@ final class PageHierarchy {
 		$this->setAndAssertManager(WebsiteManager::class);
 		$this->assertSingleton();
 
-		$this->data = JsonDecoder::read('/Content/hierarchy.json');
+		$this->data = JsonDecoder::read('/src/content/hierarchy.json');
 		$this->prepare();
 	}
 

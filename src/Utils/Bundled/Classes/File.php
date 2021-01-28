@@ -9,6 +9,7 @@ namespace SiteBuilder\Utils\Bundled\Classes;
 
 use ErrorException;
 use FilesystemIterator;
+use SiteBuilder\Core\FrameworkManager;
 use SiteBuilder\Utils\Bundled\Traits\StaticOnly;
 
 class File {
@@ -21,7 +22,7 @@ class File {
 	public static function fullPath(string $path): string {
 		if(static::isAbsolutePath($path)) {
 			// Absolute path
-			return $_SERVER['DOCUMENT_ROOT'] . $path;
+			return FrameworkManager::projectRoot() . "/$path";
 		} else {
 			// Relative path
 			return dirname($_SERVER['SCRIPT_FILENAME']) . "/$path";
@@ -33,8 +34,6 @@ class File {
 	}
 
 	public static function read(string $file): string {
-		$file = Normalizer::filePath($file);
-
 		// Check if the computed file path exists
 		// If no, throw error: File not found
 		if(!static::exists($file)) {

@@ -21,6 +21,7 @@ final class FrameworkManager {
 	use Runnable;
 	use Singleton;
 
+	private string $projectRoot;
 	private array $config;
 	private ContentManager $content;
 	private ModuleManager $module;
@@ -35,6 +36,11 @@ final class FrameworkManager {
 			SessionManager::instance(),
 			WebsiteManager::instance(),
 		);
+	}
+
+	public static function projectRoot(): string {
+		$instance = FrameworkManager::instance();
+		return $instance->projectRoot;
 	}
 
 	public static function config(string $option_name = null, string $expected_type = null): mixed {
@@ -56,9 +62,10 @@ final class FrameworkManager {
 		}
 	}
 
-	public function __construct() {
+	public function __construct(string $project_root) {
 		$this->assertSingleton();
 
+		$this->projectRoot = $project_root;
 		$this->config = JsonDecoder::read('/sitebuilder.json');
 		JsonDecoder::assertTraversable($this->config, '.');
 
