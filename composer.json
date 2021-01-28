@@ -10,9 +10,15 @@
 			"email": "alpin@gencer.us"
 		}
 	],
+	"support": {
+		"issues": "https://github.com/alpingencer/SiteBuilder/issues"
+	},
 	"autoload": {
 		"psr-4": {
 			"SiteBuilder\\": "src/"
 		}
-	}
+	},
+	"bin": [
+		"sitebuilder"
+	]
 }
