@@ -10,12 +10,12 @@ namespace SiteBuilder\Core\Website;
 use ErrorException;
 use SiteBuilder\Core\Content\PageConstructor;
 use SiteBuilder\Core\FrameworkManager;
-use SiteBuilder\Utils\Bundled\Classes\File;
-use SiteBuilder\Utils\Bundled\Classes\JsonDecoder;
-use SiteBuilder\Utils\Bundled\Classes\Normalizer;
-use SiteBuilder\Utils\Bundled\Traits\ManagedObject;
-use SiteBuilder\Utils\Bundled\Traits\Runnable;
-use SiteBuilder\Utils\Bundled\Traits\Singleton;
+use SiteBuilder\Utils\Classes\File;
+use SiteBuilder\Utils\Classes\JsonDecoder;
+use SiteBuilder\Utils\Classes\Normalizer;
+use SiteBuilder\Utils\Traits\ManagedObject;
+use SiteBuilder\Utils\Traits\Runnable;
+use SiteBuilder\Utils\Traits\Singleton;
 
 final class WebsiteManager {
 	use ManagedObject;
@@ -26,6 +26,14 @@ final class WebsiteManager {
 	private string $currentPage;
 	private array $errorPages;
 	private string $subsite;
+
+	public static function appDir(): string {
+		return dirname($_SERVER['DOCUMENT_ROOT']);
+	}
+
+	public static function frameworkDir(): string {
+		return '/vendor/sitebuilder/sitebuilder';
+	}
 
 	public function __construct() {
 		$this->setAndAssertManager(FrameworkManager::class);

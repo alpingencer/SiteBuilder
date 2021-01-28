@@ -13,6 +13,6 @@ final class JSDependency extends Dependency {
 	public function html(): string {
 		$source = Dependency::path($this->source());
 		$params = $this->paramsAsString();
-		return '<script ' . $params . 'src="' . $source . '"></script>';
+		return "<script $params src=\"$source\"></script>";
 	}
 }

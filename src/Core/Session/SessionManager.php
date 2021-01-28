@@ -10,12 +10,12 @@ namespace SiteBuilder\Core\Session;
 use ErrorException;
 use SiteBuilder\Core\FrameworkManager;
 use SiteBuilder\Core\Website\WebsiteManager;
-use SiteBuilder\Utils\Bundled\Traits\ManagedObject;
-use SiteBuilder\Utils\Bundled\Traits\Singleton;
+use SiteBuilder\Utils\Traits\ManagedObject;
+use SiteBuilder\Utils\Traits\Singleton;
 
 final class SessionManager {
 	public const SESSION_LAST_ACTIVITY = 'LastActivity';
-	public const CONFIG_TIMEOUT = 'core.session.timeout';
+	public const CONFIG_TIMEOUT = 'session.timeout';
 
 	use ManagedObject;
 	use Singleton;

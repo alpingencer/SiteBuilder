@@ -13,6 +13,6 @@ final class CSSDependency extends Dependency {
 	public function html(): string {
 		$source = Dependency::path($this->source());
 		$params = $this->paramsAsString();
-		return '<link rel="stylesheet" type="text/css" ' . $params . 'href="' . $source . '">';
+		return "<link rel=\"stylesheet\" type=\"text/css\" $params href=\"$source\">";
 	}
 }

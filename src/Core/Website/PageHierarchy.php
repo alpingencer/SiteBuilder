@@ -8,10 +8,10 @@
 namespace SiteBuilder\Core\Website;
 
 use ErrorException;
-use SiteBuilder\Utils\Bundled\Classes\JsonDecoder;
-use SiteBuilder\Utils\Bundled\Classes\Normalizer;
-use SiteBuilder\Utils\Bundled\Traits\ManagedObject;
-use SiteBuilder\Utils\Bundled\Traits\Singleton;
+use SiteBuilder\Utils\Classes\JsonDecoder;
+use SiteBuilder\Utils\Classes\Normalizer;
+use SiteBuilder\Utils\Traits\ManagedObject;
+use SiteBuilder\Utils\Traits\Singleton;
 
 final class PageHierarchy {
 	use ManagedObject;

@@ -12,16 +12,15 @@ use SiteBuilder\Core\Content\ContentManager;
 use SiteBuilder\Core\Module\ModuleManager;
 use SiteBuilder\Core\Session\SessionManager;
 use SiteBuilder\Core\Website\WebsiteManager;
-use SiteBuilder\Utils\Bundled\Classes\JsonDecoder;
-use SiteBuilder\Utils\Bundled\Classes\Normalizer;
-use SiteBuilder\Utils\Bundled\Traits\Runnable;
-use SiteBuilder\Utils\Bundled\Traits\Singleton;
+use SiteBuilder\Utils\Classes\JsonDecoder;
+use SiteBuilder\Utils\Classes\Normalizer;
+use SiteBuilder\Utils\Traits\Runnable;
+use SiteBuilder\Utils\Traits\Singleton;
 
 final class FrameworkManager {
 	use Runnable;
 	use Singleton;
 
-	private string $projectRoot;
 	private array $config;
 	private ContentManager $content;
 	private ModuleManager $module;
@@ -36,11 +35,6 @@ final class FrameworkManager {
 			SessionManager::instance(),
 			WebsiteManager::instance(),
 		);
-	}
-
-	public static function projectRoot(): string {
-		$instance = FrameworkManager::instance();
-		return $instance->projectRoot;
 	}
 
 	public static function config(string $option_name = null, string $expected_type = null): mixed {
@@ -62,17 +56,17 @@ final class FrameworkManager {
 		}
 	}
 
-	public function __construct(string $project_root) {
+	public function __construct() {
 		$this->assertSingleton();
 
-		$this->projectRoot = $project_root;
+		$this->website = new WebsiteManager();
+
 		$this->config = JsonDecoder::read('/sitebuilder.json');
 		JsonDecoder::assertTraversable($this->config, '.');
 
 		$this->content = new ContentManager();
 		$this->module = new ModuleManager();
 		$this->session = new SessionManager();
-		$this->website = new WebsiteManager();
 	}
 
 	public function content(): ContentManager {

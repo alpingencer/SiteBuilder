@@ -5,10 +5,10 @@
  *      Refer to LICENSE.md for a full notice     *
  **************************************************/
 
-namespace SiteBuilder\Utils\Bundled\Classes;
+namespace SiteBuilder\Utils\Classes;
 
 use ErrorException;
-use SiteBuilder\Utils\Bundled\Traits\StaticOnly;
+use SiteBuilder\Utils\Traits\StaticOnly;
 
 class Normalizer {
 	use StaticOnly;

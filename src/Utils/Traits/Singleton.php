@@ -5,7 +5,7 @@
  *      Refer to LICENSE.md for a full notice     *
  **************************************************/
 
-namespace SiteBuilder\Utils\Bundled\Traits;
+namespace SiteBuilder\Utils\Traits;
 
 use LogicException;
 use ReflectionClass;

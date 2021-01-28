@@ -7,9 +7,9 @@
 
 namespace SiteBuilder\Core\Module;
 
-use SiteBuilder\Utils\Bundled\Traits\ManagedObject;
-use SiteBuilder\Utils\Bundled\Traits\Runnable;
-use SiteBuilder\Utils\Bundled\Traits\Singleton;
+use SiteBuilder\Utils\Traits\ManagedObject;
+use SiteBuilder\Utils\Traits\Runnable;
+use SiteBuilder\Utils\Traits\Singleton;
 
 abstract class Module {
 	use ManagedObject;

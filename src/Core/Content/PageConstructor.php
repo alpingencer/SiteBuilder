@@ -8,9 +8,9 @@
 namespace SiteBuilder\Core\Content;
 
 use SiteBuilder\Core\Website\PageHierarchy;
-use SiteBuilder\Utils\Bundled\Classes\Formatter;
-use SiteBuilder\Utils\Bundled\Traits\ManagedObject;
-use SiteBuilder\Utils\Bundled\Traits\Singleton;
+use SiteBuilder\Utils\Classes\Formatter;
+use SiteBuilder\Utils\Traits\ManagedObject;
+use SiteBuilder\Utils\Traits\Singleton;
 
 final class PageConstructor {
 	use ManagedObject;

@@ -9,9 +9,10 @@ namespace SiteBuilder\Core\Content;
 
 use ErrorException;
 use SiteBuilder\Core\FrameworkManager;
-use SiteBuilder\Utils\Bundled\Traits\ManagedObject;
-use SiteBuilder\Utils\Bundled\Traits\Runnable;
-use SiteBuilder\Utils\Bundled\Traits\Singleton;
+use SiteBuilder\Utils\Classes\Formatter;
+use SiteBuilder\Utils\Traits\ManagedObject;
+use SiteBuilder\Utils\Traits\Runnable;
+use SiteBuilder\Utils\Traits\Singleton;
 use SplObjectStorage;
 
 final class ContentManager {
@@ -57,7 +58,7 @@ final class ContentManager {
 			$dependency_html = '<!-- SiteBuilder Generated Dependencies -->';
 
 			foreach($dependencies as $dependency) {
-				$dependency_html .= $dependency->html();
+				$dependency_html .= Formatter::doubleSpace($dependency->html());
 			}
 
 			$dependency_html .= '<!-- End SiteBuilder Generated Dependencies -->';

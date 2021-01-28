@@ -8,7 +8,7 @@
 namespace SiteBuilder\Core\Content;
 
 use ErrorException;
-use SiteBuilder\Utils\Bundled\Classes\File;
+use SiteBuilder\Utils\Classes\File;
 
 abstract class Dependency {
 	private string $source;
@@ -37,9 +37,9 @@ abstract class Dependency {
 			return $source;
 		}
 
-		if(File::exists($path = "/SiteBuilder/Modules/$source")) {
-			// File in Modules
-			return $path;
+		if(File::exists("/public/assets/$source")) {
+			// File in assets folder
+			return "/assets/$source";
 		} else {
 			// File elsewhere
 			return $source;

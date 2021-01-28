@@ -14,10 +14,13 @@ SiteBuilder is a page management and HTML auto-generation framework for PHP writ
 * 'sitebuilder.json' configuration file in the application root
 * Directories:
     * 'public': Anything publicly accessible via an HTTP request
+        * 'public/assets': Any CSS, JS, font, image, etc. assets that a page needs
+            * 'public/assets/sitebuilder': A symlink to 'vendor/sitebuilder/sitebuilder/assets' for
+              SiteBuilder's own asset dependencies
     * 'src': PHP scripts, custom classes, etc.
         * 'src/content': Webpage content files
-          * One directory for each subsite
-          * 'shared' directory for common pages in all subsites
+            * One directory for each subsite
+            * 'shared' directory for common pages in all subsites
         * 'src/hierarchy.json': The webpage hierarchy file
 * 'p' GET parameter for defining the current webpage
 

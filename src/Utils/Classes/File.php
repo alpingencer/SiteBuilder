@@ -5,12 +5,12 @@
  *      Refer to LICENSE.md for a full notice     *
  **************************************************/
 
-namespace SiteBuilder\Utils\Bundled\Classes;
+namespace SiteBuilder\Utils\Classes;
 
 use ErrorException;
 use FilesystemIterator;
-use SiteBuilder\Core\FrameworkManager;
-use SiteBuilder\Utils\Bundled\Traits\StaticOnly;
+use SiteBuilder\Core\Website\WebsiteManager;
+use SiteBuilder\Utils\Traits\StaticOnly;
 
 class File {
 	use StaticOnly;
@@ -22,7 +22,7 @@ class File {
 	public static function fullPath(string $path): string {
 		if(static::isAbsolutePath($path)) {
 			// Absolute path
-			return FrameworkManager::projectRoot() . "/$path";
+			return WebsiteManager::appDir() . "/$path";
 		} else {
 			// Relative path
 			return dirname($_SERVER['SCRIPT_FILENAME']) . "/$path";
