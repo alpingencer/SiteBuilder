@@ -13,6 +13,10 @@
 	"support": {
 		"issues": "https://github.com/alpingencer/SiteBuilder/issues"
 	},
+	"config": {
+		"optimize-autoloader": true,
+		"sort-packages": true
+	},
 	"autoload": {
 		"psr-4": {
 			"SiteBuilder\\": "src/"
