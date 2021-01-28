@@ -1,11 +1,12 @@
 <?php
+/**************************************************
+ *          The SiteBuilder PHP Framework         *
+ *         Copyright (c) 2021 Alpin Gencer        *
+ *      Refer to LICENSE.md for a full notice     *
+ **************************************************/
 
-/* Core */
-require_once 'Core/Core.inc';
+namespace SiteBuilder;
 
-/* Modules */
-require_once 'Modules/Components/Components.inc';
-require_once 'Modules/Database/Database.inc';
-require_once 'Modules/Security/Security.inc';
-require_once 'Modules/Translation/Translation.inc';
+require_once 'Utils/Bundled/autoload.php';
 
+new Core\FrameworkManager();

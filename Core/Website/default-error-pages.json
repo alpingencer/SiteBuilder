@@ -1,0 +1,50 @@
+{
+	"400": {
+		"name": "Bad Request",
+		"message": ""
+	},
+	"401": {
+		"name": "Unauthorized",
+		"message": "You do not have permission to view the page you have requested."
+	},
+	"403": {
+		"name": "Forbidden",
+		"message": ""
+	},
+	"404": {
+		"name": "Not Found",
+		"message": "The page you're looking was not found."
+	},
+	"408": {
+		"name": "Request Timeout",
+		"message": ""
+	},
+	"418": {
+		"name": "I'm a teapot",
+		"message": ""
+	},
+	"429": {
+		"name": "Too Many Requests",
+		"message": ""
+	},
+	"451": {
+		"name": "Unavailable For Legal Reasons",
+		"message": ""
+	},
+	"500": {
+		"name": "Internal Server Error",
+		"message": "An internal server error has occurred."
+	},
+	"501": {
+		"name": "Not Implemented",
+		"message": "The page you're looking for has not yet been implemented."
+	},
+	"503": {
+		"name": "Service Unavailable",
+		"message": ""
+	},
+	"508": {
+		"name": "Loop Detected",
+		"message": "The server detected an infinite loop while processing the request."
+	}
+}
