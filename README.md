@@ -10,18 +10,21 @@ SiteBuilder is a page management and HTML auto-generation framework for PHP writ
 
 ### 1. Project structure
 
-* 'SiteBuilder' directory
-* 'Content' directory
-    * 'Content/hierarchy.json' hierarchy file
-    * Directories for each subsite
-    * 'shared' directory for common pages in all subsites
-* 'sitebuilder.json' configuration file in the root directory
-* 'p' GET parameter
-* Autoload: Namespace structure matches directory structure
+* Server document root is exactly 1 directory under the application root
+* 'sitebuilder.json' configuration file in the application root
+* Directories:
+    * 'public': Anything publicly accessible via an HTTP request
+    * 'src': PHP scripts, custom classes, etc.
+        * 'src/content': Webpage content files
+          * One directory for each subsite
+          * 'shared' directory for common pages in all subsites
+        * 'src/hierarchy.json': The webpage hierarchy file
+* 'p' GET parameter for defining the current webpage
 
 ### 2. Server system
 
 * PHP sessions must be enabled
+* SiteBuilder must be built via Composer
 
 ### 3. Client system
 
