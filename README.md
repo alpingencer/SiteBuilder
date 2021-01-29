@@ -28,6 +28,7 @@ SiteBuilder is a page management and HTML auto-generation framework for PHP writ
 
 * PHP sessions must be enabled
 * SiteBuilder must be built via Composer
+* Server document root must be set correctly (see project structure requirements)
 
 ### 3. Client system
 
