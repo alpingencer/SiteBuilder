@@ -49,7 +49,8 @@ class JsonDecoder {
 
 			// Validate child parameters
 			if(is_array($param)) {
-				static::assertParamTraversable($param, $separator, $current_param . $separator . $param_name);
+				$current_param .= empty($current_param) ? $param_name : $separator . $param_name;
+				static::assertParamTraversable($param, $separator, $current_param);
 			}
 		}
 	}
