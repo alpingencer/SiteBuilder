@@ -20,7 +20,7 @@ final class SessionManager {
 	use ManagedObject;
 	use Singleton;
 
-	public function __construct() {
+	public function __construct(array $config) {
 		$this->setAndAssertManager(FrameworkManager::class);
 		$this->assertSingleton();
 
@@ -35,9 +35,8 @@ final class SessionManager {
 		session_start();
 
 		// Session timeout logic
-		$session_timeout = FrameworkManager::config(option_name: SessionManager::CONFIG_TIMEOUT, expected_type: 'integer');
-
-		if($session_timeout !== null) {
+		if(isset($config[SessionManager::CONFIG_TIMEOUT])) {
+			$session_timeout = $config[SessionManager::CONFIG_TIMEOUT];
 			$last_activity = $this->get(SessionManager::SESSION_LAST_ACTIVITY, global: true);
 
 			if(isset($last_activity) && (time() - $last_activity + 1) > $session_timeout) {

@@ -7,13 +7,10 @@
 
 namespace SiteBuilder\Core;
 
-use ErrorException;
 use SiteBuilder\Core\Content\ContentManager;
 use SiteBuilder\Core\Module\ModuleManager;
 use SiteBuilder\Core\Session\SessionManager;
 use SiteBuilder\Core\Website\WebsiteManager;
-use SiteBuilder\Utils\Classes\JsonDecoder;
-use SiteBuilder\Utils\Classes\Normalizer;
 use SiteBuilder\Utils\Traits\Runnable;
 use SiteBuilder\Utils\Traits\Singleton;
 
@@ -21,7 +18,6 @@ final class FrameworkManager {
 	use Runnable;
 	use Singleton;
 
-	private array $config;
 	private ContentManager $content;
 	private ModuleManager $module;
 	private SessionManager $session;
@@ -37,36 +33,13 @@ final class FrameworkManager {
 		);
 	}
 
-	public static function config(string $option_name = null, string $expected_type = null): mixed {
-		$instance = FrameworkManager::instance();
-
-		if($option_name === null) {
-			return $instance->config;
-		} else {
-			$option = JsonDecoder::traverse($instance->config, $option_name, '.');
-
-			try {
-				Normalizer::assertExpectedType($option, $expected_type);
-			} catch(ErrorException) {
-				$option_type = gettype($option);
-				throw new ErrorException("Expected type '$expected_type' for the framework configuration option '$option_name', received '$option_type'!");
-			}
-
-			return $option;
-		}
-	}
-
-	public function __construct() {
+	public function __construct(array $config = []) {
 		$this->assertSingleton();
 
-		$this->website = new WebsiteManager();
-
-		$this->config = JsonDecoder::read('/sitebuilder.json');
-		JsonDecoder::assertTraversable($this->config, '.');
-
-		$this->content = new ContentManager();
-		$this->module = new ModuleManager();
-		$this->session = new SessionManager();
+		$this->content = new ContentManager($config);
+		$this->module = new ModuleManager($config);
+		$this->session = new SessionManager($config);
+		$this->website = new WebsiteManager($config);
 	}
 
 	public function content(): ContentManager {

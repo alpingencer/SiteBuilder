@@ -7,7 +7,7 @@
 
 namespace SiteBuilder\Core\Module;
 
-use ErrorException;
+use LogicException;
 use SiteBuilder\Core\FrameworkManager;
 use SiteBuilder\Utils\Traits\ManagedObject;
 use SiteBuilder\Utils\Traits\Runnable;
@@ -20,7 +20,7 @@ final class ModuleManager {
 
 	private array $modules;
 
-	public function __construct() {
+	public function __construct(array $config) {
 		$this->setAndAssertManager(FrameworkManager::class);
 		$this->assertSingleton();
 		$this->modules = array();
@@ -31,11 +31,11 @@ final class ModuleManager {
 	}
 
 	public function module(string $module_class): Module {
-		// Check if the requested module is initialized
-		// If no, throw error: Cannot get uninitialized module
-		if(!$this->moduleInitialized($module_class)) {
-			throw new ErrorException("No module of the given class '$module_class' has been initialized!");
-		}
+		// Assert the given module class has been initialized: Cannot return uninitialized module
+		assert(
+			$this->moduleInitialized($module_class),
+			new LogicException("No module of the given class '$module_class' has been initialized!")
+		);
 
 		return $this->modules[$module_class];
 	}
@@ -44,27 +44,31 @@ final class ModuleManager {
 		return $this->modules;
 	}
 
-	public function init(string $module_class, array $config = []): Module {
-		// Check if the given class is a subclass of Module
-		// If no, throw error: ModuleManager only manages Modules
-		if(!is_subclass_of($module_class, Module::class)) {
-			throw new ErrorException("The given class '$module_class' must be a subclass of '" . Module::class . "'!");
-		}
+	public function init(string $module_class, array $config = []): void {
+		// Assert that the given class is a subclass of Module: ModuleManager only manages Modules
+		assert(
+			is_subclass_of($module_class, Module::class),
+			new LogicException("The given class '$module_class' must be a subclass of '" . Module::class . "'!")
+		);
 
-		$module = new $module_class($config);
+		// Assert that the given module has not already been initialized: Cannot reinitialize Modules
+		assert(
+			!$module_class::initialized(),
+			new LogicException("The module of the given class '$module_class' has already been initialized!")
+		);
+
+		// Init module
+		$module = new $module_class();
 		$this->modules[$module_class] = $module;
-		$module->init();
-
-		return $module;
+		$module->init($config);
 	}
 
 	public function uninit(string $module_class): void {
-		// Check if the given module is initialized
-		// If no, trigger warning: Module not found
-		if(!$this->moduleInitialized($module_class)) {
-			trigger_error("No module of the given class '$module_class' has been initialized, skipping uninitialization", E_USER_WARNING);
-			return;
-		}
+		// Assert that the given module is initialized: Cannot uninitialize non-existing module
+		assert(
+			$this->moduleInitialized($module_class),
+			new LogicException("No module of the given class '$module_class' has been initialized!")
+		);
 
 		$this->modules[$module_class]->uninit();
 		unset($this->modules[$module_class]);

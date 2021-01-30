@@ -7,7 +7,6 @@
 
 namespace SiteBuilder\Utils\Classes;
 
-use ErrorException;
 use FilesystemIterator;
 use SiteBuilder\Core\Website\WebsiteManager;
 use SiteBuilder\Utils\Traits\StaticOnly;
@@ -22,7 +21,7 @@ class File {
 	public static function fullPath(string $path): string {
 		if(static::isAbsolutePath($path)) {
 			// Absolute path
-			return WebsiteManager::appDir() . "/$path";
+			return WebsiteManager::appDir() . $path;
 		} else {
 			// Relative path
 			return dirname($_SERVER['SCRIPT_FILENAME']) . "/$path";
@@ -34,20 +33,20 @@ class File {
 	}
 
 	public static function read(string $file): string {
-		// Check if the computed file path exists
-		// If no, throw error: File not found
-		if(!static::exists($file)) {
-			throw new ErrorException("The given file path '$file' was not found!");
-		}
+		// Assert that the file exists: Cannot read if file not found
+		assert(
+			static::exists($file),
+			"The given file path '$file' was not found!"
+		);
 
 		$file = static::fullPath($file);
 		$file_contents = file_get_contents($file);
 
-		// Check if the file is readable
-		// If no, throw error: Failed while getting file contents
-		if($file_contents === false) {
-			throw new ErrorException("Error while reading the file '$file'!");
-		}
+		// Assert that the file read correctly: Cannot return on unsuccessful read
+		assert(
+			$file_contents !== false,
+			"Error while reading the file '$file'!"
+		);
 
 		return $file_contents;
 	}

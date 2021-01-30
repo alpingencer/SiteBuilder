@@ -208,45 +208,27 @@ final class PageHierarchy {
 		}
 	}
 
-	public function attribute(string $attribute_name, string $page, string $subsite_name = null, string $expected_type = null): mixed {
+	public function attribute(string $attribute_name, string $page, string $subsite_name = null): mixed {
 		$page_data = $this->page($page, subsite_name: $subsite_name);
 
 		if(isset($page_data[$attribute_name])) {
-			$attribute = $page_data[$attribute_name];
-
-			try {
-				Normalizer::assertExpectedType($attribute, $expected_type);
-			} catch(ErrorException) {
-				$attribute_type = gettype($attribute);
-				throw new ErrorException("Expected type '$expected_type' for the attribute '$attribute_name' for the page '$page', received '$attribute_type'!");
-			}
-
-			return $attribute;
+			return $page_data[$attribute_name];
 		} else {
 			return null;
 		}
 	}
 
-	public function currentAttribute(string $attribute_name, string $expected_type = null): mixed {
-		return $this->attribute($attribute_name, WebsiteManager::instance()->currentPage(), expected_type: $expected_type);
+	public function currentAttribute(string $attribute_name): mixed {
+		return $this->attribute($attribute_name, WebsiteManager::instance()->currentPage());
 	}
 
-	public function globalAttribute(string $attribute_name, string $subsite_name = null, string $expected_type = null): mixed {
+	public function globalAttribute(string $attribute_name, string $subsite_name = null): mixed {
 		$subsite = $this->subsite(subsite_name: $subsite_name);
 
 		if(isset($subsite['global'][$attribute_name])) {
-			$attribute = $subsite['global'][$attribute_name];
-
-			try {
-				Normalizer::assertExpectedType($attribute, $expected_type);
-			} catch(ErrorException) {
-				$attribute_type = gettype($attribute);
-				throw new ErrorException("Expected type '$expected_type' for the global attribute '$attribute_name', received '$attribute_type'!");
-			}
-
-			return $attribute;
+			return $subsite['global'][$attribute_name];
 		} else if($subsite_name !== 'shared') {
-			return $this->globalAttribute($attribute_name, subsite_name: 'shared', expected_type: $expected_type);
+			return $this->globalAttribute($attribute_name, subsite_name: 'shared');
 		} else {
 			return null;
 		}

@@ -19,19 +19,30 @@ trait Runnable {
 	}
 
 	private function assertCurrentRunStage(int $run_stage): void {
+		// Call to getter function to set run stage initially
 		$this->currentRunStage();
 
 		// Assert the given run stage is greater than 0: Run stages are 1-indexed
-		assert($run_stage > 0, new ValueError("The given run stage must be greater than 0!"));
+		assert(
+			$run_stage > 0,
+			new ValueError("The given run stage must be greater than 0!")
+		);
 
 		// Assert run stage wasn't run previously: Cannot re-run run stages
 		$current_stage = $this->currentRunStage;
-		assert($this->currentRunStage <= $run_stage, new LogicException("Cannot re-run the stage #$run_stage! Currently on stage #$current_stage"));
+		assert(
+			$this->currentRunStage <= $run_stage,
+			new LogicException("Cannot re-run the stage #$run_stage! Currently on stage #$current_stage")
+		);
 
 		// Assert run stage doesn't skip ahead: Must run run stages in order
 		$current_stage = $this->currentRunStage;
-		assert($this->currentRunStage >= $run_stage, new LogicException("Cannot skip to the run stage #$run_stage! Currently on stage #$current_stage"));
+		assert(
+			$this->currentRunStage >= $run_stage,
+			new LogicException("Cannot skip to the run stage #$run_stage! Currently on stage #$current_stage")
+		);
 
+		// Increment to next run stage
 		$this->currentRunStage++;
 	}
 }

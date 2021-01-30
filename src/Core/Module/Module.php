@@ -8,12 +8,10 @@
 namespace SiteBuilder\Core\Module;
 
 use SiteBuilder\Utils\Traits\ManagedObject;
-use SiteBuilder\Utils\Traits\Runnable;
 use SiteBuilder\Utils\Traits\Singleton;
 
 abstract class Module {
 	use ManagedObject;
-	use Runnable;
 	use Singleton;
 
 	public final function __construct() {
@@ -21,29 +19,24 @@ abstract class Module {
 		$this->assertSingleton();
 	}
 
-	public function init(): void {
+	public function init(array $config): void {
 		$this->assertCallerIsManager();
-		$this->assertCurrentRunStage(1);
 	}
 
 	public function runEarly(): void {
 		$this->assertCallerIsManager();
-		$this->assertCurrentRunStage(2);
 	}
 
 	public function run(): void {
 		$this->assertCallerIsManager();
-		$this->assertCurrentRunStage(3);
 	}
 
 	public function runLate(): void {
 		$this->assertCallerIsManager();
-		$this->assertCurrentRunStage(4);
 	}
 
 	public function uninit(): void {
 		$this->assertCallerIsManager();
-		$this->assertCurrentRunStage(5);
 		$this->resetSingleton();
 	}
 }

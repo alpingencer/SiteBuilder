@@ -35,7 +35,7 @@ final class WebsiteManager {
 		return '/vendor/sitebuilder/sitebuilder';
 	}
 
-	public function __construct() {
+	public function __construct(array $config) {
 		$this->setAndAssertManager(FrameworkManager::class);
 		$this->assertSingleton();
 
@@ -49,7 +49,7 @@ final class WebsiteManager {
 				continue;
 			}
 
-			$subsite_entry_point = $this->hierarchy->globalAttribute('entry-point', subsite_name: $subsite_name, expected_type: 'string');
+			$subsite_entry_point = $this->hierarchy->globalAttribute('entry-point', subsite_name: $subsite_name);
 			$subsite_entry_point = Normalizer::filePath($subsite_entry_point);
 
 			if($subsite_entry_point === $current_entry_point) {
@@ -105,14 +105,14 @@ final class WebsiteManager {
 		// Global header and footer paths are relative to page content directory
 		$require_paths = array();
 
-		$global_header = $this->hierarchy->globalAttribute('header', expected_type: 'string');
+		$global_header = $this->hierarchy->globalAttribute('header');
 		if($global_header !== null) {
 			array_push($require_paths, $global_header);
 		}
 
 		array_push($require_paths, $this->currentPage);
 
-		$global_footer = $this->hierarchy->globalAttribute('footer', expected_type: 'string');
+		$global_footer = $this->hierarchy->globalAttribute('footer');
 		if($global_footer !== null) {
 			array_push($require_paths, $global_footer);
 		}

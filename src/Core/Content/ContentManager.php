@@ -23,7 +23,7 @@ final class ContentManager {
 	private PageConstructor $page;
 	private SplObjectStorage $components;
 
-	public function __construct() {
+	public function __construct(array $config) {
 		$this->setAndAssertManager(FrameworkManager::class);
 		$this->assertSingleton();
 

@@ -7,7 +7,6 @@
 
 namespace SiteBuilder\Utils\Classes;
 
-use ErrorException;
 use SiteBuilder\Utils\Traits\StaticOnly;
 
 class Normalizer {
@@ -31,18 +30,7 @@ class Normalizer {
 			}
 		}
 
-		return implode('/', $absolutes);
-	}
-
-	public static function assertExpectedType(mixed $variable, string $expected_type = null): void {
-		if($expected_type === null) {
-			return;
-		}
-
-		$variable_type = gettype($variable);
-
-		if($variable_type !== $expected_type) {
-			throw new ErrorException("Unexpected variable type '$variable_type', expected '$expected_type'!");
-		}
+		$path = implode('/', $absolutes);
+		return $path;
 	}
 }
