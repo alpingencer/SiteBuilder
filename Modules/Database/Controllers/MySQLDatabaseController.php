@@ -11,9 +11,9 @@ use SiteBuilder\Modules\Database\DatabaseController;
 /**
  * The MySQLDatabaseController provides out-of-the-box support for MySQL databases.
  *
- * @author Alpin Gencer
+ * @author    Alpin Gencer
  * @namespace SiteBuilder\Modules\Database\Controllers
- * @see DatabaseController
+ * @see       DatabaseController
  */
 class MySQLDatabaseController extends DatabaseController {
 	/**
@@ -44,8 +44,8 @@ class MySQLDatabaseController extends DatabaseController {
 	/**
 	 * Executes and logs a query, returning the resulting PDOStatement
 	 *
-	 * @param string $query The query to execute
-	 * @param string $type The type of the query
+	 * @param string $query  The query to execute
+	 * @param string $type   The type of the query
 	 *
 	 * @return PDOStatement
 	 */
@@ -108,7 +108,6 @@ class MySQLDatabaseController extends DatabaseController {
 				'boolean' => array('boolean'),
 				'integer' => array('tinyint', 'smallint', 'mediumint', 'int', 'bigint', 'decimal'),
 				'double' => array('float', 'double'),
-				'string' => array('char', 'varchar', 'tinytext', 'text', 'mediumtext', 'longtext', 'date', 'datetime', 'timestamp', 'time', 'year', 'int'),
 		);
 		// @formatter:on
 
@@ -138,7 +137,7 @@ class MySQLDatabaseController extends DatabaseController {
 			$value = $values[$column_name];
 			$value_data_type = gettype($value);
 
-			if($value_data_type !== 'NULL') {
+			if($value_data_type !== 'NULL' && $value_data_type !== 'string') {
 				// Check if PHP variable type can be inserted into the database
 				// If no, throw error: Invalid PHP variable type to insert
 				if(!array_key_exists($value_data_type, $php_to_mysql_types)) {
@@ -188,13 +187,14 @@ class MySQLDatabaseController extends DatabaseController {
 				}
 			}
 
-			// Check if a maximum character length is specified and the given string value is too
-			// long
+			// Check if a maximum character length is specified and the given string value is too long
 			// If yes, throw error: Value is too long
 			if($column_maximum_length !== null && $value_data_type === 'string') {
 				$value_length = strlen($value);
 				if($value_length > $column_maximum_length) {
-					throw new ErrorException("The specified string of length '$value_length' is too long for the column '$column_name' in table '$table', expected length '$column_maximum_length'!");
+					throw new ErrorException(
+						"The specified string of length '$value_length' is too long for the column '$column_name' in table '$table', expected length '$column_maximum_length'!"
+					);
 				}
 			}
 		}
@@ -209,7 +209,8 @@ class MySQLDatabaseController extends DatabaseController {
 		$this->checkTableExists($table);
 
 		// Get the primary key from the information schema
-		$query = "SELECT `COLUMN_NAME`,`DATA_TYPE` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_SCHEMA`='" . $this->getName() . "' AND `TABLE_NAME`='$table' AND `COLUMN_KEY`='PRI'";
+		$query = "SELECT `COLUMN_NAME`,`DATA_TYPE` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_SCHEMA`='" . $this->getName()
+			. "' AND `TABLE_NAME`='$table' AND `COLUMN_KEY`='PRI'";
 		$primary_keys = $this->getRowsByQuery($query);
 
 		// Check if no rows were returned
@@ -261,7 +262,8 @@ class MySQLDatabaseController extends DatabaseController {
 
 		// Get the foreign key from the information schema
 		$query = "SELECT `COLUMN_NAME` FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE ";
-		$query .= "`REFERENCED_TABLE_SCHEMA`='" . $this->getName() . "' AND `REFERENCED_TABLE_NAME`='$referenced_table' AND `REFERENCED_COLUMN_NAME`='$referenced_column' AND `TABLE_NAME`='$table'";
+		$query .= "`REFERENCED_TABLE_SCHEMA`='" . $this->getName()
+			. "' AND `REFERENCED_TABLE_NAME`='$referenced_table' AND `REFERENCED_COLUMN_NAME`='$referenced_column' AND `TABLE_NAME`='$table'";
 		$foreign_keys = $this->getRowsByQuery($query);
 
 		// Check if no rows were returned
@@ -297,7 +299,9 @@ class MySQLDatabaseController extends DatabaseController {
 	 */
 	public function getRows(string $table, string $condition, string $columns = '*', string $order = ''): array {
 		$query = "SELECT $columns FROM `$table` WHERE $condition";
-		if(!empty($order)) $query .= " ORDER BY $order";
+		if(!empty($order)) {
+			$query .= " ORDER BY $order";
+		}
 		return $this->getRowsByQuery($query);
 	}
 
@@ -394,26 +398,41 @@ class MySQLDatabaseController extends DatabaseController {
 		$id = $this->getValByQuery($query) + 1;
 
 		// Merge the id value into the values array
-		$values = array_merge(array(
-				$primary_key => $id
-		), $values);
+		$values = array_merge(
+			array(
+				$primary_key => $id,
+			),
+			$values
+		);
 
 		// Check if values are of compatible type with the table
 		$this->checkValueTypes($table, $values, true);
 
 		// Build the key part of the SQL string from the given keys
-		$keys_as_string = implode(', ', array_map(function (string $key) {
-			return "`$key`";
-		}, array_keys($values)));
+		$keys_as_string = implode(
+			', ',
+			array_map(
+				function(string $key) {
+					return "`$key`";
+				},
+				array_keys($values)
+			)
+		);
 
 		// Build the value part of the SQL string from the given values
-		$values_as_string = implode(',', array_map(function ($value) {
-			if($value === null) {
-				return "NULL";
-			} else {
-				return $this->pdo->quote($value);
-			}
-		}, array_values($values)));
+		$values_as_string = implode(
+			',',
+			array_map(
+				function($value) {
+					if($value === null) {
+						return "NULL";
+					} else {
+						return $this->pdo->quote($value);
+					}
+				},
+				array_values($values)
+			)
+		);
 
 		// Build the complete query and execute it
 		$query = "INSERT INTO `$table`($keys_as_string) VALUES ($values_as_string)";
@@ -442,14 +461,20 @@ class MySQLDatabaseController extends DatabaseController {
 		$this->checkValueTypes($table, $values, false);
 
 		// Build the set values part of the SQL string from the given values
-		$values_as_string = implode(',', array_map(function (string $key) use ($values) {
-			$value = $values[$key];
-			if($value === null) {
-				return "`$key`=NULL";
-			} else {
-				return "`$key`=" . $this->pdo->quote($value);
-			}
-		}, array_keys($values)));
+		$values_as_string = implode(
+			',',
+			array_map(
+				function(string $key) use ($values) {
+					$value = $values[$key];
+					if($value === null) {
+						return "`$key`=NULL";
+					} else {
+						return "`$key`=" . $this->pdo->quote($value);
+					}
+				},
+				array_keys($values)
+			)
+		);
 
 		// Build the complete query and execute it
 		$query = "UPDATE `$table` SET $values_as_string WHERE $condition";
@@ -509,7 +534,7 @@ class MySQLDatabaseController extends DatabaseController {
 
 		$q = "INSERT INTO `" . $this->getLogTableName() . "`(`UID`,`TIME`,`TYPE`,`PAGE`,`QUERY`) VALUES (?,?,?,?,?)";
 		$statement = $this->pdo->prepare($q);
-		$statement->execute(array($uid,$date,$type,$uri,$query));
+		$statement->execute(array($uid, $date, $type, $uri, $query));
 	}
 
 }
