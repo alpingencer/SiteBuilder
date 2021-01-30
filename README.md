@@ -1,10 +1,19 @@
-<h1 align="center">SiteBuilder</h1>
+<p align="center">
+    <img alt="The SiteBuilder Logo" src="SiteBuilder.png">
+    <h1 align="center">SiteBuilder</h1>
+</p>
 
 ## About SiteBuilder
 
 SiteBuilder is a page management and HTML auto-generation framework for PHP written by Alpin Gencer.
 
 ## Installation
+
+SiteBuilder v3.0 Lithium comes with Composer support. As such, installation is very quick and
+simple. All you need to do is require the "v3.x-dev" branch in the package
+"sitebuilder/sitebuilder". Composer will automatically fetch the repository from Packagist for you
+and copy it to the "vendor" directory. After including the Composer autoloader script, you're all
+set!
 
 ## Framework Rules and Restrictions
 
@@ -37,6 +46,8 @@ SiteBuilder is a page management and HTML auto-generation framework for PHP writ
 * Target browsers: Latest versions of Firefox and Chrome
 
 ## Wiki
+
+As it is still very early days for SiteBuilder, the wiki has not been set up yet.
 
 ## License
 
