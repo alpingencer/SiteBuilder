@@ -18,7 +18,7 @@ trait Singleton {
 	}
 
 	public static function instance(): object {
-		// Assert Singleton is initialized: Cannot return uninitialized instance
+		// Assert that the singleton is initialized: Cannot return uninitialized instance
 		assert(
 			static::initialized(),
 			new BadMethodCallException("Cannot access instance of singleton class '" . static::class . "' before initialization")
@@ -28,7 +28,7 @@ trait Singleton {
 	}
 
 	private function assertSingleton(): void {
-		// Assert Singleton is uninitialized: Cannot reinitialize Singleton
+		// Assert that the singleton is uninitialized: Cannot reinitialize Singleton
 		assert(
 			!static::initialized(),
 			new BadMethodCallException("Forbidden multiple instantiation of the singleton class '" . static::class . "'")
