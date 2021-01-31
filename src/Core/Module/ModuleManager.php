@@ -7,11 +7,11 @@
 
 namespace SiteBuilder\Core\Module;
 
-use LogicException;
 use SiteBuilder\Core\FrameworkManager;
 use SiteBuilder\Utils\Traits\ManagedObject;
 use SiteBuilder\Utils\Traits\Runnable;
 use SiteBuilder\Utils\Traits\Singleton;
+use UnexpectedValueException;
 
 final class ModuleManager {
 	use ManagedObject;
@@ -31,10 +31,10 @@ final class ModuleManager {
 	}
 
 	public function module(string $module_class): Module {
-		// Assert the given module class has been initialized: Cannot return uninitialized module
+		// Assert that the given module class has been initialized: Cannot return uninitialized module
 		assert(
 			$this->moduleInitialized($module_class),
-			new LogicException("No module of the given class '$module_class' has been initialized!")
+			new UnexpectedValueException("Failed while getting module: Module of the given class '$module_class' not found")
 		);
 
 		return $this->modules[$module_class];
@@ -48,13 +48,13 @@ final class ModuleManager {
 		// Assert that the given class is a subclass of Module: ModuleManager only manages Modules
 		assert(
 			is_subclass_of($module_class, Module::class),
-			new LogicException("The given class '$module_class' must be a subclass of '" . Module::class . "'!")
+			new UnexpectedValueException("Failed while initializing module: The given class '$module_class' must be a subclass of '" . Module::class . "'")
 		);
 
 		// Assert that the given module has not already been initialized: Cannot reinitialize Modules
 		assert(
 			!$module_class::initialized(),
-			new LogicException("The module of the given class '$module_class' has already been initialized!")
+			new UnexpectedValueException("Failed while initializing module: The module of the given class '$module_class' has already been initialized")
 		);
 
 		// Init module
@@ -67,7 +67,7 @@ final class ModuleManager {
 		// Assert that the given module is initialized: Cannot uninitialize non-existing module
 		assert(
 			$this->moduleInitialized($module_class),
-			new LogicException("No module of the given class '$module_class' has been initialized!")
+			new UnexpectedValueException("Failed while uninitializing module: Module of the given class '$module_class' not found")
 		);
 
 		$this->modules[$module_class]->uninit();

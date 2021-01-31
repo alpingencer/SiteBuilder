@@ -7,9 +7,9 @@
 
 namespace SiteBuilder\Core\Session;
 
-use ErrorException;
 use SiteBuilder\Core\FrameworkManager;
 use SiteBuilder\Core\Website\WebsiteManager;
+use SiteBuilder\Utils\Exceptions\MisconfigurationException;
 use SiteBuilder\Utils\Traits\ManagedObject;
 use SiteBuilder\Utils\Traits\Singleton;
 
@@ -24,11 +24,11 @@ final class SessionManager {
 		$this->setAndAssertManager(FrameworkManager::class);
 		$this->assertSingleton();
 
-		// Check if PHP sessions are disabled on the server
-		// If yes, throw error: PHP sessions must be enabled
-		if(session_status() === PHP_SESSION_DISABLED) {
-			throw new ErrorException('PHP sessions must be enabled by the server to use the SiteBuilder framework!');
-		}
+		// Assert that PHP sessions are not disabled: The framework (and it's modules) rely on sessions
+		assert(
+			session_status() !== PHP_SESSION_DISABLED,
+			new MisconfigurationException('Server misconfiguration error: PHP sessions must be enabled')
+		);
 
 		// Start session
 		session_set_cookie_params(['samesite' => 'Lax']);
