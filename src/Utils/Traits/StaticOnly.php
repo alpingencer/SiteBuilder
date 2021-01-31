@@ -7,12 +7,10 @@
 
 namespace SiteBuilder\Utils\Traits;
 
-use LogicException;
-use ReflectionClass;
+use BadMethodCallException;
 
 trait StaticOnly {
 	public function __construct() {
-		$class_short_name = (new ReflectionClass($this))->getShortName();
-		throw new LogicException("Cannot initialize instance of the static only class '$class_short_name'!");
+		throw new BadMethodCallException("Forbidden instantiation of the static only class '" . static::class . "'");
 	}
 }
