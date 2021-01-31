@@ -7,8 +7,7 @@
 
 namespace SiteBuilder\Utils\Traits;
 
-use LogicException;
-use ReflectionClass;
+use BadMethodCallException;
 
 trait Singleton {
 	private static ?object $instance;
@@ -20,10 +19,9 @@ trait Singleton {
 
 	public static function instance(): object {
 		// Assert Singleton is initialized: Cannot return uninitialized instance
-		$class_short_name = (new ReflectionClass(static::class))->getShortName();
 		assert(
 			static::initialized(),
-			new LogicException("Cannot access singleton class '$class_short_name' before initialization!")
+			new BadMethodCallException("Cannot access instance of singleton class '" . static::class . "' before initialization")
 		);
 
 		return static::$instance;
@@ -31,10 +29,9 @@ trait Singleton {
 
 	private function assertSingleton(): void {
 		// Assert Singleton is uninitialized: Cannot reinitialize Singleton
-		$class_short_name = (new ReflectionClass($this))->getShortName();
 		assert(
 			!static::initialized(),
-			"Cannot initialize multiple instances of the singleton class '$class_short_name'!"
+			new BadMethodCallException("Forbidden multiple instantiation of the singleton class '" . static::class . "'")
 		);
 
 		// Set instance variable after assertion in constructor
