@@ -19,7 +19,7 @@ class JsonDecoder {
 		// Assert that the given JSON was successfully decoded: JSON must be valid
 		assert(
 			$decoded_json !== null,
-			new ParseError("Error while decoding the given JSON!")
+			new ParseError("Failed while decoding the given JSON: JSON is invalid")
 		);
 
 		return $decoded_json;
@@ -31,31 +31,13 @@ class JsonDecoder {
 		try {
 			return static::decode($file_contents);
 		} catch(ParseError) {
-			throw new ParseError("Error while decoding the JSON file '$file'!");
-		}
-	}
-
-	public static function assertTraversable(array $json, string $separator): void {
-		static::assertParamTraversable($json, $separator, '');
-	}
-
-	private static function assertParamTraversable(array $json, string $separator, string $current_param): void {
-		foreach($json as $param_name => $param) {
-			// Assert that the param name doesn't contain the separator: Separator is reserved
-			assert(
-				!str_contains($param_name, $separator),
-				"The JSON parameter '$param_name' cannot contain the character '$separator' in the path '$current_param'!"
-			);
-
-			// Validate child parameters
-			if(is_array($param)) {
-				$current_param .= empty($current_param) ? $param_name : $separator . $param_name;
-				static::assertParamTraversable($param, $separator, $current_param);
-			}
+			throw new ParseError("Failed while decoding the JSON file 'file': JSON is invalid");
 		}
 	}
 
 	public static function traverse(array $json, string $path, string $separator, string|array $group = null): mixed {
+		static::assertTraversable($json, $separator);
+
 		if(is_array($group)) {
 			$group = implode($separator, $group);
 		}
@@ -85,5 +67,21 @@ class JsonDecoder {
 		}
 
 		return $current;
+	}
+
+	private static function assertTraversable(array $json, string $separator, string $current_param = ''): void {
+		foreach($json as $param_name => $param) {
+			// Assert that the param name doesn't contain the separator: Separator is reserved
+			assert(
+				!str_contains($param_name, $separator),
+				"Failed while traversing the given JSON: Parameter '$param_name' in the path '$current_param' cannot contain the character '$separator'!"
+			);
+
+			// Validate child parameters
+			if(is_array($param)) {
+				$current_param .= empty($current_param) ? $param_name : $separator . $param_name;
+				static::assertTraversable($param, $separator, $current_param);
+			}
+		}
 	}
 }
