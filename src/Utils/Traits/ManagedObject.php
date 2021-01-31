@@ -9,9 +9,7 @@ namespace SiteBuilder\Utils\Traits;
 
 use BadMethodCallException;
 use Error;
-use LogicException;
-use ReflectionClass;
-use ValueError;
+use UnexpectedValueException;
 
 trait ManagedObject {
 	private ?object $manager;
@@ -24,13 +22,13 @@ trait ManagedObject {
 	private function setManager(object|string $manager): static {
 		if(is_string($manager)) {
 			try {
+				$manager_class = $manager;
 				/** @var $manager Singleton */
 				$manager = $manager::instance();
 			} catch(Error) {
-				throw new LogicException("The given manager class '$manager' must be a singleton class!");
-			} catch(LogicException) {
-				$manager_short_name = (new ReflectionClass($manager))->getShortName();
-				throw new LogicException("Cannot be managed by the singleton class '$manager_short_name' before it has been initialized!");
+				throw new UnexpectedValueException("Forbidden manager class: The given class '$manager_class' must be a singleton");
+			} catch(BadMethodCallException) {
+				throw new BadMethodCallException("Forbidden manager instance: The given singleton manager '$manager_class' has not been initialized");
 			}
 		}
 
@@ -47,7 +45,7 @@ trait ManagedObject {
 		// Assert that the manager has been set: Cannot assert caller if manager is unknown
 		assert(
 			$this->manager() !== null,
-			new ValueError("Cannot assert manager before manager has been set!")
+			new UnexpectedValueException("Cannot assert caller is manager: Manager has not been set")
 		);
 	}
 
@@ -67,12 +65,10 @@ trait ManagedObject {
 		$caller = $trace[$iteration]['object'] ?? null;
 
 		// Assert that the method call was from the manager: Object must be managed by manager
-		$class_short_name = (new ReflectionClass($this))->getShortName();
-		$manager_short_name = (new ReflectionClass($this->manager))->getShortName();
 		$method = $trace[$iteration - 1]['function'];
 		assert(
 			$caller === $this->manager,
-			new BadMethodCallException("The method '$class_short_name::$method()' must be called by the manager class '$manager_short_name'!'")
+			new BadMethodCallException("Forbidden call to method '" . static::class . "::$method()': Method must be called by the object's manager")
 		);
 	}
 }
