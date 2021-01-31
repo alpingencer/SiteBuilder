@@ -1,5 +1,5 @@
 <div align="center">
-    <img alt="The SiteBuilder Logo" src="SiteBuilder.png">
+    <img alt="The SiteBuilder Logo" src="https://raw.githubusercontent.com/alpingencer/SiteBuilder/v3/SiteBuilder.png">
     <h1>SiteBuilder</h1>
 </div>
 
