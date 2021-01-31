@@ -1,7 +1,7 @@
-<p align="center">
+<div align="center">
     <img alt="The SiteBuilder Logo" src="SiteBuilder.png">
-    <h1 align="center">SiteBuilder</h1>
-</p>
+    <h1>SiteBuilder</h1>
+</div>
 
 ## About SiteBuilder
 
@@ -38,11 +38,15 @@ set!
 * PHP sessions must be enabled
 * SiteBuilder must be built via Composer
 * Server document root must be set correctly (see project structure requirements)
+* The following php.ini settings must be set:
+    * zend.assertions=1
+    * assert.active=1
+    * assert.exception=1
 
 ### 3. Client system
 
 * Cookies must be enabled
-* JavaScript must be enabled (for some modules)
+* JavaScript must be enabled
 * Target browsers: Latest versions of Firefox and Chrome
 
 ## Wiki
