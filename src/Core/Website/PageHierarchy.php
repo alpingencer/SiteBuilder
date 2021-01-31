@@ -52,10 +52,6 @@ final class PageHierarchy {
 	}
 
 	private function assertValid(): void {
-		// Check if keys in hierarchy contain '/'
-		// If yes, throw error: Invalid subsite or page names
-		JsonDecoder::assertTraversable($this->data, '/');
-
 		foreach($this->data as $subsite_name => $subsite) {
 			// Check if type of the subsite is an array
 			// If no, throw error: Subsite must be an array
@@ -192,7 +188,7 @@ final class PageHierarchy {
 		$subsite = $this->subsite(subsite_name: $subsite_name);
 		$path = Normalizer::filePath($path);
 
-		$page = JsonDecoder::traverse($subsite, $path, '/', group: 'children');
+		$page = JsonDecoder::traverse($subsite['children'], $path, '/', group: 'children');
 
 		if($page === null && $subsite_name !== 'shared') {
 			// Look for page in 'shared' subsite
