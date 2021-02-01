@@ -15,11 +15,6 @@ abstract class Component {
 	public function __construct() {
 		ContentManager::instance()->addComponent($this);
 		$this->clearAttributes();
-
-	}
-
-	public function dependencies(): array {
-		return array();
 	}
 
 	public abstract function content(): string;

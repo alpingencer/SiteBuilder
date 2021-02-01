@@ -7,12 +7,18 @@
 
 namespace SiteBuilder\Core\Content\Dependencies;
 
-use SiteBuilder\Core\Content\Dependency;
+use SiteBuilder\Core\Content\AssetDependency;
 
-final class JSDependency extends Dependency {
+final class JSDependency extends AssetDependency {
+
+	public function __construct(string $source) {
+		parent::__construct($source);
+	}
+
 	public function html(): string {
-		$source = Dependency::path($this->source());
+		$source = AssetDependency::path($this->source());
 		$params = $this->paramsAsString();
 		return "<script $params src=\"$source\"></script>";
 	}
+
 }

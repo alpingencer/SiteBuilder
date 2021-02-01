@@ -11,6 +11,7 @@ use SiteBuilder\Core\Website\PageHierarchy;
 use SiteBuilder\Utils\Classes\Formatter;
 use SiteBuilder\Utils\Traits\ManagedObject;
 use SiteBuilder\Utils\Traits\Singleton;
+use SplObjectStorage;
 
 final class PageConstructor {
 	use ManagedObject;
@@ -27,7 +28,37 @@ final class PageConstructor {
 		$this->clear();
 	}
 
+	public function construct(SplObjectStorage $components, SplObjectStorage $dependencies): void {
+		$this->assertCallerIsManager();
+
+		// Components
+		// Add components to page
+		foreach($components as $component) {
+			$this->body .= $component->content();
+		}
+
+		// Dependencies
+		// Add all dependencies
+		$added_dependencies = array();
+		foreach($dependencies as $dependency) {
+			array_push($added_dependencies, $dependency);
+		}
+
+		// Get rid of duplicate dependencies
+		AssetDependency::removeDuplicates($added_dependencies);
+
+		// Sort dependencies by class
+		usort($added_dependencies, fn($d1, $d2) => get_class($d1) <=> get_class($d2));
+
+		// Add dependencies to page
+		foreach($added_dependencies as $dependency) {
+			$this->head .= Formatter::doubleSpace($dependency->html());
+		}
+	}
+
 	public function html(): string {
+		$this->assertCallerIsManager();
+
 		// Generate HTML5 DOCTYPE
 		$content = '<!DOCTYPE html>';
 
@@ -46,7 +77,6 @@ final class PageConstructor {
 		// Check if head defines a <title> tag
 		// If no, generate SiteBuilder default title
 		if(!str_contains($this->head, '</title>')) {
-			// No <title> tag found in page head
 			$hierarchy = PageHierarchy::instance();
 			$title = $hierarchy->currentAttribute('title') . ' - ' . $hierarchy->globalAttribute('title');
 			$content .= "<title>$title</title>";
@@ -61,17 +91,11 @@ final class PageConstructor {
 		// Close <html>
 		$content .= '</html>';
 
-		// Pretty print
+		// Format HTML
 		$content = Formatter::html($content);
 
 		// Return result
 		return $content;
-	}
-
-	public function clear(): void {
-		$this->head = '';
-		$this->body = '';
-		unset($this->lang);
 	}
 
 	public function lang(string $lang = null): string|self {
@@ -81,5 +105,11 @@ final class PageConstructor {
 			$this->lang = $lang;
 			return $this;
 		}
+	}
+
+	public function clear(): void {
+		$this->head = '';
+		$this->body = '';
+		unset($this->lang);
 	}
 }

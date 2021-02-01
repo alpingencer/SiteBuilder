@@ -7,12 +7,18 @@
 
 namespace SiteBuilder\Core\Content\Dependencies;
 
-use SiteBuilder\Core\Content\Dependency;
+use SiteBuilder\Core\Content\AssetDependency;
 
-final class CSSDependency extends Dependency {
+final class CSSDependency extends AssetDependency {
+
+	public function __construct(string $source) {
+		parent::__construct($source);
+	}
+
 	public function html(): string {
-		$source = Dependency::path($this->source());
+		$source = AssetDependency::path($this->source());
 		$params = $this->paramsAsString();
 		return "<link rel=\"stylesheet\" type=\"text/css\" $params href=\"$source\">";
 	}
+	
 }

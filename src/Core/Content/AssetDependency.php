@@ -10,7 +10,7 @@ namespace SiteBuilder\Core\Content;
 use ErrorException;
 use SiteBuilder\Utils\Classes\File;
 
-abstract class Dependency {
+abstract class AssetDependency {
 	private string $source;
 	private array $params;
 
@@ -47,6 +47,7 @@ abstract class Dependency {
 	}
 
 	public function __construct(string $source) {
+		ContentManager::instance()->addDependency($this);
 		$this->source = $source;
 		$this->clearParams();
 	}
@@ -85,13 +86,6 @@ abstract class Dependency {
 	}
 
 	public final function paramsAsString(): string {
-		return implode(
-			' ',
-			array_map(
-				fn(string $param_name, string $param) => "$param_name=\"$param\"",
-				array_keys($this->params),
-				array_values($this->params)
-			)
-		);
+		return implode(' ', array_map(fn(string $param_name, string $param) => "$param_name=\"$param\"", array_keys($this->params), array_values($this->params)));
 	}
 }
