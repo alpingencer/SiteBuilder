@@ -88,4 +88,5 @@ abstract class AssetDependency {
 	public final function paramsAsString(): string {
 		return implode(' ', array_map(fn(string $param_name, string $param) => "$param_name=\"$param\"", array_keys($this->params), array_values($this->params)));
 	}
+
 }

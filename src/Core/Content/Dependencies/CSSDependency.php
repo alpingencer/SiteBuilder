@@ -20,5 +20,5 @@ final class CSSDependency extends AssetDependency {
 		$params = $this->paramsAsString();
 		return "<link rel=\"stylesheet\" type=\"text/css\" $params href=\"$source\">";
 	}
-	
+
 }

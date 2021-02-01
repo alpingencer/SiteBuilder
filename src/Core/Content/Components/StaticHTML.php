@@ -20,4 +20,5 @@ class StaticHTML extends Component {
 	public function content(): string {
 		return $this->content;
 	}
+
 }

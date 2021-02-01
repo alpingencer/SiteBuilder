@@ -106,4 +106,5 @@ final class ModuleManager {
 			$module->runLate();
 		}
 	}
+
 }

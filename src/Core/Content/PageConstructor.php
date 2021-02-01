@@ -112,4 +112,5 @@ final class PageConstructor {
 		$this->body = '';
 		unset($this->lang);
 	}
+
 }

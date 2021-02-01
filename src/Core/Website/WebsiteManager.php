@@ -306,4 +306,5 @@ final class WebsiteManager {
 	public function subsite(): string {
 		return $this->subsite;
 	}
+
 }

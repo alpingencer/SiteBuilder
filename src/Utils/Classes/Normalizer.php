@@ -33,4 +33,5 @@ class Normalizer {
 		$path = implode('/', $absolutes);
 		return $path;
 	}
+
 }

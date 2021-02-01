@@ -41,4 +41,5 @@ trait Singleton {
 	private function resetSingleton(): void {
 		static::$instance = null;
 	}
+
 }

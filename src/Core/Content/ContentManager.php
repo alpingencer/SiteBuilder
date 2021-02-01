@@ -138,4 +138,5 @@ final class ContentManager {
 	public function appendToHead(string $content): void {
 		$this->page->head .= $content;
 	}
+
 }

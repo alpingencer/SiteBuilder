@@ -72,4 +72,5 @@ final class FrameworkManager {
 
 		$this->content->output();
 	}
+
 }

@@ -49,4 +49,5 @@ abstract class Component {
 	public final function attributesAsString(): string {
 		return implode(' ', array_map(fn(string $attribute_name, string $attribute) => "$attribute_name=\"$attribute\"", $this->attributes));
 	}
+
 }

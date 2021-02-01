@@ -43,4 +43,5 @@ trait Runnable {
 		// Increment to next run stage
 		$this->currentRunStage++;
 	}
+
 }

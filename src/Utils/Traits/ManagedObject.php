@@ -71,4 +71,5 @@ trait ManagedObject {
 			new BadMethodCallException("Forbidden call to method '" . static::class . "::$method()': Method must be called by the object's manager")
 		);
 	}
+
 }

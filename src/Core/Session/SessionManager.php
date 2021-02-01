@@ -65,4 +65,5 @@ final class SessionManager {
 	public function unset(string $var_name, bool $global = false): void {
 		unset($_SESSION[$this->varName($var_name, global: $global)]);
 	}
+
 }

@@ -39,4 +39,5 @@ abstract class Module {
 		$this->assertCallerIsManager();
 		$this->resetSingleton();
 	}
+
 }
