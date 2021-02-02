@@ -66,7 +66,9 @@ final class ContentManager {
 
 		// Add dependencies to page
 		foreach($added_dependencies as $dependency) {
-			$this->head .= Formatter::doubleSpace($dependency->html());
+			$dependency_html = $dependency->html(AssetDependency::path($dependency->source()), $dependency->paramsAsString());
+			$dependency_html = Formatter::doubleSpace($dependency_html);
+			$this->head .= $dependency_html;
 		}
 	}
 

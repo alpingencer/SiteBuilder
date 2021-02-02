@@ -52,7 +52,7 @@ abstract class AssetDependency {
 		$this->clearParams();
 	}
 
-	public abstract function html(): string;
+	public abstract function html(string $source, string $params): string;
 
 	public final function source(): string {
 		return $this->source;
