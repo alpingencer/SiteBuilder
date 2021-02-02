@@ -8,10 +8,10 @@
 namespace SiteBuilder\Core\Content;
 
 use SiteBuilder\Core\Website\PageHierarchy;
+use SiteBuilder\Utils\Classes\ClassedCollection;
 use SiteBuilder\Utils\Classes\Formatter;
 use SiteBuilder\Utils\Traits\ManagedObject;
 use SiteBuilder\Utils\Traits\Singleton;
-use SplObjectStorage;
 
 final class PageConstructor {
 	use ManagedObject;
@@ -28,7 +28,7 @@ final class PageConstructor {
 		$this->clear();
 	}
 
-	public function construct(SplObjectStorage $components, SplObjectStorage $dependencies): void {
+	public function construct(ClassedCollection $components, ClassedCollection $dependencies): void {
 		$this->assertCallerIsManager();
 
 		// Components

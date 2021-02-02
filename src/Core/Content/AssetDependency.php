@@ -47,7 +47,7 @@ abstract class AssetDependency {
 	}
 
 	public function __construct(string $source) {
-		ContentManager::instance()->addDependency($this);
+		ContentManager::instance()->dependencies()->add($this);
 		$this->source = $source;
 		$this->clearParams();
 	}

@@ -13,7 +13,7 @@ abstract class Component {
 	private array $attributes;
 
 	public function __construct() {
-		ContentManager::instance()->addComponent($this);
+		ContentManager::instance()->components()->add($this);
 		$this->clearAttributes();
 	}
 
