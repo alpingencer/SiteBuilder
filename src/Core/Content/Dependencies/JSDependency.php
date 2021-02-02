@@ -15,8 +15,8 @@ final class JSDependency extends AssetDependency {
 		parent::__construct($source);
 	}
 
-	public function html(string $source, string $params): string {
-		return "<script $params src=\"$source\"></script>";
+	public function html(string $source, string $attributes): string {
+		return "<script $attributes src=\"$source\"></script>";
 	}
 
 }

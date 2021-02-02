@@ -15,8 +15,8 @@ final class CSSDependency extends AssetDependency {
 		parent::__construct($source);
 	}
 
-	public function html(string $source, string $params): string {
-		return "<link rel=\"stylesheet\" type=\"text/css\" $params href=\"$source\">";
+	public function html(string $source, string $attributes): string {
+		return "<link rel=\"stylesheet\" type=\"text/css\" $attributes href=\"$source\">";
 	}
 
 }
