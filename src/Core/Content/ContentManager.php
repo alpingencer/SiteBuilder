@@ -16,7 +16,7 @@ use SiteBuilder\Utils\Traits\Runnable;
 use SiteBuilder\Utils\Traits\Singleton;
 
 final class ContentManager {
-	public const CONFIG_LANG = 'lang';
+	public const CONFIG_LANG = 'content.lang';
 
 	use ManagedObject;
 	use Runnable;
