@@ -7,13 +7,12 @@
 
 namespace SiteBuilder\Core\Content;
 
+use SiteBuilder\Utils\Classes\AttributeCollection;
 use SiteBuilder\Utils\Classes\File;
-use SiteBuilder\Utils\Traits\HasAttributes;
 
 abstract class AssetDependency {
-	use HasAttributes;
-
 	private string $source;
+	private AttributeCollection $attributes;
 
 	public final static function removeDuplicates(array &$dependencies): void {
 		$added_dependencies = array();
@@ -49,14 +48,18 @@ abstract class AssetDependency {
 
 	public function __construct(string $source) {
 		ContentManager::instance()->dependencies()->add($this);
-		$this->source = $source;
-		$this->clearAttributes();
+		$this->source = AssetDependency::path($source);
+		$this->attributes = new AttributeCollection();
 	}
 
-	public abstract function html(string $source, string $attributes): string;
+	public abstract function html(): string;
 
 	public final function source(): string {
 		return $this->source;
+	}
+
+	public final function attributes(): AttributeCollection {
+		return $this->attributes;
 	}
 
 }

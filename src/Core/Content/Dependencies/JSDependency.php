@@ -15,11 +15,13 @@ final class JSDependency extends AssetDependency {
 		parent::__construct($source);
 
 		if($defer) {
-			$this->attribute('defer', '');
+			$this->attributes()->set('defer');
 		}
 	}
 
-	public function html(string $source, string $attributes): string {
+	public function html(): string {
+		$source = $this->source();
+		$attributes = $this->attributes();
 		return "<script $attributes src=\"$source\"></script>";
 	}
 

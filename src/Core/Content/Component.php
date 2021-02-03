@@ -7,16 +7,20 @@
 
 namespace SiteBuilder\Core\Content;
 
-use SiteBuilder\Utils\Traits\HasAttributes;
+use SiteBuilder\Utils\Classes\AttributeCollection;
 
 abstract class Component {
-	use HasAttributes;
+	private AttributeCollection $attributes;
 
 	public function __construct() {
 		ContentManager::instance()->components()->add($this);
-		$this->clearAttributes();
+		$this->attributes = new AttributeCollection();
 	}
 
 	public abstract function content(): string;
+
+	public final function attributes(): AttributeCollection {
+		return $this->attributes;
+	}
 
 }
