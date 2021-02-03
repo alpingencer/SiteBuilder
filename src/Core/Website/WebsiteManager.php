@@ -8,7 +8,7 @@
 namespace SiteBuilder\Core\Website;
 
 use ErrorException;
-use SiteBuilder\Core\Content\PageConstructor;
+use SiteBuilder\Core\Content\ContentManager;
 use SiteBuilder\Core\FrameworkManager;
 use SiteBuilder\Utils\Classes\File;
 use SiteBuilder\Utils\Classes\JsonDecoder;
@@ -282,7 +282,7 @@ final class WebsiteManager {
 
 	public function showDefaultErrorPage(int $error_code): void {
 		http_response_code($error_code);
-		$error_pages = JsonDecoder::read('/SiteBuilder/Core/Website/default-error-pages.json');
+		$error_pages = JsonDecoder::read('/vendor/sitebuilder/sitebuilder/src/Core/Website/default-error-pages.json');
 
 		if(isset($error_pages[$error_code])) {
 			$error_name = $error_pages[$error_code]['name'];
@@ -292,14 +292,14 @@ final class WebsiteManager {
 			$error_message = 'An unknown error has occurred';
 		}
 
-		$page_constructor = PageConstructor::instance();
-		$page_constructor->clear();
+		$content_manager = ContentManager::instance();
+		$content_manager->clear();
 
-		$page_constructor->lang('en');
-		$page_constructor->head = "<title>$error_code $error_name</title>";
-		$page_constructor->body = "<h1>$error_code $error_name</h1><p>$error_message</p>";
+		$content_manager->lang('en');
+		$content_manager->head = "<title>$error_code $error_name</title>";
+		$content_manager->body = "<h1>$error_code $error_name</h1><p>$error_message</p>";
 
-		echo $page_constructor->html();
+		$content_manager->output();
 		die();
 	}
 

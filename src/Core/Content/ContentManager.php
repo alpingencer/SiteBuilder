@@ -73,9 +73,6 @@ final class ContentManager {
 	}
 
 	public function output(): void {
-		$this->assertCallerIsManager();
-		$this->assertCurrentRunStage(2);
-
 		// Generate HTML5 DOCTYPE
 		$content = '<!DOCTYPE html>';
 
