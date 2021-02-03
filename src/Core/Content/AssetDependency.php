@@ -7,7 +7,7 @@
 
 namespace SiteBuilder\Core\Content;
 
-use SiteBuilder\Utils\Classes\AttributeCollection;
+use SiteBuilder\Utils\Classes\Collections\AttributeCollection;
 use SiteBuilder\Utils\Classes\File;
 
 abstract class AssetDependency {

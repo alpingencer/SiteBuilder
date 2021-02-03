@@ -5,7 +5,7 @@
  *      Refer to LICENSE.md for a full notice     *
  **************************************************/
 
-namespace SiteBuilder\Utils\Classes;
+namespace SiteBuilder\Utils\Classes\Collections;
 
 use Countable;
 use Iterator;

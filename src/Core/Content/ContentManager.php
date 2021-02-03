@@ -9,7 +9,7 @@ namespace SiteBuilder\Core\Content;
 
 use SiteBuilder\Core\FrameworkManager;
 use SiteBuilder\Core\Website\PageHierarchy;
-use SiteBuilder\Utils\Classes\ClassedCollection;
+use SiteBuilder\Utils\Classes\Collections\ClassedCollection;
 use SiteBuilder\Utils\Classes\Formatter;
 use SiteBuilder\Utils\Traits\ManagedObject;
 use SiteBuilder\Utils\Traits\Runnable;

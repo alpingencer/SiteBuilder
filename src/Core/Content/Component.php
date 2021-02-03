@@ -7,7 +7,7 @@
 
 namespace SiteBuilder\Core\Content;
 
-use SiteBuilder\Utils\Classes\AttributeCollection;
+use SiteBuilder\Utils\Classes\Collections\AttributeCollection;
 
 abstract class Component {
 	private AttributeCollection $attributes;
