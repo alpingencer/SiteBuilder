@@ -24,14 +24,14 @@ class AttributeCollection implements Countable, Iterator {
 		return implode(
 			' ',
 			array_map(
-				fn(string $attribute, string $value) => empty($value) ? $attribute : "$attribute=\"$value\"",
+				fn(string $attribute, string $value) => $value === true ? $attribute : "$attribute=\"$value\"",
 				array_keys($this->attributes),
 				array_values($this->attributes)
 			)
 		);
 	}
 
-	public function get(string $attribute): string {
+	public function get(string $attribute): string|bool {
 		if(!isset($this->attributes[$attribute])) {
 			throw new UnexpectedValueException("Error while fetching attribute '$attribute': Attribute is undefined");
 		}
@@ -39,14 +39,22 @@ class AttributeCollection implements Countable, Iterator {
 		return $this->attributes[$attribute];
 	}
 
-	public function set(string $attribute, string $value = ''): self {
-		$this->attributes[$attribute] = $value;
+	public function array(): array {
+		return $this->attributes;
+	}
+
+	public function set(string $attribute, string $value = null): self {
+		$this->attributes[$attribute] = $value ?? true;
 		return $this;
 	}
 
 	public function setAll(array $attributes): self {
 		foreach($attributes as $attribute => $value) {
-			$this->set($attribute, $value);
+			if(is_string($attribute)) {
+				$this->set($attribute, $value);
+			} else {
+				$this->set($value);
+			}
 		}
 
 		return $this;
