@@ -51,7 +51,7 @@ final class SessionManager {
 
 	private function varName(string $var_name, bool $global = false): string {
 		$subsite = $global ? 'shared' : WebsiteManager::instance()->subsite();
-		return 'Eufony' . $subsite . '_' . $var_name;
+		return '__Eufony_' . $subsite . '_' . $var_name;
 	}
 
 	public function get(string $var_name, bool $global = false): mixed {
