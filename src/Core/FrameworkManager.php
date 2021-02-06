@@ -41,9 +41,17 @@ final class FrameworkManager {
 		$this->assertSingleton();
 
 		$this->debug = $config[FrameworkManager::CONFIG_DEBUG] ?? true;
+
 		if($this->debug) {
-			if(ini_get('zend.assertions') !== '1') {
-				throw new MisconfigurationException("Server misconfiguration error: The php.ini setting 'zend.assertions' must have a value of '1'");
+			// Assert that the following php.ini settings are set correctly: Eufony requires these ini settings
+			$php_ini_settings = array(
+				'zend.assertions' => '1',
+			);
+
+			foreach($php_ini_settings as $setting => $expected_value) {
+				if(ini_get($setting) !== $expected_value) {
+					throw new MisconfigurationException("Server misconfiguration error: The php.ini setting '$setting' must have a value of '$expected_value'");
+				}
 			}
 
 			ini_set('assert.active', '1');
