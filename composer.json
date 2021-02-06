@@ -1,6 +1,6 @@
 {
-	"name": "sitebuilder/sitebuilder",
-	"description": "The SiteBuilder PHP Framework",
+	"name": "eufony/eufony",
+	"description": "The Eufony PHP Framework",
 	"type": "library",
 	"license": "LGPL-3.0-or-later",
 	"minimum-stability": "stable",
@@ -11,7 +11,7 @@
 		}
 	],
 	"support": {
-		"issues": "https://github.com/alpingencer/sitebuilder/issues"
+		"issues": "https://github.com/eufony/eufony/issues"
 	},
 	"config": {
 		"optimize-autoloader": true,
@@ -19,10 +19,10 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"SiteBuilder\\": "src/"
+			"Eufony\\": "src/"
 		}
 	},
 	"bin": [
-		"sitebuilder"
+		"eufony"
 	]
 }

@@ -1,13 +1,13 @@
 <?php
 /**************************************************
- *          The SiteBuilder PHP Framework         *
+ *            The Eufony PHP Framework            *
  *         Copyright (c) 2021 Alpin Gencer        *
  *      Refer to LICENSE.md for a full notice     *
  **************************************************/
 
-namespace SiteBuilder\Utils\Classes;
+namespace Eufony\Utils\Classes;
 
-use SiteBuilder\Utils\Traits\StaticOnly;
+use Eufony\Utils\Traits\StaticOnly;
 
 class Normalizer {
 	use StaticOnly;

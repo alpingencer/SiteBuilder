@@ -1,16 +1,16 @@
 <?php
 /**************************************************
- *          The SiteBuilder PHP Framework         *
+ *            The Eufony PHP Framework            *
  *         Copyright (c) 2021 Alpin Gencer        *
  *      Refer to LICENSE.md for a full notice     *
  **************************************************/
 
-namespace SiteBuilder\Utils\Classes;
+namespace Eufony\Utils\Classes;
 
+use Eufony\Core\Website\WebsiteManager;
+use Eufony\Utils\Exceptions\IOException;
+use Eufony\Utils\Traits\StaticOnly;
 use FilesystemIterator;
-use SiteBuilder\Core\Website\WebsiteManager;
-use SiteBuilder\Utils\Exceptions\IOException;
-use SiteBuilder\Utils\Traits\StaticOnly;
 
 class File {
 	use StaticOnly;

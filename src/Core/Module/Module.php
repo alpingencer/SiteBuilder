@@ -1,14 +1,14 @@
 <?php
 /**************************************************
- *          The SiteBuilder PHP Framework         *
+ *            The Eufony PHP Framework            *
  *         Copyright (c) 2021 Alpin Gencer        *
  *      Refer to LICENSE.md for a full notice     *
  **************************************************/
 
-namespace SiteBuilder\Core\Module;
+namespace Eufony\Core\Module;
 
-use SiteBuilder\Utils\Traits\ManagedObject;
-use SiteBuilder\Utils\Traits\Singleton;
+use Eufony\Utils\Traits\ManagedObject;
+use Eufony\Utils\Traits\Singleton;
 
 abstract class Module {
 	use ManagedObject;

@@ -1,17 +1,17 @@
 <?php
 /**************************************************
- *          The SiteBuilder PHP Framework         *
+ *            The Eufony PHP Framework            *
  *         Copyright (c) 2021 Alpin Gencer        *
  *      Refer to LICENSE.md for a full notice     *
  **************************************************/
 
-namespace SiteBuilder\Core\Session;
+namespace Eufony\Core\Session;
 
-use SiteBuilder\Core\FrameworkManager;
-use SiteBuilder\Core\Website\WebsiteManager;
-use SiteBuilder\Utils\Exceptions\MisconfigurationException;
-use SiteBuilder\Utils\Traits\ManagedObject;
-use SiteBuilder\Utils\Traits\Singleton;
+use Eufony\Core\FrameworkManager;
+use Eufony\Core\Website\WebsiteManager;
+use Eufony\Utils\Exceptions\MisconfigurationException;
+use Eufony\Utils\Traits\ManagedObject;
+use Eufony\Utils\Traits\Singleton;
 
 final class SessionManager {
 	public const SESSION_LAST_ACTIVITY = 'LastActivity';
@@ -51,7 +51,7 @@ final class SessionManager {
 
 	private function varName(string $var_name, bool $global = false): string {
 		$subsite = $global ? 'shared' : WebsiteManager::instance()->subsite();
-		return '__SiteBuilder_' . $subsite . '_' . $var_name;
+		return 'Eufony' . $subsite . '_' . $var_name;
 	}
 
 	public function get(string $var_name, bool $global = false): mixed {

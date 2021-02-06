@@ -1,19 +1,19 @@
 <?php
 /**************************************************
- *          The SiteBuilder PHP Framework         *
+ *            The Eufony PHP Framework            *
  *         Copyright (c) 2021 Alpin Gencer        *
  *      Refer to LICENSE.md for a full notice     *
  **************************************************/
 
-namespace SiteBuilder\Core\Content;
+namespace Eufony\Core\Content;
 
-use SiteBuilder\Core\FrameworkManager;
-use SiteBuilder\Core\Website\PageHierarchy;
-use SiteBuilder\Utils\Classes\Collections\ClassedCollection;
-use SiteBuilder\Utils\Classes\Formatter;
-use SiteBuilder\Utils\Traits\ManagedObject;
-use SiteBuilder\Utils\Traits\Runnable;
-use SiteBuilder\Utils\Traits\Singleton;
+use Eufony\Core\FrameworkManager;
+use Eufony\Core\Website\PageHierarchy;
+use Eufony\Utils\Classes\Collections\ClassedCollection;
+use Eufony\Utils\Classes\Formatter;
+use Eufony\Utils\Traits\ManagedObject;
+use Eufony\Utils\Traits\Runnable;
+use Eufony\Utils\Traits\Singleton;
 
 final class ContentManager {
 	public const CONFIG_LANG = 'content.lang';
@@ -89,7 +89,7 @@ final class ContentManager {
 		$content .= '<meta http-equiv="X-UA-Compatible" content="ie=edge">';
 
 		// Check if head defines a <title> tag
-		// If no, generate SiteBuilder default title
+		// If no, generate Eufony default title
 		if(!str_contains($this->head, '</title>')) {
 			$hierarchy = PageHierarchy::instance();
 			$title = $hierarchy->currentAttribute('title') . ' - ' . $hierarchy->globalAttribute('title');

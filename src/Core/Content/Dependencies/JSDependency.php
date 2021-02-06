@@ -1,13 +1,13 @@
 <?php
 /**************************************************
- *          The SiteBuilder PHP Framework         *
+ *            The Eufony PHP Framework            *
  *         Copyright (c) 2021 Alpin Gencer        *
  *      Refer to LICENSE.md for a full notice     *
  **************************************************/
 
-namespace SiteBuilder\Core\Content\Dependencies;
+namespace Eufony\Core\Content\Dependencies;
 
-use SiteBuilder\Core\Content\AssetDependency;
+use Eufony\Core\Content\AssetDependency;
 
 final class JSDependency extends AssetDependency {
 

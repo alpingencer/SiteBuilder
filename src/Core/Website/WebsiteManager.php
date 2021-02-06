@@ -1,21 +1,21 @@
 <?php
 /**************************************************
- *          The SiteBuilder PHP Framework         *
+ *            The Eufony PHP Framework            *
  *         Copyright (c) 2021 Alpin Gencer        *
  *      Refer to LICENSE.md for a full notice     *
  **************************************************/
 
-namespace SiteBuilder\Core\Website;
+namespace Eufony\Core\Website;
 
 use ErrorException;
-use SiteBuilder\Core\Content\ContentManager;
-use SiteBuilder\Core\FrameworkManager;
-use SiteBuilder\Utils\Classes\File;
-use SiteBuilder\Utils\Classes\JsonDecoder;
-use SiteBuilder\Utils\Classes\Normalizer;
-use SiteBuilder\Utils\Traits\ManagedObject;
-use SiteBuilder\Utils\Traits\Runnable;
-use SiteBuilder\Utils\Traits\Singleton;
+use Eufony\Core\Content\ContentManager;
+use Eufony\Core\FrameworkManager;
+use Eufony\Utils\Classes\File;
+use Eufony\Utils\Classes\JsonDecoder;
+use Eufony\Utils\Classes\Normalizer;
+use Eufony\Utils\Traits\ManagedObject;
+use Eufony\Utils\Traits\Runnable;
+use Eufony\Utils\Traits\Singleton;
 
 final class WebsiteManager {
 	use ManagedObject;
@@ -32,7 +32,7 @@ final class WebsiteManager {
 	}
 
 	public static function frameworkDir(): string {
-		return '/vendor/sitebuilder/sitebuilder';
+		return '/vendor/eufony/eufony';
 	}
 
 	public function __construct(array $config) {
@@ -220,7 +220,7 @@ final class WebsiteManager {
 	public function errorPage(int $error_code, string $error_page = null): string {
 		if($error_page === null) {
 			// Check if error page path is defined for the given error code
-			// If no, check if the SiteBuilder default path for error pages is defined in the hierarchy
+			// If no, check if the Eufony default path for error pages is defined in the hierarchy
 			// If also no, throw error: No error page path defined
 			if(!isset($this->errorPages[$error_code])) {
 				$error_page = "error/$error_code";
@@ -282,7 +282,7 @@ final class WebsiteManager {
 
 	public function showDefaultErrorPage(int $error_code): void {
 		http_response_code($error_code);
-		$error_pages = JsonDecoder::read('/vendor/sitebuilder/sitebuilder/src/Core/Website/default-error-pages.json');
+		$error_pages = JsonDecoder::read('/vendor/eufony/eufony/src/Core/Website/default-error-pages.json');
 
 		if(isset($error_pages[$error_code])) {
 			$error_name = $error_pages[$error_code]['name'];

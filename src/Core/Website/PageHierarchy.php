@@ -1,17 +1,17 @@
 <?php
 /**************************************************
- *          The SiteBuilder PHP Framework         *
+ *            The Eufony PHP Framework            *
  *         Copyright (c) 2021 Alpin Gencer        *
  *      Refer to LICENSE.md for a full notice     *
  **************************************************/
 
-namespace SiteBuilder\Core\Website;
+namespace Eufony\Core\Website;
 
 use ErrorException;
-use SiteBuilder\Utils\Classes\JsonDecoder;
-use SiteBuilder\Utils\Classes\Normalizer;
-use SiteBuilder\Utils\Traits\ManagedObject;
-use SiteBuilder\Utils\Traits\Singleton;
+use Eufony\Utils\Classes\JsonDecoder;
+use Eufony\Utils\Classes\Normalizer;
+use Eufony\Utils\Traits\ManagedObject;
+use Eufony\Utils\Traits\Singleton;
 
 final class PageHierarchy {
 	use ManagedObject;

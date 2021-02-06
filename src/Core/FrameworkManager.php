@@ -1,18 +1,18 @@
 <?php
 /**************************************************
- *          The SiteBuilder PHP Framework         *
+ *            The Eufony PHP Framework            *
  *         Copyright (c) 2021 Alpin Gencer        *
  *      Refer to LICENSE.md for a full notice     *
  **************************************************/
 
-namespace SiteBuilder\Core;
+namespace Eufony\Core;
 
-use SiteBuilder\Core\Content\ContentManager;
-use SiteBuilder\Core\Module\ModuleManager;
-use SiteBuilder\Core\Session\SessionManager;
-use SiteBuilder\Core\Website\WebsiteManager;
-use SiteBuilder\Utils\Traits\Runnable;
-use SiteBuilder\Utils\Traits\Singleton;
+use Eufony\Core\Content\ContentManager;
+use Eufony\Core\Module\ModuleManager;
+use Eufony\Core\Session\SessionManager;
+use Eufony\Core\Website\WebsiteManager;
+use Eufony\Utils\Traits\Runnable;
+use Eufony\Utils\Traits\Singleton;
 
 final class FrameworkManager {
 	use Runnable;

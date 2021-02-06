@@ -1,13 +1,13 @@
 <p align="center">
-    <img alt="The SiteBuilder Logo" src="https://raw.githubusercontent.com/alpingencer/sitebuilder/v3/SiteBuilder.png">
+    <img alt="The Eufony Logo" src="https://raw.githubusercontent.com/eufony/eufony/v3/Eufony.png">
 </p>
 
-SiteBuilder is a page management and HTML auto-generation framework for PHP written by Alpin Gencer.
+Eufony is a page management and HTML auto-generation framework for PHP written by Alpin Gencer.
 
 ## Installation
 
-* SiteBuilder v3.0 Lithium comes with Composer support. You can find the Packagist
-  page [here](https://packagist.org/packages/sitebuilder/sitebuilder).
+* Eufony v3.0 Lithium comes with Composer support. You can find the Packagist
+  page [here](https://packagist.org/packages/eufony/eufony).
 
 ## Framework Rules and Restrictions
 
@@ -17,8 +17,8 @@ SiteBuilder is a page management and HTML auto-generation framework for PHP writ
 * Directories:
     * 'public': Anything publicly accessible via an HTTP request
         * 'public/assets': Any CSS, JS, font, image, etc. assets that a page needs
-            * 'public/assets/sitebuilder': A symlink to 'vendor/sitebuilder/sitebuilder/assets' for
-              SiteBuilder's own asset dependencies
+            * 'public/assets/eufony': A symlink to 'vendor/eufony/eufony/assets' for Eufony's own
+              asset dependencies
     * 'src': PHP scripts, custom classes, etc.
         * 'src/content': Webpage content files
             * One directory for each subsite
@@ -29,7 +29,7 @@ SiteBuilder is a page management and HTML auto-generation framework for PHP writ
 ### 2. Server system
 
 * PHP sessions must be enabled
-* SiteBuilder must be installed via Composer
+* Eufony must be installed via Composer
 * Server document root must be set correctly (see project structure requirements)
 * The following php.ini settings must be set:
     * zend.assertions=1
@@ -44,9 +44,9 @@ SiteBuilder is a page management and HTML auto-generation framework for PHP writ
 
 ## Wiki
 
-As it is still very early days for SiteBuilder, the wiki has not been set up yet.
+As it is still very early days for Eufony, the wiki has not been set up yet.
 
 ## License
 
-The SiteBuilder framework is open-sourced software licensed under
+The Eufony framework is open-sourced software licensed under
 the [GNU Lesser General Public License](LICENSE.md).

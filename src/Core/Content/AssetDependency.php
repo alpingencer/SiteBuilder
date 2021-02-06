@@ -1,14 +1,14 @@
 <?php
 /**************************************************
- *          The SiteBuilder PHP Framework         *
+ *            The Eufony PHP Framework            *
  *         Copyright (c) 2021 Alpin Gencer        *
  *      Refer to LICENSE.md for a full notice     *
  **************************************************/
 
-namespace SiteBuilder\Core\Content;
+namespace Eufony\Core\Content;
 
-use SiteBuilder\Utils\Classes\Collections\AttributeCollection;
-use SiteBuilder\Utils\Classes\File;
+use Eufony\Utils\Classes\Collections\AttributeCollection;
+use Eufony\Utils\Classes\File;
 
 abstract class AssetDependency {
 	private string $source;
