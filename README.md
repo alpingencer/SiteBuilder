@@ -1,5 +1,5 @@
 <p align="center">
-    <img alt="The SiteBuilder Logo" src="https://raw.githubusercontent.com/alpingencer/SiteBuilder/v3/SiteBuilder.png">
+    <img alt="The SiteBuilder Logo" src="https://raw.githubusercontent.com/alpingencer/sitebuilder/v3/SiteBuilder.png">
 </p>
 
 SiteBuilder is a page management and HTML auto-generation framework for PHP written by Alpin Gencer.
@@ -14,7 +14,6 @@ SiteBuilder is a page management and HTML auto-generation framework for PHP writ
 ### 1. Project structure
 
 * Server document root is exactly 1 directory under the application root
-* 'sitebuilder.json' configuration file in the application root
 * Directories:
     * 'public': Anything publicly accessible via an HTTP request
         * 'public/assets': Any CSS, JS, font, image, etc. assets that a page needs
@@ -24,13 +23,13 @@ SiteBuilder is a page management and HTML auto-generation framework for PHP writ
         * 'src/content': Webpage content files
             * One directory for each subsite
             * 'shared' directory for common pages in all subsites
-        * 'src/hierarchy.json': The webpage hierarchy file
+        * 'src/content/hierarchy.json': The webpage hierarchy file
 * 'p' GET parameter for defining the current webpage
 
 ### 2. Server system
 
 * PHP sessions must be enabled
-* SiteBuilder must be built via Composer
+* SiteBuilder must be installed via Composer
 * Server document root must be set correctly (see project structure requirements)
 * The following php.ini settings must be set:
     * zend.assertions=1
