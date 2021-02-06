@@ -11,13 +11,17 @@ use Eufony\Core\Content\ContentManager;
 use Eufony\Core\Module\ModuleManager;
 use Eufony\Core\Session\SessionManager;
 use Eufony\Core\Website\WebsiteManager;
+use Eufony\Utils\Exceptions\MisconfigurationException;
 use Eufony\Utils\Traits\Runnable;
 use Eufony\Utils\Traits\Singleton;
 
 final class FrameworkManager {
+	public const CONFIG_DEBUG = 'eufony.debug';
+
 	use Runnable;
 	use Singleton;
 
+	private bool $debug;
 	private ContentManager $content;
 	private ModuleManager $module;
 	private SessionManager $session;
@@ -36,10 +40,27 @@ final class FrameworkManager {
 	public function __construct(array $config = []) {
 		$this->assertSingleton();
 
+		$this->debug = $config[FrameworkManager::CONFIG_DEBUG] ?? true;
+		if($this->debug) {
+			if(ini_get('zend.assertions') !== '1') {
+				throw new MisconfigurationException("Server misconfiguration error: The php.ini setting 'zend.assertions' must have a value of '1'");
+			}
+
+			ini_set('assert.active', '1');
+			ini_set('assert.exception', '1');
+		} else {
+			ini_set('assert.active', '0');
+			ini_set('assert.exception', '0');
+		}
+
 		$this->content = new ContentManager($config);
 		$this->module = new ModuleManager($config);
 		$this->session = new SessionManager($config);
 		$this->website = new WebsiteManager($config);
+	}
+
+	public function debug(): bool {
+		return $this->debug;
 	}
 
 	public function content(): ContentManager {

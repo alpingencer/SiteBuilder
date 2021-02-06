@@ -33,8 +33,6 @@ Eufony is a page management and HTML auto-generation framework for PHP written b
 * Server document root must be set correctly (see project structure requirements)
 * The following php.ini settings must be set:
     * zend.assertions=1
-    * assert.active=1
-    * assert.exception=1
 
 ### 3. Client system
 
