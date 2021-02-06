@@ -1,0 +1,17 @@
+#!/bin/bash
+
+if [ x"$1" = x ]; then
+  # Display help page
+  cat <<USAGE
+Usage: eufony [OPTIONS]
+
+Options:
+	init	Initialize a new Eufony project with the default template
+USAGE
+elif [ "$1" = init ]; then
+  # Initialize new project
+  echo
+else
+  # Unknown command
+  echo Unknown command "$1"
+fi
