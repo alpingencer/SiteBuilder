@@ -11,7 +11,7 @@
 		}
 	],
 	"support": {
-		"issues": "https://github.com/alpingencer/SiteBuilder/issues"
+		"issues": "https://github.com/alpingencer/sitebuilder/issues"
 	},
 	"config": {
 		"optimize-autoloader": true,
