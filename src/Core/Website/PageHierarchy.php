@@ -181,6 +181,13 @@ final class PageHierarchy {
 		return $this->data[$subsite_name];
 	}
 
+	/**
+	 * @param string      $path
+	 * @param string|null $subsite_name
+	 *
+	 * @return array
+	 * @throws PageHierarchyException
+	 */
 	public function page(string $path, string $subsite_name = null): array {
 		$subsite = $this->subsite(subsite_name: $subsite_name);
 		$path = Normalizer::filePath($path);

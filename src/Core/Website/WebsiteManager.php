@@ -8,11 +8,12 @@
 namespace Eufony\Core\Website;
 
 use ErrorException;
-use Eufony\Core\Content\ContentManager;
+use Eufony\Core\Exception\ExceptionManager;
 use Eufony\Core\FrameworkManager;
 use Eufony\Utils\Classes\File;
-use Eufony\Utils\Classes\JsonDecoder;
 use Eufony\Utils\Classes\Normalizer;
+use Eufony\Utils\Exceptions\PageHierarchyException;
+use Eufony\Utils\Exceptions\RedirectingException;
 use Eufony\Utils\Traits\ManagedObject;
 use Eufony\Utils\Traits\Runnable;
 use Eufony\Utils\Traits\Singleton;
@@ -24,7 +25,6 @@ final class WebsiteManager {
 
 	private PageHierarchy $hierarchy;
 	private string $currentPage;
-	private array $errorPages;
 	private string $subsite;
 
 	public static function appDir(): string {
@@ -53,35 +53,32 @@ final class WebsiteManager {
 			}
 		}
 
-		// Check if the current entry point belongs to a subsite
-		// If no, throw error: Subsite not found
-		if(!isset($this->subsite)) {
-			throw new ErrorException("The current subsite with the entry point '$current_entry_point' is not defined in the page hierarchy!");
-		}
+		// Assert that the current entry point belongs to a subsite: Entry point must be defined in the hierarchy
+		assert(
+			isset($this->subsite),
+			new PageHierarchyException("Invalid page hierarchy: Undefined subsite with the entry point '$current_entry_point'")
+		);
 
-		if(isset($_GET['p']) && !empty($_GET['p'])) {
-			// Get the current page path from the 'p' GET parameter
-			$p = $_GET['p'];
-
-			$current_page = Normalizer::filePath($p);
-
-			if($current_page !== $p) {
-				// Redirect to normalize page path in request URI
-				$this->redirect($current_page, keep_get_params: true);
-			}
-
-			$last_char_in_uri = substr($_SERVER['REQUEST_URI'], -1);
-
-			if($last_char_in_uri === '&') {
-				// Redirect to remove trailing '&' in request URI
-				$this->redirect($current_page, keep_get_params: true);
-			}
-
-			$this->currentPage = $current_page;
-		} else {
-			// Redirect to set 'p' GET parameter
+		// Redirect to set 'p' GET parameter if empty
+		if(!isset($_GET['p']) || empty($_GET['p'])) {
 			$this->redirect($this->defaultPage(), keep_get_params: true);
 		}
+
+		// Fetch the current page from the 'p' GET parameter
+		$p = $_GET['p'];
+		$current_page = Normalizer::filePath($p);
+
+		// Redirect to normalize page path in request URI
+		if($current_page !== $p) {
+			$this->redirect($current_page, keep_get_params: true);
+		}
+
+		// Redirect to remove trailing '&' in request URI
+		if(substr($_SERVER['REQUEST_URI'], -1) === '&') {
+			$this->redirect($current_page, keep_get_params: true);
+		}
+
+		$this->currentPage = $current_page;
 	}
 
 	public function run(): void {
@@ -89,16 +86,15 @@ final class WebsiteManager {
 		$this->assertCurrentRunStage(1);
 
 		// Check if page exists in hierarchy
-		// If not, show error 404: Page not found
+		// If no, show error 404: Page not found
 		try {
 			$this->hierarchy->page($this->currentPage);
-		} catch(ErrorException) {
-			$this->showErrorPage(404, 400);
+		} catch(PageHierarchyException) {
+			ExceptionManager::instance()->showErrorPage(404, 400);
 		}
 
-
 		// Include content files for the page and the global header and footer
-		// Global header and footer paths are relative to page content directory
+		// Global header and footer paths are relative to the subsite directory
 		$require_paths = array();
 
 		$global_header = $this->hierarchy->globalAttribute('header');
@@ -120,17 +116,12 @@ final class WebsiteManager {
 			try {
 				$content_file = $this->contentFile($path);
 			} catch(ErrorException) {
-				trigger_error("The path '" . $path . "' does not have a corresponding content file!", E_USER_WARNING);
-				$this->showErrorPage(501, 500);
+				$subsite = $this->subsite();
+				throw new RedirectingException(501, "Undefined content file for the path '$path' in the subsite '$subsite'");
 			}
 
 			require $content_file;
 		}
-
-		/*
-		// Restore default exception handler
-		$this->setShowErrorPageOnException(false);
-		*/
 	}
 
 	public function redirect(string $page, string|array $get_params = '', bool $keep_get_params = false): void {
@@ -167,8 +158,7 @@ final class WebsiteManager {
 		$request_uri_without_get_params = explode('?', $_SERVER['REQUEST_URI'], 2)[0];
 
 		if($request_uri_without_get_params . $uri === $_SERVER['REQUEST_URI']) {
-			trigger_error('Infinite loop detected while redirecting! Showing the default error 508 page to avoid infinite redirecting.', E_USER_WARNING);
-			$this->showDefaultErrorPage(508);
+			ExceptionManager::instance()->showDefaultErrorPage(508);
 		}
 
 		// Redirect and die
@@ -211,92 +201,6 @@ final class WebsiteManager {
 
 	public function defaultPage(): string {
 		return $this->hierarchy->globalAttribute('default-page');
-	}
-
-	public function errorPage(int $error_code, string $error_page = null): string {
-		if($error_page === null) {
-			// Check if error page path is defined for the given error code
-			// If no, check if the Eufony default path for error pages is defined in the hierarchy
-			// If also no, throw error: No error page path defined
-			if(!isset($this->errorPages[$error_code])) {
-				$error_page = "error/$error_code";
-
-				try {
-					$this->hierarchy->page($error_page);
-				} catch(ErrorException) {
-					throw new ErrorException("The page path for the error code '$error_code' is undefined!");
-				}
-
-				$this->errorPages[$error_code] = $error_page;
-			}
-
-			return $this->errorPages[$error_code];
-		} else {
-			$error_page = Normalizer::filePath($error_page);
-
-			// Check if error page is in hierarchy
-			// If no, throw error: Cannot use undefined error page
-			try {
-				$this->hierarchy->page($error_page);
-			} catch(ErrorException) {
-				throw new ErrorException("The given error page path '$error_page' is not in the page hierarchy!");
-			}
-
-			// Check if error page has a content file
-			// If no, throw error: Cannot use error page without its content file
-			try {
-				$this->contentFile($error_page);
-			} catch(ErrorException) {
-				throw new ErrorException("The given error page path '$error_page' does not have a corresponding content file!");
-			}
-
-			$this->errorPages[$error_code] = $error_page;
-			return $this;
-		}
-	}
-
-	public function errorPages(): array {
-		return $this->errorPages;
-	}
-
-	public function showErrorPage(int ...$error_codes): void {
-		// Check each error code in order to see if its error page is defined
-		// If yes, redirect to it
-		// If no, show default error page
-		foreach($error_codes as $error_code) {
-			try {
-				$this->redirect($this->errorPage($error_code));
-			} catch(ErrorException) {
-				if(count($error_codes) > 2) {
-					$this->showErrorPage(array_slice($error_codes, 1));
-				} else {
-					$this->showDefaultErrorPage($error_codes[0]);
-				}
-			}
-		}
-	}
-
-	public function showDefaultErrorPage(int $error_code): void {
-		http_response_code($error_code);
-		$error_pages = JsonDecoder::read('file://' . __DIR__ . '/default-error-pages.json');
-
-		if(isset($error_pages[$error_code])) {
-			$error_name = $error_pages[$error_code]['name'];
-			$error_message = $error_pages[$error_code]['message'];
-		} else {
-			$error_name = 'Unknown Error';
-			$error_message = 'An unknown error has occurred';
-		}
-
-		$content_manager = ContentManager::instance();
-		$content_manager->clear();
-
-		$content_manager->lang('en');
-		$content_manager->head = "<title>$error_code $error_name</title>";
-		$content_manager->body = "<h1>$error_code $error_name</h1><p>$error_message</p>";
-
-		$content_manager->output();
-		die();
 	}
 
 	public function subsite(): string {
