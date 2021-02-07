@@ -24,7 +24,7 @@ class AttributeCollection implements Countable, Iterator {
 		return implode(
 			' ',
 			array_map(
-				fn(string $attribute, string $value) => $value === true ? $attribute : "$attribute=\"$value\"",
+				fn(string $attribute, $value) => $value === true ? $attribute : "$attribute=\"$value\"",
 				array_keys($this->attributes),
 				array_values($this->attributes)
 			)
