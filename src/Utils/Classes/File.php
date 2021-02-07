@@ -23,6 +23,9 @@ class File {
 		if(static::isAbsolutePath($path)) {
 			// Absolute path
 			return WebsiteManager::appDir() . $path;
+		} else if(substr($path, 0, 7) === 'file://') {
+			// Full path given
+			return '/' . ltrim(substr($path, 6), '/');
 		} else {
 			// Relative path
 			return dirname($_SERVER['SCRIPT_FILENAME']) . "/$path";

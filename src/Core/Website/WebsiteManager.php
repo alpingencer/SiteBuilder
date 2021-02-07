@@ -282,7 +282,7 @@ final class WebsiteManager {
 
 	public function showDefaultErrorPage(int $error_code): void {
 		http_response_code($error_code);
-		$error_pages = JsonDecoder::read('/vendor/eufony/eufony/src/Core/Website/default-error-pages.json');
+		$error_pages = JsonDecoder::read('file://' . __DIR__ . '/default-error-pages.json');
 
 		if(isset($error_pages[$error_code])) {
 			$error_name = $error_pages[$error_code]['name'];
