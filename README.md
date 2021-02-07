@@ -17,8 +17,6 @@ Eufony is a page management and HTML auto-generation framework for PHP written b
 * Directories:
     * 'public': Anything publicly accessible via an HTTP request
         * 'public/assets': Any CSS, JS, font, image, etc. assets that a page needs
-            * 'public/assets/eufony': A symlink to 'vendor/eufony/eufony/assets' for Eufony's own
-              asset dependencies
     * 'src': PHP scripts, custom classes, etc.
         * 'src/content': Webpage content files
             * One directory for each subsite
@@ -29,7 +27,6 @@ Eufony is a page management and HTML auto-generation framework for PHP written b
 ### 2. Server system
 
 * PHP sessions must be enabled
-* Eufony must be installed via Composer
 * Server document root must be set correctly (see project structure requirements)
 * The following php.ini settings must be set:
     * zend.assertions=1
