@@ -12,8 +12,8 @@ released. However, if you insist on getting started early, check out the install
 ## Installation
 
 Currently, there are two major versions of Eufony meant for use: v2.0 Helium and v3.0 Lithium. As
-v3.0 is the first version of SiteBuilder to add Composer support, v2.0 only has a manual
-installation process.
+v3.0 is the first version of Eufony to add Composer support, v2.0 only has a manual installation
+process.
 
 ### Installing Eufony v2.0 Helium
 
