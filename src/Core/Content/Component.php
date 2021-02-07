@@ -7,6 +7,8 @@
 
 namespace Eufony\Core\Content;
 
+use BadMethodCallException;
+use Eufony\Core\Content\Components\StaticHTML;
 use Eufony\Utils\Classes\Collections\AttributeCollection;
 
 abstract class Component {
@@ -20,6 +22,11 @@ abstract class Component {
 	public abstract function content(): string;
 
 	public final function attributes(): AttributeCollection {
+		assert(
+			!($this instanceof StaticHTML),
+			new BadMethodCallException("Failed while returning component attributes: StaticHTML components cannot have attributes")
+		);
+
 		return $this->attributes;
 	}
 
