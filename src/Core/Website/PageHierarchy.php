@@ -7,9 +7,9 @@
 
 namespace Eufony\Core\Website;
 
-use ErrorException;
 use Eufony\Utils\Classes\JsonDecoder;
 use Eufony\Utils\Classes\Normalizer;
+use Eufony\Utils\Exceptions\PageHierarchyException;
 use Eufony\Utils\Traits\ManagedObject;
 use Eufony\Utils\Traits\Singleton;
 
@@ -43,33 +43,28 @@ final class PageHierarchy {
 			}
 
 			$default_page = $this->globalAttribute('default-page', subsite_name: $subsite_name);
+
 			try {
 				$this->page($default_page, subsite_name: $subsite_name);
-			} catch(ErrorException) {
-				throw new ErrorException("The given default page '$default_page' is not a valid page in the subsite '$subsite_name'!");
+			} catch(PageHierarchyException) {
+				throw new PageHierarchyException("Invalid page hierarchy: The given default page '$default_page' is not a valid page in the subsite '$subsite_name'!");
 			}
 		}
 	}
 
 	private function assertValid(): void {
 		foreach($this->data as $subsite_name => $subsite) {
-			// Check if type of the subsite is an array
-			// If no, throw error: Subsite must be an array
-			if(!is_array($subsite)) {
-				throw new ErrorException("The given subsite '$subsite_name' in the hierarchy must be an array!");
-			}
+			// Assert that the subsite name is not '.' or '..': These are invalid subsite names
+			assert(
+				$subsite_name !== '.' && $subsite_name !== '..',
+				new PageHierarchyException("Invalid page hierarchy: '.' and '..' are not valid subsite names")
+			);
 
-			// Check if subsite name is '.' or '..'
-			// If yes, throw error: Invalid subsite name
-			if($subsite_name === '..' || $subsite_name === '.') {
-				throw new ErrorException("'..' and '.' are not valid subsite names!");
-			}
-
-			// Check if 'global' global attribute is set
-			// If yes, throw error: Invalid global attribute name
-			if(isset($subsite['global']['global'])) {
-				throw new ErrorException("Invalid global attribute 'global' defined for the subsite '$subsite_name' in the hierarchy!");
-			}
+			// Assert that the subsite is an array
+			assert(
+				is_array($subsite),
+				new PageHierarchyException("Invalid page hierarchy: The subsite '$subsite_name' must be an array")
+			);
 
 			// Check if all required global attributes are set
 			// If yes in 'shared' subsite, throw error: 'shared' cannot define these global attributes
@@ -78,24 +73,26 @@ final class PageHierarchy {
 
 			if($subsite_name === 'shared') {
 				foreach($required_global_attributes as $attribute_name) {
-					if(isset($subsite['global'][$attribute_name])) {
-						throw new ErrorException("The 'shared' subsite cannot define the '$attribute_name' global attribute!");
-					}
+					assert(
+						!isset($subsite['global'][$attribute_name]),
+						new PageHierarchyException("Invalid page hierarchy: The 'shared' subsite cannot define the global attribute '$attribute_name'")
+					);
 				}
 			} else {
 				foreach($required_global_attributes as $attribute_name) {
-					if(!isset($subsite['global'][$attribute_name])) {
-						throw new ErrorException("The subsite '$subsite_name' must define the '$attribute_name' global attribute!");
-					}
+					assert(
+						isset($subsite['global'][$attribute_name]),
+						new PageHierarchyException("Invalid page hierarchy: The subsite '$subsite_name' must define the global attribute '$attribute_name'")
+					);
 				}
 			}
 
 			if(isset($subsite['children'])) {
-				// Check if 'children' attribute is an array
-				// If no, throw error: 'children' must be an array
-				if(!is_array($subsite['children'])) {
-					throw new ErrorException("The 'children' attribute of the subsite '$subsite_name' must be an array!");
-				}
+				// Assert that the 'children' attribute is an array
+				assert(
+					is_array($subsite['children']),
+					new PageHierarchyException("Invalid page hierarchy: The 'children' attribute of the subsite '$subsite_name' must be an array")
+				);
 
 				// Validate subpages
 				foreach($subsite['children'] as $subpage_name => $subpage) {
@@ -106,42 +103,42 @@ final class PageHierarchy {
 	}
 
 	private function assertSubpageValid(mixed $subpage, string $page_name, string $current_path): void {
-		// Check if type of the subpage is an array
-		// If no, throw error: Subpage must be an array
-		if(!is_array($subpage)) {
-			throw new ErrorException("The given subpage '$page_name' in the page '$current_path' in the hierarchy must be an array!");
-		}
+		// Assert that the page name is not '.' or '..': These are invalid subpage names
+		assert(
+			$page_name !== '.' && $page_name !== '..',
+			new PageHierarchyException("Invalid page hierarchy: Invalid subpage name '.' or '..' in the path '$current_path'")
+		);
 
-		// Check if page name is '.' or '..'
-		// If yes, throw error: Invalid page name
-		if($page_name === '..' || $page_name === '.') {
-			throw new ErrorException("'..' and '.' in the path '$current_path' are not valid page names!");
-		}
+		// Assert that the page name is not 'global': Invalid subpage names
+		assert(
+			$page_name !== 'global',
+			new PageHierarchyException("Invalid page hierarchy: Invalid page name 'global' in the path '$current_path'")
+		);
 
-		// Check if page name is 'global'
-		// If yes, throw error: Invalid page name
-		if($page_name === 'global') {
-			throw new ErrorException("Invalid page name 'global' in the path '$current_path'!");
-		}
+		// Assert that the subpage is an array
+		assert(
+			is_array($subpage),
+			new PageHierarchyException("Invalid page hierarchy: The subpage '$current_path' must be an array")
+		);
 
-		// Check if invalid attribute 'global' is set
-		// If yes, throw error: Subpages cannot define global attributes
-		if(isset($subpage['global'])) {
-			throw new ErrorException("Invalid attribute 'global' defined for the page '$current_path' in the hierarchy!");
-		}
+		// Assert that the invalid attribute 'global' is not set: Subpages cannot defined global attributes
+		assert(
+			!isset($subpage['global']),
+			new PageHierarchyException("Invalid page hierarchy: Invalid attribute 'global' defined for the page '$current_path'")
+		);
 
-		// Check if required 'title' attribute is set
-		// If no, throw error: Page must have a title
-		if(!isset($subpage['title'])) {
-			throw new ErrorException("The required attribute 'title' is not defined for the path '$current_path' in the hierarchy!");
-		}
+		// Assert that the required 'title' attribute is set: Pages must have a title
+		assert(
+			isset($subpage['title']),
+			new PageHierarchyException("Invalid page hierarchy: The required attribute 'title' must be defined for the page '$current_path'")
+		);
 
 		if(isset($subpage['children'])) {
-			// Check if 'children' attribute is an array
-			// If no, throw error: 'children' must be an array
-			if(!is_array($subpage['children'])) {
-				throw new ErrorException("The 'children' attribute of the subsite '$page_name' must be an array!");
-			}
+			// Assert that the 'children' attribute is an array
+			assert(
+				is_array($subpage['children']),
+				new PageHierarchyException("Invalid page hierarchy: The 'children' attribute of the subpage '$current_path' must be an array")
+			);
 
 			// Validate children
 			foreach($subpage['children'] as $child_name => $child) {
@@ -175,11 +172,11 @@ final class PageHierarchy {
 			$subsite_name = WebsiteManager::instance()->subsite();
 		}
 
-		// Check if subsite is defined
-		// If no, throw error: Subsite not found
-		if(!isset($this->data[$subsite_name])) {
-			throw new ErrorException("Undefined subsite '$subsite_name'!");
-		}
+		// Assert that the subsite is defined: Cannot return undefined subsite
+		assert(
+			isset($this->data[$subsite_name]),
+			new PageHierarchyException("Failed while getting subsite data: Undefined subsite '$subsite_name'")
+		);
 
 		return $this->data[$subsite_name];
 	}
@@ -195,23 +192,18 @@ final class PageHierarchy {
 			$page = $this->page($path, subsite_name: 'shared');
 		}
 
-		if($page !== null) {
-			// Page found, return it
-			return $page;
-		} else {
-			// Page not found
-			throw new ErrorException("The given page path '$path' was not found in the hierarchy!");
-		}
+		// Assert that the page is found
+		assert(
+			$page !== null,
+			new PageHierarchyException("The given page path '$path' was not found in the hierarchy!")
+		);
+
+		return $page;
 	}
 
 	public function attribute(string $attribute_name, string $page, string $subsite_name = null): mixed {
 		$page_data = $this->page($page, subsite_name: $subsite_name);
-
-		if(isset($page_data[$attribute_name])) {
-			return $page_data[$attribute_name];
-		} else {
-			return null;
-		}
+		return $page_data[$attribute_name] ?? null;
 	}
 
 	public function currentAttribute(string $attribute_name): mixed {
