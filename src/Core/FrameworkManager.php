@@ -77,7 +77,7 @@ final class FrameworkManager {
 
 		$this->module->runLate();
 		$this->content->output();
-		$this->module->uninitAll();
+		$this->module->uninit();
 		$this->exception->restoreHandler();
 	}
 

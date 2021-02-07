@@ -69,39 +69,39 @@ class ClassedCollection implements Countable, Iterator {
 		return $this->data;
 	}
 
-	public function add(object $object): void {
-		// Assert that the given object matches the type of this ClassedCollection
-		$expected_class = $this->class;
-		$object_class = get_class($object);
-		assert(
-			is_a($object, $this->class),
-			new InvalidArgumentException("Failed while adding object to collection: Cannot add object of class '$object_class' to collection of '$expected_class'")
-		);
-
-		$this->data->attach($object);
-	}
-
-	public function addAll(object ...$objects): void {
+	public function add(object ...$objects): void {
 		foreach($objects as $object) {
-			$this->add($object);
+			// Assert that the given object matches the type of this ClassedCollection
+			$expected_class = $this->class;
+			$object_class = get_class($object);
+			assert(
+				is_a($object, $this->class),
+				new InvalidArgumentException("Failed while adding object to collection: Cannot add object of class '$object_class' to collection of '$expected_class'")
+			);
+
+			$this->data->attach($object);
 		}
 	}
 
-	public function remove(object $object): void {
-		// Assert that the given object matches the type of this ClassedCollection
-		$expected_class = $this->class;
-		$object_class = get_class($object);
-		assert(
-			is_a($object, $this->class),
-			new InvalidArgumentException("Failed while removing object from collection: Object of class '$object_class' cannot be in collection of '$expected_class'")
-		);
+	public function remove(object|string $object_or_class): void {
+		if(is_object($object_or_class)) {
+			$object = $object_or_class;
 
-		$this->data->detach($object);
-	}
+			// Assert that the given object matches the type of this ClassedCollection
+			$expected_class = $this->class;
+			$object_class = get_class($object);
+			assert(
+				is_a($object, $this->class),
+				new InvalidArgumentException("Failed while removing object from collection: Object of class '$object_class' cannot be in collection of '$expected_class'")
+			);
 
-	public function removeAll(string $class): void {
-		foreach($this->get($class) as $object) {
-			$this->remove($object);
+			$this->data->detach($object);
+		} else {
+			$class = $object_or_class;
+
+			foreach($this->get($class) as $object) {
+				$this->remove($object);
+			}
 		}
 	}
 

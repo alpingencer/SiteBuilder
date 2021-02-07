@@ -63,20 +63,20 @@ final class ModuleManager {
 		$module->init($config);
 	}
 
-	public function uninit(string $module_class): void {
-		// Assert that the given module is initialized: Cannot uninitialize non-existing module
-		assert(
-			$this->moduleInitialized($module_class),
-			new UnexpectedValueException("Failed while uninitializing module: Module of the given class '$module_class' not found")
-		);
+	public function uninit(string $module_class = null): void {
+		if($module_class === null) {
+			foreach(array_keys($this->modules) as $module_class) {
+				$this->uninit($module_class);
+			}
+		} else {
+			// Assert that the given module is initialized: Cannot uninitialize non-existing module
+			assert(
+				$this->moduleInitialized($module_class),
+				new UnexpectedValueException("Failed while uninitializing module: Module of the given class '$module_class' not found")
+			);
 
-		$this->modules[$module_class]->uninit();
-		unset($this->modules[$module_class]);
-	}
-
-	public function uninitAll(): void {
-		foreach(array_keys($this->modules) as $module_class) {
-			$this->uninit($module_class);
+			$this->modules[$module_class]->uninit();
+			unset($this->modules[$module_class]);
 		}
 	}
 
