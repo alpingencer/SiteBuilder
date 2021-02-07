@@ -31,10 +31,6 @@ final class WebsiteManager {
 		return dirname($_SERVER['DOCUMENT_ROOT']);
 	}
 
-	public static function frameworkDir(): string {
-		return '/vendor/eufony/eufony';
-	}
-
 	public function __construct(array $config) {
 		$this->setAndAssertManager(FrameworkManager::class);
 		$this->assertSingleton();
