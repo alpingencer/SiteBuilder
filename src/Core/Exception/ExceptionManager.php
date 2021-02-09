@@ -39,7 +39,7 @@ final class ExceptionManager {
 		}
 	}
 
-	public function setHandler(): void {
+	private function setHandler(): void {
 		set_exception_handler(
 			function(Throwable $e) {
 				// Log exception
@@ -56,9 +56,17 @@ final class ExceptionManager {
 	}
 
 	public function restoreHandler(): void {
+		$this->assertCallerIsManager();
 		restore_exception_handler();
 	}
 
+	/**
+	 * @param int         $error_code
+	 * @param string|null $error_page
+	 *
+	 * @return string|$this
+	 * @throws ErrorException
+	 */
 	public function errorPage(int $error_code, string $error_page = null): string|self {
 		if($error_page === null) {
 			// Check if error page path is defined for the given error code

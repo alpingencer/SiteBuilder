@@ -62,11 +62,7 @@ final class FrameworkManager {
 		$this->website = new WebsiteManager($config);
 	}
 
-	public function __destruct() {
-		$this->run();
-	}
-
-	private function run(): void {
+	public function run(): void {
 		$this->assertCurrentRunStage(1);
 
 		$this->website->run();
@@ -76,8 +72,8 @@ final class FrameworkManager {
 		$this->content->run();
 
 		$this->module->runLate();
-		$this->content->output();
 		$this->module->uninit();
+		$this->content->output();
 		$this->exception->restoreHandler();
 	}
 
