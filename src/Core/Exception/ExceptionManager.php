@@ -14,7 +14,6 @@ use Eufony\Core\Website\WebsiteManager;
 use Eufony\Utils\Classes\JsonDecoder;
 use Eufony\Utils\Classes\Normalizer;
 use Eufony\Utils\Exceptions\PageHierarchyException;
-use Eufony\Utils\Exceptions\RedirectingException;
 use Eufony\Utils\Traits\ManagedObject;
 use Eufony\Utils\Traits\Singleton;
 use Throwable;
@@ -46,11 +45,7 @@ final class ExceptionManager {
 				error_log("Uncaught $e", message_type: 4);
 
 				// Redirect to error page
-				if($e instanceof RedirectingException) {
-					$this->showErrorPage($e->getHttpResponseCode(), 500);
-				} else {
-					$this->showErrorPage(500);
-				}
+				$this->showErrorPage(500);
 			}
 		);
 	}

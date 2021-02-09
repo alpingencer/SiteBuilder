@@ -13,7 +13,6 @@ use Eufony\Core\FrameworkManager;
 use Eufony\Utils\Classes\File;
 use Eufony\Utils\Classes\Normalizer;
 use Eufony\Utils\Exceptions\PageHierarchyException;
-use Eufony\Utils\Exceptions\RedirectingException;
 use Eufony\Utils\Traits\ManagedObject;
 use Eufony\Utils\Traits\Runnable;
 use Eufony\Utils\Traits\Singleton;
@@ -117,7 +116,7 @@ final class WebsiteManager {
 				$content_file = $this->contentFile($path);
 			} catch(ErrorException) {
 				$subsite = $this->subsite();
-				throw new RedirectingException(501, "Undefined content file for the path '$path' in the subsite '$subsite'");
+				throw new ErrorException("Undefined content file for the path '$path' in the subsite '$subsite'");
 			}
 
 			require $content_file;
