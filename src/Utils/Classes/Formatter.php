@@ -23,6 +23,7 @@ class Formatter {
 
 		$result = ''; // holds formatted version as it is built
 		$pad = 0; // initial indent
+		$indent = 0;
 		$matches = array(); // returns from preg_matches()
 		$voidTag = false;
 
