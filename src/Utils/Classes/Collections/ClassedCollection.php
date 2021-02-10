@@ -73,7 +73,7 @@ class ClassedCollection implements Countable, Iterator {
 		foreach($objects as $object) {
 			// Assert that the given object matches the type of this ClassedCollection
 			$expected_class = $this->class;
-			$object_class = get_class($object);
+			$object_class = $object::class;
 			assert(
 				is_a($object, $this->class),
 				new InvalidArgumentException("Failed while adding object to collection: Cannot add object of class '$object_class' to collection of '$expected_class'")
@@ -89,7 +89,7 @@ class ClassedCollection implements Countable, Iterator {
 
 			// Assert that the given object matches the type of this ClassedCollection
 			$expected_class = $this->class;
-			$object_class = get_class($object);
+			$object_class = $object::class;
 			assert(
 				is_a($object, $this->class),
 				new InvalidArgumentException("Failed while removing object from collection: Object of class '$object_class' cannot be in collection of '$expected_class'")

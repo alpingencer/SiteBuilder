@@ -19,7 +19,7 @@ abstract class AssetDependency {
 		$added_dependency_sources = array();
 
 		foreach($dependencies as $dependency) {
-			$dependency_class = get_class($dependency);
+			$dependency_class = $dependency::class;
 			$added_dependency_sources[$dependency_class] ??= array();
 
 			if(in_array($dependency->source(), $added_dependency_sources[$dependency_class], true)) {

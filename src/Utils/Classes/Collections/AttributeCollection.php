@@ -9,9 +9,10 @@ namespace Eufony\Utils\Classes\Collections;
 
 use Countable;
 use Iterator;
+use Stringable;
 use UnexpectedValueException;
 
-class AttributeCollection implements Countable, Iterator {
+class AttributeCollection implements Countable, Iterator, Stringable {
 	private array $attributes;
 	private int $position;
 

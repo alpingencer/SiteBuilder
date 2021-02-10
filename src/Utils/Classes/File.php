@@ -16,16 +16,16 @@ class File {
 	use StaticOnly;
 
 	public static function isAbsolutePath(string $path): bool {
-		return substr($path, 0, 1) === '/';
+		return str_starts_with($path, '/');
 	}
 
 	public static function fullPath(string $path): string {
 		if(static::isAbsolutePath($path)) {
 			// Absolute path
 			return WebsiteManager::appDir() . $path;
-		} else if(substr($path, 0, 7) === 'file://') {
+		} else if(str_starts_with($path, 'file://')) {
 			// Full path given
-			return '/' . ltrim(substr($path, 6), '/');
+			return '/' . ltrim(substr($path, 7), '/');
 		} else {
 			// Relative path
 			return dirname($_SERVER['SCRIPT_FILENAME']) . "/$path";

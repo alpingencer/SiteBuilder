@@ -62,7 +62,7 @@ final class ContentManager {
 		AssetDependency::removeDuplicates($added_dependencies);
 
 		// Sort dependencies by class
-		usort($added_dependencies, fn($d1, $d2) => get_class($d1) <=> get_class($d2));
+		usort($added_dependencies, fn($d1, $d2) => $d1::class <=> $d2::class);
 
 		// Add dependencies to page
 		foreach($added_dependencies as $dependency) {

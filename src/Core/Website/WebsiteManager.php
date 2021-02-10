@@ -73,7 +73,7 @@ final class WebsiteManager {
 		}
 
 		// Redirect to remove trailing '&' in request URI
-		if(substr($_SERVER['REQUEST_URI'], -1) === '&') {
+		if(str_ends_with($_SERVER['REQUEST_URI'], '&')) {
 			$this->redirect($current_page, keep_get_params: true);
 		}
 
