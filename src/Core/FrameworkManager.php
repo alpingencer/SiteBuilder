@@ -17,6 +17,8 @@ use Eufony\Utils\Traits\Runnable;
 use Eufony\Utils\Traits\Singleton;
 
 final class FrameworkManager {
+	public const CONFIG_ASSERTIONS = 'eufony.assertions';
+
 	use Runnable;
 	use Singleton;
 
@@ -50,7 +52,7 @@ final class FrameworkManager {
 		}
 
 		// Set Eufony's required php.ini settings
-		ini_set('assert.active', '1');
+		ini_set('assert.active', $config[FrameworkManager::CONFIG_ASSERTIONS] ?? true ? '1' : '0');
 		ini_set('assert.exception', '1');
 
 		$this->assertSingleton();
