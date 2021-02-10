@@ -38,8 +38,6 @@ final class FrameworkManager {
 	}
 
 	public function __construct(array $config = []) {
-		$this->assertSingleton();
-
 		// Assert that the following php.ini settings are set correctly: Eufony requires these ini settings
 		$php_ini_settings = array(
 			'zend.assertions' => '1',
@@ -54,6 +52,8 @@ final class FrameworkManager {
 		// Set Eufony's required php.ini settings
 		ini_set('assert.active', '1');
 		ini_set('assert.exception', '1');
+
+		$this->assertSingleton();
 
 		$this->content = new ContentManager($config);
 		$this->exception = new ExceptionManager($config);
