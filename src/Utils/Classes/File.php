@@ -7,7 +7,6 @@
 
 namespace Eufony\Utils\Classes;
 
-use Eufony\Core\Website\WebsiteManager;
 use Eufony\Utils\Exceptions\IOException;
 use Eufony\Utils\Traits\StaticOnly;
 use FilesystemIterator;
@@ -22,7 +21,7 @@ class File {
 	public static function fullPath(string $path): string {
 		if(static::isAbsolutePath($path)) {
 			// Absolute path
-			return WebsiteManager::appDir() . $path;
+			return dirname($_SERVER['DOCUMENT_ROOT']) . $path;
 		} else if(str_starts_with($path, 'file://')) {
 			// Full path given
 			return '/' . ltrim(substr($path, 7), '/');

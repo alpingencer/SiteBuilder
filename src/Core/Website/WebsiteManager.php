@@ -26,10 +26,6 @@ final class WebsiteManager {
 	private string $currentPage;
 	private string $subsite;
 
-	public static function appDir(): string {
-		return dirname($_SERVER['DOCUMENT_ROOT']);
-	}
-
 	public function __construct(array $config) {
 		$this->setAndAssertManager(FrameworkManager::class);
 		$this->assertSingleton();
@@ -174,7 +170,7 @@ final class WebsiteManager {
 		$page = Normalizer::filePath($page);
 
 		foreach(array($this->subsite, 'shared') as $subsite) {
-			$file_path = "/src/content/$subsite/$page.php";
+			$file_path = "/content/$subsite/$page.php";
 
 			// Check if content file exists
 			// If no, continue: Check next subsite
