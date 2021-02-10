@@ -13,15 +13,13 @@ Eufony is a page management and HTML auto-generation framework for PHP written b
 
 ### 1. Project structure
 
-* Server document root is exactly 1 directory under the application root
 * Directories:
-    * 'public': Anything publicly accessible via an HTTP request
+    * 'public': Anything publicly accessible via an HTTP request (the server document root)
         * 'public/assets': Any CSS, JS, font, image, etc. assets that a page needs
-    * 'src': PHP scripts, custom classes, etc.
-        * 'src/content': Webpage content files
-            * One directory for each subsite
-            * 'shared' directory for common pages in all subsites
-        * 'src/content/hierarchy.json': The webpage hierarchy file
+    * 'content': Webpage content files
+        * 'content/hierarchy.json': The webpage hierarchy file
+        * One directory for each subsite
+        * 'shared' directory for common pages in all subsites
 * 'p' GET parameter for defining the current webpage
 
 ### 2. Server system
