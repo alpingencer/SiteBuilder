@@ -44,17 +44,19 @@ class AttributeCollection implements Countable, Iterator, Stringable {
 		return $this->attributes;
 	}
 
-	public function set(string $attribute, string $value = null): self {
-		$this->attributes[$attribute] = $value ?? true;
-		return $this;
-	}
+	public function set(string|array $attribute_or_array, string $value = null): self {
+		if(is_string($attribute_or_array)) {
+			$attribute = $attribute_or_array;
+			$this->attributes[$attribute] = $value ?? true;
+		} else {
+			$array = $attribute_or_array;
 
-	public function setAll(array $attributes): self {
-		foreach($attributes as $attribute => $value) {
-			if(is_string($attribute)) {
-				$this->set($attribute, $value);
-			} else {
-				$this->set($value);
+			foreach($array as $attribute => $value) {
+				if(is_string($attribute)) {
+					$this->set($attribute, $value);
+				} else {
+					$this->set($value);
+				}
 			}
 		}
 
