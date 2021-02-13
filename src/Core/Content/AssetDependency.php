@@ -9,8 +9,9 @@ namespace Eufony\Core\Content;
 
 use Eufony\Utils\Classes\Collections\AttributeCollection;
 use Eufony\Utils\Classes\File;
+use Stringable;
 
-abstract class AssetDependency {
+abstract class AssetDependency implements Stringable {
 	private string $source;
 	private AttributeCollection $attributes;
 
@@ -53,6 +54,10 @@ abstract class AssetDependency {
 		ContentManager::instance()->dependencies()->add($this);
 		$this->source = AssetDependency::path($source);
 		$this->attributes = new AttributeCollection();
+	}
+
+	public final function __toString(): string {
+		return $this->html();
 	}
 
 	public abstract function html(): string;

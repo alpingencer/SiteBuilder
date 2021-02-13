@@ -7,8 +7,9 @@
 
 namespace Eufony\Core\Content;
 
+use Eufony\Core\Content\Components\Body;
+use Eufony\Core\Content\Components\Head;
 use Eufony\Core\FrameworkManager;
-use Eufony\Core\Website\PageHierarchy;
 use Eufony\Utils\Classes\Collections\ClassedCollection;
 use Eufony\Utils\Classes\Formatter;
 use Eufony\Utils\Traits\ManagedObject;
@@ -24,8 +25,6 @@ final class ContentManager {
 
 	private ClassedCollection $components;
 	private ClassedCollection $dependencies;
-	public string $head;
-	public string $body;
 	private string $lang;
 
 	public function __construct(array $config) {
@@ -34,6 +33,8 @@ final class ContentManager {
 
 		$this->components = new ClassedCollection(Component::class);
 		$this->dependencies = new ClassedCollection(AssetDependency::class);
+		new Head();
+		new Body();
 		$this->clear();
 
 		if(isset($config[ContentManager::CONFIG_LANG])) {
@@ -48,7 +49,11 @@ final class ContentManager {
 		// Components
 		// Add components to page
 		foreach($this->components as $component) {
-			$this->body .= $component->content();
+			if($component instanceof Head || $component instanceof Body) {
+				continue;
+			}
+
+			$this->body()->append($component);
 		}
 
 		// Dependencies
@@ -66,9 +71,8 @@ final class ContentManager {
 
 		// Add dependencies to page
 		foreach($added_dependencies as $dependency) {
-			$dependency_html = $dependency->html();
-			$dependency_html = Formatter::doubleSpace($dependency_html);
-			$this->head .= $dependency_html;
+			$dependency_html = Formatter::doubleSpace($dependency);
+			$this->head()->append($dependency_html);
 		}
 	}
 
@@ -80,27 +84,9 @@ final class ContentManager {
 		$lang = isset($this->lang) ? " lang=\"$this->lang\"" : "";
 		$content .= '<html' . $lang . '>';
 
-		// Generate <head>
-		$content .= '<head>';
-
-		// Generate HTML boilerplate
-		$content .= '<meta charset="UTF-8">';
-		$content .= '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
-		$content .= '<meta http-equiv="X-UA-Compatible" content="ie=edge">';
-
-		// Check if head defines a <title> tag
-		// If no, generate Eufony default title
-		if(!str_contains($this->head, '</title>')) {
-			$hierarchy = PageHierarchy::instance();
-			$title = $hierarchy->currentAttribute('title') . ' - ' . $hierarchy->globalAttribute('title');
-			$content .= "<title>$title</title>";
-		}
-
-		$content .= $this->head;
-		$content .= '</head>';
-
-		// Generate <body>
-		$content .= '<body>' . $this->body . '</body>';
+		// Generate head and body
+		$content .= $this->head();
+		$content .= $this->body();
 
 		// Close <html>
 		$content .= '</html>';
@@ -112,16 +98,24 @@ final class ContentManager {
 		echo $content;
 	}
 
-	public function appendToHead(string $content): void {
-		$this->head .= $content;
-	}
-
 	public function components(): ClassedCollection {
 		return $this->components;
 	}
 
 	public function dependencies(): ClassedCollection {
 		return $this->dependencies;
+	}
+
+	public function head(): Head {
+		/** @var $head Head */
+		$head = Head::instance();
+		return $head;
+	}
+
+	public function body(): Body {
+		/** @var $body Body */
+		$body = Body::instance();
+		return $body;
 	}
 
 	public function lang(string $lang = null): string|self {
@@ -134,8 +128,8 @@ final class ContentManager {
 	}
 
 	public function clear(): void {
-		$this->head = '';
-		$this->body = '';
+		$this->head()->clear();
+		$this->body()->clear();
 		unset($this->lang);
 		$this->components->clear();
 		$this->dependencies->clear();

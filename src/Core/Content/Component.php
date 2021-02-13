@@ -10,13 +10,18 @@ namespace Eufony\Core\Content;
 use BadMethodCallException;
 use Eufony\Core\Content\Components\StaticHTML;
 use Eufony\Utils\Classes\Collections\AttributeCollection;
+use Stringable;
 
-abstract class Component {
+abstract class Component implements Stringable {
 	private AttributeCollection $attributes;
 
 	public function __construct() {
 		ContentManager::instance()->components()->add($this);
 		$this->attributes = new AttributeCollection();
+	}
+
+	public final function __toString(): string {
+		return $this->content();
 	}
 
 	public abstract function content(): string;
