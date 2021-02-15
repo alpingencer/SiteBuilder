@@ -27,6 +27,7 @@ final class FrameworkManager {
 	private ModuleManager $module;
 	private SessionManager $session;
 	private WebsiteManager $website;
+	private bool $ready;
 
 	public static function managers(): array {
 		return array(
@@ -40,6 +41,8 @@ final class FrameworkManager {
 	}
 
 	public function __construct(array $config = []) {
+		$this->ready = false;
+
 		// Assert that the following php.ini settings are set correctly: Eufony requires these ini settings
 		$php_ini_settings = array(
 			'zend.assertions' => '1',
@@ -57,11 +60,13 @@ final class FrameworkManager {
 
 		$this->assertSingleton();
 
-		$this->content = new ContentManager($config);
 		$this->exception = new ExceptionManager($config);
-		$this->module = new ModuleManager($config);
-		$this->session = new SessionManager($config);
 		$this->website = new WebsiteManager($config);
+		$this->session = new SessionManager($config);
+		$this->content = new ContentManager($config);
+		$this->module = new ModuleManager($config);
+
+		$this->ready = true;
 	}
 
 	public function run(): void {
@@ -76,7 +81,9 @@ final class FrameworkManager {
 		$this->module->runLate();
 		$this->module->uninit();
 		$this->content->output();
-		$this->exception->restoreHandler();
+		$this->exception->redirectOnException(false);
+
+		$this->ready = false;
 	}
 
 	public function content(): ContentManager {
@@ -97,6 +104,10 @@ final class FrameworkManager {
 
 	public function website(): WebsiteManager {
 		return $this->website;
+	}
+
+	public function ready(): bool {
+		return $this->ready;
 	}
 
 }

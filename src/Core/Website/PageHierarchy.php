@@ -23,7 +23,7 @@ final class PageHierarchy {
 		$this->setAndAssertManager(WebsiteManager::class);
 		$this->assertSingleton();
 
-		$this->data = JsonDecoder::read('/content/hierarchy.json');
+		$this->data = JsonDecoder::read('/routes/hierarchy.json');
 		$this->prepare();
 	}
 
@@ -42,12 +42,12 @@ final class PageHierarchy {
 				continue;
 			}
 
-			$default_page = $this->globalAttribute('default-page', subsite_name: $subsite_name);
+			$default_page = $this->globalAttribute('default-page', subsite_name: $subsite_name) ?? 'home';
 
 			try {
 				$this->page($default_page, subsite_name: $subsite_name);
 			} catch(PageHierarchyException) {
-				throw new PageHierarchyException("Invalid page hierarchy: The given default page '$default_page' is not a valid page in the subsite '$subsite_name'!");
+				throw new PageHierarchyException("Invalid page hierarchy: The default page '$default_page' is not a valid page in the subsite '$subsite_name'!");
 			}
 		}
 	}
@@ -69,7 +69,7 @@ final class PageHierarchy {
 			// Check if all required global attributes are set
 			// If yes in 'shared' subsite, throw error: 'shared' cannot define these global attributes
 			// If no otherwise, throw error: Subsites must define these global attributes
-			$required_global_attributes = array('title', 'entry-point', 'default-page');
+			$required_global_attributes = array('title');
 
 			if($subsite_name === 'shared') {
 				foreach($required_global_attributes as $attribute_name) {

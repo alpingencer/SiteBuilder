@@ -13,6 +13,7 @@ use Eufony\Core\FrameworkManager;
 use Eufony\Core\Website\WebsiteManager;
 use Eufony\Utils\Classes\JsonDecoder;
 use Eufony\Utils\Classes\Normalizer;
+use Eufony\Utils\Exceptions\IOException;
 use Eufony\Utils\Exceptions\PageHierarchyException;
 use Eufony\Utils\Traits\ManagedObject;
 use Eufony\Utils\Traits\Singleton;
@@ -24,43 +25,41 @@ final class ExceptionManager {
 	use ManagedObject;
 	use Singleton;
 
-	private bool $redirectOnException;
 	private array $errorPages;
 
 	public function __construct(array $config) {
 		$this->setAndAssertManager(FrameworkManager::class);
 		$this->assertSingleton();
 
-		$this->redirectOnException = $config[ExceptionManager::CONFIG_REDIRECT] ?? true;
-
-		if($this->redirectOnException) {
-			$this->setHandler();
-		}
+		$this->redirectOnException($config[ExceptionManager::CONFIG_REDIRECT] ?? true);
 	}
 
-	private function setHandler(): void {
-		set_exception_handler(
-			function(Throwable $e) {
-				// Log exception
-				error_log("Uncaught $e", message_type: 4);
-
-				// Redirect to error page
-				$this->showErrorPage(500);
-			}
-		);
-	}
-
-	public function restoreHandler(): void {
+	public function redirectOnException(bool $redirect): void {
 		$this->assertCallerIsManager();
-		restore_exception_handler();
+
+		if($redirect) {
+			set_exception_handler(
+				function(Throwable $e) {
+					// Log exception
+					error_log("Uncaught $e", message_type: 4);
+
+					if(FrameworkManager::instance()->ready()) {
+						// Redirect to error page
+						$this->showErrorPage(500);
+					}
+				}
+			);
+		} else {
+			restore_exception_handler();
+		}
 	}
 
 	/**
 	 * @param int         $error_code
 	 * @param string|null $error_page
 	 *
-	 * @return string|$this
-	 * @throws ErrorException
+	 * @return string|self
+	 * @throws PageHierarchyException|IOException|ErrorException
 	 */
 	public function errorPage(int $error_code, string $error_page = null): string|self {
 		if($error_page === null) {
@@ -72,8 +71,8 @@ final class ExceptionManager {
 
 				try {
 					$this->errorPage($error_code, $error_page);
-				} catch(ErrorException) {
-					throw new ErrorException("The page path for the error code '$error_code' is undefined!");
+				} catch(PageHierarchyException | IOException) {
+					throw new ErrorException("Failed while getting error page path: Undefined error page for error code '$error_code'");
 				}
 			}
 
@@ -87,15 +86,15 @@ final class ExceptionManager {
 			try {
 				$website_manager->hierarchy()->page($error_page);
 			} catch(PageHierarchyException) {
-				throw new ErrorException("The given error page path '$error_page' is not in the page hierarchy!");
+				throw new PageHierarchyException("Failed while setting error page path: Undefined error page '$error_page' in the hierarchy");
 			}
 
 			// Check if error page has a content file
 			// If no, throw error: Cannot use error page without its content file
 			try {
 				$website_manager->contentFile($error_page);
-			} catch(ErrorException) {
-				throw new ErrorException("The given error page path '$error_page' does not have a corresponding content file!");
+			} catch(IOException) {
+				throw new IOException("Failed while setting error page path: Undefined content file for the error page path '$error_page'");
 			}
 
 			$this->errorPages[$error_code] = $error_page;
@@ -114,7 +113,7 @@ final class ExceptionManager {
 		foreach(array($error_code, ...$alternatives) as $current_error_code) {
 			try {
 				WebsiteManager::instance()->redirect($this->errorPage($current_error_code));
-			} catch(ErrorException) {
+			} catch(ErrorException | IOException) {
 				continue;
 			}
 		}
@@ -138,15 +137,11 @@ final class ExceptionManager {
 		$content_manager->clear();
 
 		$content_manager->lang('en');
-		$content_manager->head = "<title>$error_code $error_name</title>";
-		$content_manager->body = "<h1>$error_code $error_name</h1><p>$error_message</p>";
+		$content_manager->head()->content = "<title>$error_code $error_name</title>";
+		$content_manager->body()->content = "<!-- Eufony Default Page --><h1>$error_code $error_name</h1><p>$error_message</p>";
 
 		$content_manager->output();
 		die();
-	}
-
-	public function redirectOnException(): bool {
-		return $this->redirectOnException;
 	}
 
 }
