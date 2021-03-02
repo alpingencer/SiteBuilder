@@ -23,22 +23,19 @@ trait Runnable {
 		$current_stage = $this->currentRunStage();
 
 		// Assert that the given run stage is greater than 0: Run stages are 1-indexed
-		assert(
-			$run_stage > 0,
-			new UnexpectedValueException("Forbidden run stage value: Run stage must be greater than 0")
-		);
+		if($run_stage <= 0) {
+			throw new UnexpectedValueException("Forbidden run stage value: Run stage must be greater than 0");
+		}
 
 		// Assert that the run stage wasn't run previously: Cannot re-run run stages
-		assert(
-			$this->currentRunStage <= $run_stage,
-			new BadMethodCallException("Forbidden call to run stage #$run_stage: Already ran (currently on stage #$current_stage)")
-		);
+		if($this->currentRunStage > $run_stage) {
+			throw new BadMethodCallException("Forbidden call to run stage #$run_stage: Already ran (currently on stage #$current_stage)");
+		}
 
 		// Assert that the run stage doesn't skip ahead: Must run run stages in order
-		assert(
-			$this->currentRunStage >= $run_stage,
-			new BadMethodCallException("Forbidden call to run stage #$run_stage! Cannot skip ahead (currently on stage #$current_stage)")
-		);
+		if($this->currentRunStage < $run_stage) {
+			throw new BadMethodCallException("Forbidden call to run stage #$run_stage! Cannot skip ahead (currently on stage #$current_stage)");
+		}
 
 		// Increment to next run stage
 		$this->currentRunStage++;

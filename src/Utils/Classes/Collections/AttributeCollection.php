@@ -33,11 +33,8 @@ class AttributeCollection implements Countable, Iterator, Stringable {
 	}
 
 	public function get(string $attribute): string|bool {
-		if(!isset($this->attributes[$attribute])) {
-			throw new UnexpectedValueException("Error while fetching attribute '$attribute': Attribute is undefined");
-		}
-
-		return $this->attributes[$attribute];
+		return $this->attributes[$attribute]
+			?? throw new UnexpectedValueException("Error while fetching attribute '$attribute': Attribute is undefined");
 	}
 
 	public function array(): array {

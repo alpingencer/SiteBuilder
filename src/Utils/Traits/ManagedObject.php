@@ -43,10 +43,9 @@ trait ManagedObject {
 
 	private function assertManagerIsset(): void {
 		// Assert that the manager has been set: Cannot assert caller if manager is unknown
-		assert(
-			$this->manager() !== null,
-			new UnexpectedValueException("Cannot assert caller is manager: Manager has not been set")
-		);
+		if($this->manager() === null) {
+			throw new UnexpectedValueException("Cannot assert caller is manager: Manager has not been set");
+		}
 	}
 
 	private function assertCallerIsManager(): void {
@@ -65,11 +64,10 @@ trait ManagedObject {
 		$caller = $trace[$iteration]['object'] ?? null;
 
 		// Assert that the method call was from the manager: Object must be managed by manager
-		$method = $trace[$iteration - 1]['function'];
-		assert(
-			$caller === $this->manager,
-			new BadMethodCallException("Forbidden call to method '" . static::class . "::$method()': Method must be called by the object's manager")
-		);
+		if($caller !== $this->manager) {
+			$method = $trace[$iteration - 1]['function'];
+			throw new BadMethodCallException("Forbidden call to method '" . static::class . "::$method()': Method must be called by the object's manager");
+		}
 	}
 
 }

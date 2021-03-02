@@ -19,22 +19,20 @@ trait Singleton {
 
 	public static function instance(): object {
 		// Assert that the singleton is initialized: Cannot return uninitialized instance
-		assert(
-			static::initialized(),
-			new BadMethodCallException("Cannot access instance of singleton class '" . static::class . "' before initialization")
-		);
+		if(!static::initialized()) {
+			throw new BadMethodCallException("Cannot access instance of singleton class '" . static::class . "' before initialization");
+		}
 
 		return static::$instance;
 	}
 
 	private function assertSingleton(): void {
 		// Assert that the singleton is uninitialized: Cannot reinitialize Singleton
-		assert(
-			!static::initialized(),
-			new BadMethodCallException("Forbidden multiple instantiation of the singleton class '" . static::class . "'")
-		);
+		if(static::initialized()) {
+			throw new BadMethodCallException("Forbidden multiple instantiation of the singleton class '" . static::class . "'");
+		}
 
-		// Set instance variable after assertion in constructor
+		// Set instance variable
 		static::$instance = $this;
 	}
 

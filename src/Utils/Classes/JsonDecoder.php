@@ -7,6 +7,7 @@
 
 namespace Eufony\Utils\Classes;
 
+use AssertionError;
 use Eufony\Utils\Traits\StaticOnly;
 use ParseError;
 
@@ -14,15 +15,9 @@ class JsonDecoder {
 	use StaticOnly;
 
 	public static function decode(string $json): array {
-		$decoded_json = json_decode($json, associative: true);
-
-		// Assert that the given JSON was successfully decoded: JSON must be valid
-		assert(
-			$decoded_json !== null,
-			new ParseError("Failed while decoding the given JSON: JSON is invalid")
-		);
-
-		return $decoded_json;
+		return json_decode($json, associative: true)
+			// Assert that the given JSON was successfully decoded: JSON must be valid
+			?? throw new ParseError("Failed while decoding the given JSON: JSON is invalid");
 	}
 
 	public static function read(string $file): array {
@@ -41,6 +36,10 @@ class JsonDecoder {
 		if(is_array($group)) {
 			$group = implode($separator, $group);
 		}
+
+		// Replace multiple consecutive separators with single one and trim separator from start and end
+		$path = preg_replace('/' . preg_quote($separator, '/') . '{2,}/', $separator, $path);
+		$path = trim($path, $separator);
 
 		// Split path into segments
 		$segments = explode($separator, $path);
@@ -72,10 +71,9 @@ class JsonDecoder {
 	private static function assertTraversable(array $json, string $separator, string $current_param = ''): void {
 		foreach($json as $param_name => $param) {
 			// Assert that the param name doesn't contain the separator: Separator is reserved
-			assert(
-				!str_contains($param_name, $separator),
-				"Failed while traversing the given JSON: Parameter '$param_name' in the path '$current_param' cannot contain the character '$separator'!"
-			);
+			if(str_contains($param_name, $separator)) {
+				throw new AssertionError("Failed while traversing the given JSON: Parameter '$param_name' in the path '$current_param' cannot contain the character '$separator'!");
+			}
 
 			// Validate child parameters
 			if(is_array($param)) {

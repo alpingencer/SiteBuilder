@@ -8,6 +8,7 @@
 namespace Eufony\Utils\Classes;
 
 use Eufony\Utils\Exceptions\IOException;
+use Eufony\Utils\Exceptions\MisconfigurationException;
 use Eufony\Utils\Traits\StaticOnly;
 use FilesystemIterator;
 
@@ -19,9 +20,14 @@ class File {
 	}
 
 	public static function fullPath(string $path): string {
+		// Assert that the constant 'APP_DIR' is defined: Eufony needs to know where the application root is
+		if(!defined("APP_DIR")) {
+			throw new MisconfigurationException("Undefined constant 'APP_DIR'");
+		}
+
 		if(static::isAbsolutePath($path)) {
 			// Absolute path
-			return dirname($_SERVER['DOCUMENT_ROOT']) . $path;
+			return APP_DIR . $path;
 		} else if(str_starts_with($path, 'file://')) {
 			// Full path given
 			return '/' . ltrim(substr($path, 7), '/');
@@ -37,59 +43,51 @@ class File {
 
 	public static function read(string $file): string {
 		// Assert that the file exists: Cannot read if file not found
-		assert(
-			static::exists($file),
-			new IOException("Failed to read file '$file': File not found")
-		);
+		if(!static::exists($file)) {
+			throw new IOException("Failed to read file '$file': File not found");
+		}
 
 		$file = static::fullPath($file);
 		$file_contents = @file_get_contents($file);
 
 		// Assert that the file read correctly: Cannot return on unsuccessful read
-		assert(
-			$file_contents !== false,
-			new IOException("Failed to read file '$file': File is unreadable")
-		);
+		if($file_contents === false) {
+			throw new IOException("Failed to read file '$file': File is unreadable");
+		}
 
 		return $file_contents;
 	}
 
 	public static function isFile(string $path): bool {
-		$path = static::fullPath($path);
-		return is_file($path);
+		return is_file(static::fullPath($path));
 	}
 
 	public static function isDir(string $path): bool {
-		$path = static::fullPath($path);
-		return is_dir($path);
+		return is_dir(static::fullPath($path));
 	}
 
 	public static function files(string $directory): array {
 		// Assert that the directory exists: Cannot read files if directory is not found
-		assert(
-			static::exists($directory),
-			new IOException("Failed to read files in directory: Directory not found")
-		);
+		if(!static::exists($directory)) {
+			throw new IOException("Failed to read files in directory: Directory not found");
+		}
 
 		// Assert that the path is a directory: Cannot read files if not a directory
-		assert(
-			static::isDir($directory),
-			new IOException("Failed to read files in directory: Path is not a directory")
-		);
+		if(!static::isDir($directory)) {
+			throw new IOException("Failed to read files in directory: Path is not a directory");
+		}
 
 		$directory = static::fullPath($directory);
 		$iterator = new FilesystemIterator($directory);
-		$files = array();
 
-		foreach($iterator as $file) {
-			if(!$file->isFile()) {
-				continue;
-			}
+		// Filter out directories
+		$files = array_filter(iterator_to_array($iterator), fn($file) => $file->isFile());
 
-			array_push($files, $file->getPathname());
-		}
+		// Map file info to only the path name
+		$files = array_map(fn($file) => $file->getPathname(), $files);
 
-		return $files;
+		// Return only the array values
+		return array_values($files);
 	}
 
 }

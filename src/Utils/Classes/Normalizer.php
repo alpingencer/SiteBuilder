@@ -19,14 +19,15 @@ class Normalizer {
 		$absolutes = array();
 
 		foreach($parts as $part) {
-			if($part === '.') {
-				continue;
-			}
-
-			if($part === '..') {
-				array_pop($absolutes);
-			} else {
-				array_push($absolutes, $part);
+			switch($part) {
+				case '.':
+					continue 2;
+				case '..':
+					array_pop($absolutes);
+					break;
+				default:
+					array_push($absolutes, $part);
+					break;
 			}
 		}
 
