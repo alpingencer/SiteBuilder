@@ -7,15 +7,14 @@
 	"authors": [
 		{
 			"name": "Alpin Gencer",
-			"email": "alpin@gencer.us"
+			"email": "alpingencer@gmail.com"
 		}
 	],
 	"support": {
-		"issues": "https://github.com/eufony/eufony/issues"
-	},
-	"config": {
-		"optimize-autoloader": true,
-		"sort-packages": true
+		"email": "eufony@gencer.us",
+		"issues": "https://github.com/eufony/eufony/issues",
+		"source": "https://github.com/eufony/eufony",
+		"wiki": "https://github.com/eufony/eufony/wiki"
 	},
 	"autoload": {
 		"psr-4": {
