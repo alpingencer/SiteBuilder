@@ -27,10 +27,10 @@ abstract class Component implements Stringable {
 	public abstract function content(): string;
 
 	public final function attributes(): AttributeCollection {
-		assert(
-			!($this instanceof StaticHTML),
-			new BadMethodCallException("Failed while returning component attributes: StaticHTML components cannot have attributes")
-		);
+		// Assert that the components is not a StaticHTML component: StaticHTML components cannot define attributes
+		if($this instanceof StaticHTML) {
+			throw new BadMethodCallException("Failed while returning component attributes: StaticHTML components cannot have attributes");
+		}
 
 		return $this->attributes;
 	}

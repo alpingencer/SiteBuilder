@@ -9,7 +9,6 @@ namespace Eufony\Core\Content\Components;
 
 use Eufony\Core\Content\Component;
 use Eufony\Core\Content\ContentManager;
-use Eufony\Core\Website\PageHierarchy;
 use Eufony\Utils\Traits\ManagedObject;
 use Eufony\Utils\Traits\Singleton;
 use Stringable;
@@ -28,27 +27,28 @@ final class Head extends Component implements Stringable {
 	}
 
 	public function content(): string {
-		$attributes = $this->attributes();
+		$attributes = (string) $this->attributes();
 
 		// Generate <head>
-		$html = "<head $attributes>";
+		$html = "<head" . (empty($attributes) ? "" : " $attributes") . ">";
 
 		// Generate HTML boilerplate
 		$html .= '<meta charset="UTF-8">';
 		$html .= '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
 		$html .= '<meta http-equiv="X-UA-Compatible" content="ie=edge">';
 
-		// Check if head defines a <title> tag
-		// If no, generate Eufony default title
+		// If head doesn't defines a <title> tag, trigger a user warning
 		if(!str_contains($this->content, '</title>')) {
-			$hierarchy = PageHierarchy::instance();
-			$title = $hierarchy->currentAttribute('title') . ' - ' . $hierarchy->globalAttribute('title');
-			$html .= "<title>$title</title>";
+			trigger_error("Undefined required <title> element in generated HTML", E_USER_WARNING);
 		}
 
+		// Add generated content
 		$html .= $this->content;
+
+		// Close <head>
 		$html .= '</head>';
 
+		// Return the generated HTML
 		return $html;
 	}
 

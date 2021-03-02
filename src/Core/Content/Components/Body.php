@@ -27,8 +27,19 @@ final class Body extends Component implements Stringable {
 	}
 
 	public function content(): string {
-		$attributes = $this->attributes();
-		return "<body $attributes>" . $this->content . '</body>';
+		$attributes = (string) $this->attributes();
+
+		// Generate <body>
+		$html = "<body" . (empty($attributes) ? "" : " $attributes") . ">";
+
+		// Add generated content
+		$html .= $this->content;
+
+		// Close <body>
+		$html .= '</body>';
+
+		// Return the generated HTML
+		return $html;
 	}
 
 	public function append($content): void {

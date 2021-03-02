@@ -17,7 +17,7 @@ use Eufony\Utils\Traits\Runnable;
 use Eufony\Utils\Traits\Singleton;
 
 final class ContentManager {
-	public const CONFIG_LANG = 'content.lang';
+	public const CONFIG_LANG = 'eufony.eufony.content.lang';
 
 	use ManagedObject;
 	use Runnable;
@@ -48,32 +48,20 @@ final class ContentManager {
 
 		// Components
 		// Add components to page
-		foreach($this->components as $component) {
-			if($component instanceof Head || $component instanceof Body) {
-				continue;
-			}
-
-			$this->body()->append($component);
-		}
+		array_map(
+			fn($comp) => $this->body()->append($comp),
+			array_filter($this->components->array(), fn($comp) => !($comp instanceof Head || $comp instanceof Body))
+		);
 
 		// Dependencies
-		// Add all dependencies
-		$added_dependencies = array();
-		foreach($this->dependencies as $dependency) {
-			array_push($added_dependencies, $dependency);
-		}
-
-		// Get rid of duplicate dependencies
-		AssetDependency::removeDuplicates($added_dependencies);
+		// Get unique dependencies as array
+		$dependencies = array_unique($this->dependencies->array());
 
 		// Sort dependencies by class
-		usort($added_dependencies, fn($d1, $d2) => $d1::class <=> $d2::class);
+		usort($dependencies, fn($d1, $d2) => $d1::class <=> $d2::class);
 
-		// Add dependencies to page
-		foreach($added_dependencies as $dependency) {
-			$dependency_html = Formatter::doubleSpace($dependency);
-			$this->head()->append($dependency_html);
-		}
+		// Format and add dependencies to page
+		array_map(fn($dependency) => $this->head()->append(Formatter::doubleSpace($dependency)), $dependencies);
 	}
 
 	public function output(): void {
@@ -81,21 +69,16 @@ final class ContentManager {
 		$content = '<!DOCTYPE html>';
 
 		// Generate <html> tag
-		$lang = isset($this->lang) ? " lang=\"$this->lang\"" : "";
-		$content .= '<html' . $lang . '>';
+		$content .= '<html' . (empty($this->lang) ? "" : " lang=\"$this->lang\"") . '>';
 
 		// Generate head and body
-		$content .= $this->head();
-		$content .= $this->body();
+		$content .= $this->head() . $this->body();
 
 		// Close <html>
 		$content .= '</html>';
 
-		// Format HTML
-		$content = Formatter::html($content);
-
-		// Output the result
-		echo $content;
+		// Format and output the result
+		echo Formatter::html($content);
 	}
 
 	public function components(): ClassedCollection {
@@ -118,9 +101,9 @@ final class ContentManager {
 		return $body;
 	}
 
-	public function lang(string $lang = null): string|self {
+	public function lang(string $lang = null): string|null|self {
 		if($lang === null) {
-			return $this->lang;
+			return $this->lang ?? null;
 		} else {
 			$this->lang = $lang;
 			return $this;
