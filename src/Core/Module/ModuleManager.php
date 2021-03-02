@@ -26,18 +26,10 @@ final class ModuleManager {
 		$this->modules = array();
 	}
 
-	public function moduleInitialized(string $module_class): bool {
-		return isset($this->modules[$module_class]);
-	}
-
 	public function module(string $module_class): Module {
-		// Assert that the given module class has been initialized: Cannot return uninitialized module
-		assert(
-			$this->moduleInitialized($module_class),
-			new UnexpectedValueException("Failed while getting module: Module of the given class '$module_class' not found")
-		);
-
-		return $this->modules[$module_class];
+		return $this->modules[$module_class]
+			// Cannot return uninitialized module
+			?? throw new UnexpectedValueException("Failed while getting module: The module '$module_class' isn't initialized");
 	}
 
 	public function modules(): array {
@@ -46,16 +38,14 @@ final class ModuleManager {
 
 	public function init(string $module_class, array $config = []): void {
 		// Assert that the given class is a subclass of Module: ModuleManager only manages Modules
-		assert(
-			is_subclass_of($module_class, Module::class),
-			new UnexpectedValueException("Failed while initializing module: The given class '$module_class' must be a subclass of '" . Module::class . "'")
-		);
+		if(!is_subclass_of($module_class, Module::class)) {
+			throw new UnexpectedValueException("Failed while initializing module: The given class '$module_class' must be a module");
+		}
 
 		// Assert that the given module has not already been initialized: Cannot reinitialize Modules
-		assert(
-			!$module_class::initialized(),
-			new UnexpectedValueException("Failed while initializing module: The module of the given class '$module_class' has already been initialized")
-		);
+		if($module_class::initialized()) {
+			throw new UnexpectedValueException("Failed while initializing module: The module '$module_class' has already been initialized");
+		}
 
 		// Init module
 		$module = new $module_class();
@@ -65,16 +55,19 @@ final class ModuleManager {
 
 	public function uninit(string $module_class = null): void {
 		if($module_class === null) {
-			foreach(array_keys($this->modules) as $module_class) {
-				$this->uninit($module_class);
-			}
+			array_map(fn($module) => $this->uninit($module), array_keys($this->modules));
 		} else {
-			// Assert that the given module is initialized: Cannot uninitialize non-existing module
-			assert(
-				$this->moduleInitialized($module_class),
-				new UnexpectedValueException("Failed while uninitializing module: Module of the given class '$module_class' not found")
-			);
+			// Assert that the given class is a subclass of Module: ModuleManager only manages Modules
+			if(!is_subclass_of($module_class, Module::class)) {
+				throw new UnexpectedValueException("Failed while uninitializing module: The given class '$module_class' must be module");
+			}
 
+			// Assert that the given module is initialized: Cannot uninitialize non-existing module
+			if(!$module_class::initialized()) {
+				throw new UnexpectedValueException("Failed while uninitializing module: The module '$module_class' isn't initialized");
+			}
+
+			// Uninit module
 			$this->modules[$module_class]->uninit();
 			unset($this->modules[$module_class]);
 		}
@@ -83,28 +76,19 @@ final class ModuleManager {
 	public function runEarly(): void {
 		$this->assertCallerIsManager();
 		$this->assertCurrentRunStage(1);
-
-		foreach($this->modules as $module) {
-			$module->runEarly();
-		}
+		array_map(fn($module) => $module->runEarly(), $this->modules);
 	}
 
 	public function run(): void {
 		$this->assertCallerIsManager();
 		$this->assertCurrentRunStage(2);
-
-		foreach($this->modules as $module) {
-			$module->run();
-		}
+		array_map(fn($module) => $module->run(), $this->modules);
 	}
 
 	public function runLate(): void {
 		$this->assertCallerIsManager();
 		$this->assertCurrentRunStage(3);
-
-		foreach($this->modules as $module) {
-			$module->runLate();
-		}
+		array_map(fn($module) => $module->runLate(), $this->modules);
 	}
 
 }

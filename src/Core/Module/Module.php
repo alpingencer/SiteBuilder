@@ -19,8 +19,7 @@ abstract class Module {
 		$this->assertSingleton();
 	}
 
-	public final function __destruct() {
-	}
+	public final function __destruct() { }
 
 	public function init(array $config): void {
 		$this->assertCallerIsManager();
