@@ -10,22 +10,19 @@ namespace Eufony\Core;
 use Eufony\Core\Content\ContentManager;
 use Eufony\Core\Exception\ExceptionManager;
 use Eufony\Core\Module\ModuleManager;
-use Eufony\Core\Session\SessionManager;
+use Eufony\Core\User\UserManager;
 use Eufony\Core\Website\WebsiteManager;
-use Eufony\Utils\Exceptions\MisconfigurationException;
 use Eufony\Utils\Traits\Runnable;
 use Eufony\Utils\Traits\Singleton;
 
 final class FrameworkManager {
-	public const CONFIG_ASSERTIONS = 'eufony.assertions';
-
 	use Runnable;
 	use Singleton;
 
 	private ContentManager $content;
 	private ExceptionManager $exception;
 	private ModuleManager $module;
-	private SessionManager $session;
+	private UserManager $user;
 	private WebsiteManager $website;
 	private bool $ready;
 
@@ -35,7 +32,7 @@ final class FrameworkManager {
 			ContentManager::instance(),
 			ExceptionManager::instance(),
 			ModuleManager::instance(),
-			SessionManager::instance(),
+			UserManager::instance(),
 			WebsiteManager::instance(),
 		);
 	}
@@ -43,26 +40,11 @@ final class FrameworkManager {
 	public function __construct(array $config = []) {
 		$this->ready = false;
 
-		// Assert that the following php.ini settings are set correctly: Eufony requires these ini settings
-		$php_ini_settings = array(
-			'zend.assertions' => '1',
-		);
-
-		foreach($php_ini_settings as $setting => $expected_value) {
-			if(ini_get($setting) !== $expected_value) {
-				throw new MisconfigurationException("Server misconfiguration error: The php.ini setting '$setting' must have a value of '$expected_value'");
-			}
-		}
-
-		// Set Eufony's required php.ini settings
-		ini_set('assert.active', $config[FrameworkManager::CONFIG_ASSERTIONS] ?? true ? '1' : '0');
-		ini_set('assert.exception', '1');
-
 		$this->assertSingleton();
 
 		$this->exception = new ExceptionManager($config);
 		$this->website = new WebsiteManager($config);
-		$this->session = new SessionManager($config);
+		$this->user = new UserManager($config);
 		$this->content = new ContentManager($config);
 		$this->module = new ModuleManager($config);
 
@@ -72,7 +54,7 @@ final class FrameworkManager {
 	public function run(): void {
 		$this->assertCurrentRunStage(1);
 
-		$this->website->run();
+//		$this->website->run();
 
 		$this->module->runEarly();
 		$this->module->run();
@@ -98,8 +80,8 @@ final class FrameworkManager {
 		return $this->module;
 	}
 
-	public function session(): SessionManager {
-		return $this->session;
+	public function user(): UserManager {
+		return $this->user;
 	}
 
 	public function website(): WebsiteManager {
