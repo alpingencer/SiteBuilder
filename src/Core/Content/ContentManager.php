@@ -72,7 +72,8 @@ final class ContentManager {
 		$content .= '<html' . (empty($this->lang) ? "" : " lang=\"$this->lang\"") . '>';
 
 		// Generate head and body
-		$content .= $this->head() . $this->body();
+		$content .= $this->head();
+		if(strtoupper($_SERVER['REQUEST_METHOD']) !== 'HEAD') $content .= $this->body();
 
 		// Close <html>
 		$content .= '</html>';
