@@ -10,7 +10,6 @@ namespace Eufony\Core\Website;
 use Eufony\Core\Exception\ExceptionManager;
 use Eufony\Core\FrameworkManager;
 use Eufony\Utils\Classes\File;
-use Eufony\Utils\Classes\Normalizer;
 use Eufony\Utils\Exceptions\IOException;
 use Eufony\Utils\Exceptions\PageHierarchyException;
 use Eufony\Utils\Traits\ManagedObject;
@@ -24,95 +23,72 @@ final class WebsiteManager {
 
 	private PageHierarchy $hierarchy;
 	private string $currentPage;
-	private string $subsite;
 
 	public function __construct(array $config) {
 		$this->setAndAssertManager(FrameworkManager::class);
 		$this->assertSingleton();
 
-		// Redirect to remove multiple forward slashes in URI
-		if(str_contains($_SERVER['REQUEST_URI'], '//')) {
-			$this->redirectToURI(preg_replace('/\/{2,}/', '/', $_SERVER['REQUEST_URI']));
-		}
+		// Redirect to remove multiple and trailing forward slashes in URI
+		$normalized_uri = rtrim(preg_replace('/\/{2,}/', '/', $_SERVER['REQUEST_URI']), '/');
+		if(!empty($normalized_uri) && $normalized_uri !== $_SERVER['REQUEST_URI']) $this->redirectToURI($normalized_uri);
 
-		// Redirect to remove trailing '/'
-		if($_SERVER['REQUEST_URI'] !== '/' && str_ends_with($_SERVER['REQUEST_URI'], '/')) {
-			$this->redirectToURI(rtrim($_SERVER['REQUEST_URI'], '/'));
-		}
-
+		// Initialize page hierarchy
 		$this->hierarchy = new PageHierarchy();
 
-		// Fetch the current subsite name from the hierarchy data
-		$current_entry_point = explode('/', $_SERVER['REQUEST_URI'], 3)[1];
-
-		foreach(array_keys($this->hierarchy->data()) as $subsite_name) {
-			if(in_array($subsite_name, array('shared', 'default'))) {
-				continue;
-			}
-
-			if($current_entry_point !== $subsite_name) {
-				continue;
-			}
-
-			$this->subsite = $subsite_name;
-		}
-
-		$this->subsite ??= 'default';
-
 		// Fetch the current page from the request URI
-		if($this->subsite === 'default') {
-			$current_page = trim($_SERVER['REQUEST_URI'], '/');
-		} else {
-			$current_page = explode('/', $_SERVER['REQUEST_URI'], 3)[2] ?? '';
-		}
-
+		$current_page = $_SERVER['REQUEST_URI'];
+		if($current_page === '/') $current_page = $this->hierarchy->globalAttribute('default-page');
 		$current_page = explode('?', $current_page, 2)[0];
-
-		// Redirect to show current page in URI
-		if(empty($current_page)) {
-			$current_page = $this->hierarchy->globalAttribute('default-page') ?? 'home';
-			$this->redirect($current_page, keep_get_params: true);
-		}
-
 		$this->currentPage = $current_page;
 
-		// Check if HTTP method is one of 'GET', 'POST' or 'HEAD'
-		// If no, show error 405: Method not allowed
-		if(!in_array($_SERVER['REQUEST_METHOD'], array('GET', 'POST', 'HEAD'))) {
-			ExceptionManager::instance()->showErrorPage(405, 400);
-		}
-	}
-
-	public function run(): void {
-		$this->assertCallerIsManager();
-		$this->assertCurrentRunStage(1);
-
-		// Check if page exists in hierarchy
-		// If no, show error 404: Page not found
+		// If page doesn't exist in hierarchy, show error 404: Page not found
 		try {
 			$this->hierarchy->page($this->currentPage);
 		} catch(PageHierarchyException) {
 			ExceptionManager::instance()->showErrorPage(404, 400);
 		}
 
-		// Include content files for the subsite bootstrap file, current page and the global header and footer
-		// Content files are relative to the subsite directory
-		foreach(array('global/bootstrap', 'global/header', $this->currentPage, 'global/footer') as $path) {
-			// Check if content file exists
-			// If yes, include it
-			// If no, throw error: Current page's content file not found
-			try {
-				$content_file = $this->contentFile($path);
-			} catch(IOException) {
-				if($path === $this->currentPage) {
-					$subsite = $this->subsite();
-					throw new IOException("Undefined content file for the path '$path' in subsite '$subsite'");
-				} else {
-					continue;
-				}
-			}
+		// If HTTP method is not allowed, show error 405: Method not allowed
+		$allow_methods = $this->hierarchy->currentAttribute('methods') ?? array('get', 'head');
+		if(is_string($allow_methods)) $allow_methods = explode(',', str_replace(' ', '', $allow_methods));
+		if(!in_array(strtolower($_SERVER['REQUEST_METHOD']), $allow_methods)) ExceptionManager::instance()->showErrorPage(405, 400);
+	}
 
-			require $content_file;
+	public function run(): void {
+		$this->assertCallerIsManager();
+		$this->assertCurrentRunStage(1);
+
+		// Include content files for all header and footer files and the current page
+		// Headers
+		$current_path = '';
+		$segments = dirname($this->currentPage) === '/'
+			? array('')
+			: explode('/', dirname($this->currentPage));
+
+		foreach($segments as $segment) {
+			$current_path .= "/$segment";
+			try {
+				$content_file = $this->contentFile("$current_path/header");
+				require $content_file;
+			} catch(IOException) {
+				continue;
+			}
+		}
+
+		// Current page
+		require $this->contentFile($this->currentPage);
+
+		// Footers
+		$current_path = '';
+
+		foreach($segments as $segment) {
+			$current_path .= "/$segment";
+			try {
+				$content_file = $this->contentFile("$current_path/footer");
+				require $content_file;
+			} catch(IOException) {
+				continue;
+			}
 		}
 	}
 
@@ -126,7 +102,7 @@ final class WebsiteManager {
 		die();
 	}
 
-	public function redirect(string $page, string $subsite = null, string|array $get_params = '', bool $keep_get_params = false): void {
+	public function redirect(string $page, string|array $get_params = '', bool $keep_get_params = false): void {
 		if(is_string($get_params)) {
 			$parsed_params = array();
 			parse_str($get_params, $parsed_params);
@@ -137,9 +113,7 @@ final class WebsiteManager {
 		$get_params = http_build_query($keep_get_params ? array_merge($_GET, $get_params) : $get_params);
 
 		// Build URI
-		$subsite ??= $this->subsite;
-		$subsite = $subsite === 'default' ? '' : $subsite . '/';
-		$uri = '/' . $subsite . $page . (empty($get_params) ? '' : '?') . $get_params;
+		$uri = '/' . $page . (empty($get_params) ? '' : '?') . $get_params;
 
 		// Redirect and die
 		$this->redirectToURI($uri);
@@ -151,23 +125,21 @@ final class WebsiteManager {
 	}
 
 	public function contentFile(string $page): string {
-		$page = Normalizer::filePath($page);
+		// Follow symlinks and get the real path
+		$page = $this->hierarchy->realPath($page);
 
-		foreach(array($this->subsite, 'shared') as $subsite) {
-			$file_path = "/routes/$subsite/$page.php";
+		$file_path = "/routes/$page.php";
 
-			// Check if content file exists
-			// If no, continue: Check next subsite
-			if(!File::exists($file_path)) {
-				continue;
-			}
-
-			$file_path = File::fullPath($file_path);
-			return $file_path;
+		// Assert that the file exists
+		if(!File::exists($file_path)) {
+			throw new IOException("Undefined content file for the given path '$page'");
 		}
 
-		// If here, throw error: Content file not found
-		throw new IOException("Undefined content file for the given path '$page' in the current subsite");
+		// Get the full file path
+		$file_path = File::fullPath($file_path);
+
+		// Return the result
+		return $file_path;
 	}
 
 	public function hierarchy(): PageHierarchy {
@@ -176,10 +148,6 @@ final class WebsiteManager {
 
 	public function currentPage(): string {
 		return $this->currentPage;
-	}
-
-	public function subsite(): string {
-		return $this->subsite;
 	}
 
 }

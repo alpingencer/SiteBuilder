@@ -54,7 +54,7 @@ final class FrameworkManager {
 	public function run(): void {
 		$this->assertCurrentRunStage(1);
 
-//		$this->website->run();
+		$this->website->run();
 
 		$this->module->runEarly();
 		$this->module->run();
