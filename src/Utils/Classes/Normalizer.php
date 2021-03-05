@@ -35,4 +35,8 @@ class Normalizer {
 		return $path;
 	}
 
+	public static function pagePath(string $path): string {
+		return '/' . static::filePath($path);
+	}
+
 }
