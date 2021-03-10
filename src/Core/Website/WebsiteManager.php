@@ -7,8 +7,8 @@
 
 namespace Eufony\Core\Website;
 
+use Eufony\Core\EufonyFramework;
 use Eufony\Core\Exception\ExceptionManager;
-use Eufony\Core\FrameworkManager;
 use Eufony\Utils\Classes\File;
 use Eufony\Utils\Exceptions\IOException;
 use Eufony\Utils\Exceptions\PageHierarchyException;
@@ -25,7 +25,7 @@ final class WebsiteManager {
 	private string $currentPage;
 
 	public function __construct(array $config) {
-		$this->setAndAssertManager(FrameworkManager::class);
+		$this->setAndAssertManager(EufonyFramework::class);
 		$this->assertSingleton();
 
 		// Redirect to remove multiple and trailing forward slashes in URI

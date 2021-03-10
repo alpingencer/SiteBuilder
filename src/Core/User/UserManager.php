@@ -7,7 +7,7 @@
 
 namespace Eufony\Core\User;
 
-use Eufony\Core\FrameworkManager;
+use Eufony\Core\EufonyFramework;
 use Eufony\Utils\Exceptions\MisconfigurationException;
 use Eufony\Utils\Traits\ManagedObject;
 use Eufony\Utils\Traits\Singleton;
@@ -21,7 +21,7 @@ final class UserManager {
 	use Singleton;
 
 	public function __construct(array $config) {
-		$this->setAndAssertManager(FrameworkManager::class);
+		$this->setAndAssertManager(EufonyFramework::class);
 		$this->assertSingleton();
 
 		// Sessions

@@ -15,7 +15,7 @@ use Eufony\Core\Website\WebsiteManager;
 use Eufony\Utils\Traits\Runnable;
 use Eufony\Utils\Traits\Singleton;
 
-final class FrameworkManager {
+final class EufonyFramework {
 	use Runnable;
 	use Singleton;
 
@@ -28,7 +28,7 @@ final class FrameworkManager {
 
 	public static function managers(): array {
 		return array(
-			FrameworkManager::instance(),
+			EufonyFramework::instance(),
 			ContentManager::instance(),
 			ExceptionManager::instance(),
 			ModuleManager::instance(),

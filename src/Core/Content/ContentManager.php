@@ -9,7 +9,7 @@ namespace Eufony\Core\Content;
 
 use Eufony\Core\Content\Components\Body;
 use Eufony\Core\Content\Components\Head;
-use Eufony\Core\FrameworkManager;
+use Eufony\Core\EufonyFramework;
 use Eufony\Utils\Classes\Collections\ClassedCollection;
 use Eufony\Utils\Classes\Formatter;
 use Eufony\Utils\Traits\ManagedObject;
@@ -28,7 +28,7 @@ final class ContentManager {
 	private string $lang;
 
 	public function __construct(array $config) {
-		$this->setAndAssertManager(FrameworkManager::class);
+		$this->setAndAssertManager(EufonyFramework::class);
 		$this->assertSingleton();
 
 		$this->components = new ClassedCollection(Component::class);

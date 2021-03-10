@@ -9,7 +9,7 @@ namespace Eufony\Core\Exception;
 
 use ErrorException;
 use Eufony\Core\Content\ContentManager;
-use Eufony\Core\FrameworkManager;
+use Eufony\Core\EufonyFramework;
 use Eufony\Core\Website\WebsiteManager;
 use Eufony\Utils\Classes\JsonDecoder;
 use Eufony\Utils\Classes\Normalizer;
@@ -28,7 +28,7 @@ final class ExceptionManager {
 	private array $errorPages;
 
 	public function __construct(array $config) {
-		$this->setAndAssertManager(FrameworkManager::class);
+		$this->setAndAssertManager(EufonyFramework::class);
 		$this->assertSingleton();
 
 		$this->redirectOnException($config[ExceptionManager::CONFIG_REDIRECT] ?? true);
@@ -43,7 +43,7 @@ final class ExceptionManager {
 					// Log exception
 					error_log("Uncaught $e", message_type: 4);
 
-					if(FrameworkManager::instance()->ready()) {
+					if(EufonyFramework::instance()->ready()) {
 						// Redirect to error page
 						$this->showErrorPage(500);
 					}

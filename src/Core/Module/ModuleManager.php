@@ -7,7 +7,7 @@
 
 namespace Eufony\Core\Module;
 
-use Eufony\Core\FrameworkManager;
+use Eufony\Core\EufonyFramework;
 use Eufony\Utils\Traits\ManagedObject;
 use Eufony\Utils\Traits\Runnable;
 use Eufony\Utils\Traits\Singleton;
@@ -21,7 +21,7 @@ final class ModuleManager {
 	private array $modules;
 
 	public function __construct(array $config) {
-		$this->setAndAssertManager(FrameworkManager::class);
+		$this->setAndAssertManager(EufonyFramework::class);
 		$this->assertSingleton();
 		$this->modules = array();
 	}
