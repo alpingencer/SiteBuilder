@@ -35,7 +35,7 @@ final class UserManager {
 		session_start();
 
 		// User ID
-		$_SESSION[UserManager::SESSION_USER_ID] ??= uniqid(more_entropy: true);
+		$_SESSION[UserManager::SESSION_USER_ID] ??= session_id();
 
 		// Session timeout
 		if(isset($config[UserManager::CONFIG_TIMEOUT])) {
@@ -46,8 +46,10 @@ final class UserManager {
 				$user_id = $_SESSION[UserManager::SESSION_USER_ID];
 				session_unset();
 				session_destroy();
+				session_id($user_id);
 				session_start();
 				$_SESSION[UserManager::SESSION_USER_ID] = $user_id;
+				echo "TIMEOUT\n";
 			}
 		}
 
