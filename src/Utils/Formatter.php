@@ -5,7 +5,7 @@
  *      Refer to LICENSE.md for a full notice     *
  **************************************************/
 
-namespace Eufony\Utils\Classes;
+namespace Eufony\Utils;
 
 use Eufony\Utils\Traits\StaticOnly;
 

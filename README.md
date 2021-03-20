@@ -9,24 +9,16 @@ Eufony is a page management and HTML auto-generation framework for PHP written b
 * Eufony v3.0 Lithium comes with Composer support. You can find the Packagist
   page [here](https://packagist.org/packages/eufony/eufony).
 
-## Framework Rules and Restrictions
+## Project Structure
 
-### 1. Project structure
-
+* '/config': Configuration files for the webserver (keep any sensitive information out of VCS!)
 * '/public': Anything publicly accessible via an HTTP request (the server document root)
     * '/public/assets': Any CSS, JS, font, image, etc. assets that a page needs
 * '/routes': Webpage content files
     * '/routes/routes.json': The webpage hierarchy file
     * One directory for each subsite
-
-### 2. Server system
-
-* PHP sessions must be enabled
-* All HTTP requests must be rerouted to a common PHP file (typically '/public/index.php')
-
-### 3. Client system
-
-* Cookies must be enabled
+* '/src': User-defined classes and functions, according to the PSR-4 standard
+    * '/src/bootstrap.php': Bootstrap file that initializes the entire framework
 
 ## Wiki
 

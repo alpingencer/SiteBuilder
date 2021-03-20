@@ -9,6 +9,7 @@ namespace Eufony\Core\User;
 
 use Eufony\Core\EufonyFramework;
 use Eufony\Utils\Exceptions\MisconfigurationException;
+use Eufony\Utils\Server\Config;
 use Eufony\Utils\Traits\ManagedObject;
 use Eufony\Utils\Traits\Singleton;
 
@@ -20,7 +21,7 @@ final class UserManager {
 	use ManagedObject;
 	use Singleton;
 
-	public function __construct(array $config) {
+	public function __construct() {
 		$this->setAndAssertManager(EufonyFramework::class);
 		$this->assertSingleton();
 
@@ -38,8 +39,8 @@ final class UserManager {
 		$_SESSION[UserManager::SESSION_USER_ID] ??= uniqid(more_entropy: true);
 
 		// Session timeout
-		if(isset($config[UserManager::CONFIG_TIMEOUT])) {
-			$session_timeout = $config[UserManager::CONFIG_TIMEOUT];
+		if(Config::get(UserManager::CONFIG_TIMEOUT) !== null) {
+			$session_timeout = Config::get(UserManager::CONFIG_TIMEOUT);
 			$last_activity = $_SESSION[UserManager::SESSION_LAST_ACTIVITY] ?? null;
 
 			if(isset($last_activity) && (time() - $last_activity + 1) > $session_timeout) {

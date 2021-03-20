@@ -7,9 +7,9 @@
 
 namespace Eufony\Core\Website;
 
-use Eufony\Utils\Classes\JsonDecoder;
-use Eufony\Utils\Classes\Normalizer;
 use Eufony\Utils\Exceptions\PageHierarchyException;
+use Eufony\Utils\JsonDecoder;
+use Eufony\Utils\Normalizer;
 use Eufony\Utils\Traits\ManagedObject;
 use Eufony\Utils\Traits\Singleton;
 

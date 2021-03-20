@@ -5,7 +5,7 @@
  *      Refer to LICENSE.md for a full notice     *
  **************************************************/
 
-namespace Eufony\Utils\Classes\Collections;
+namespace Eufony\Utils\Collections;
 
 use Countable;
 use InvalidArgumentException;

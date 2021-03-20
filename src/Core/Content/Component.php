@@ -9,7 +9,7 @@ namespace Eufony\Core\Content;
 
 use BadMethodCallException;
 use Eufony\Core\Content\Components\StaticHTML;
-use Eufony\Utils\Classes\Collections\AttributeCollection;
+use Eufony\Utils\Collections\AttributeCollection;
 use Stringable;
 
 abstract class Component implements Stringable {

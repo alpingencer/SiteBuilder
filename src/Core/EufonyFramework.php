@@ -12,6 +12,7 @@ use Eufony\Core\Exception\ExceptionManager;
 use Eufony\Core\Module\ModuleManager;
 use Eufony\Core\User\UserManager;
 use Eufony\Core\Website\WebsiteManager;
+use Eufony\Utils\Server\Config;
 use Eufony\Utils\Traits\Runnable;
 use Eufony\Utils\Traits\Singleton;
 
@@ -37,16 +38,18 @@ final class EufonyFramework {
 		);
 	}
 
-	public function __construct(array $config = []) {
+	public function __construct(string $appDir) {
 		$this->ready = false;
 
 		$this->assertSingleton();
 
-		$this->exception = new ExceptionManager($config);
-		$this->website = new WebsiteManager($config);
-		$this->user = new UserManager($config);
-		$this->content = new ContentManager($config);
-		$this->module = new ModuleManager($config);
+		Config::setup($appDir);
+
+		$this->exception = new ExceptionManager();
+		$this->website = new WebsiteManager();
+		$this->user = new UserManager();
+		$this->content = new ContentManager();
+		$this->module = new ModuleManager();
 
 		$this->ready = true;
 	}

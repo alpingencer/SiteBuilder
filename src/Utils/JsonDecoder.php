@@ -5,9 +5,10 @@
  *      Refer to LICENSE.md for a full notice     *
  **************************************************/
 
-namespace Eufony\Utils\Classes;
+namespace Eufony\Utils;
 
 use AssertionError;
+use Eufony\Utils\Server\File;
 use Eufony\Utils\Traits\StaticOnly;
 use ParseError;
 

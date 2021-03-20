@@ -5,14 +5,15 @@
  *      Refer to LICENSE.md for a full notice     *
  **************************************************/
 
-namespace Eufony\Utils\Classes;
+namespace Eufony\Utils\Server;
 
 use Eufony\Utils\Exceptions\IOException;
-use Eufony\Utils\Exceptions\MisconfigurationException;
 use Eufony\Utils\Traits\StaticOnly;
 use FilesystemIterator;
 
 class File {
+	public const CONFIG_APP_DIR = 'eufony.eufony.app-dir';
+
 	use StaticOnly;
 
 	public static function isAbsolutePath(string $path): bool {
@@ -20,14 +21,9 @@ class File {
 	}
 
 	public static function fullPath(string $path): string {
-		// Assert that the constant 'APP_DIR' is defined: Eufony needs to know where the application root is
-		if(!defined("APP_DIR")) {
-			throw new MisconfigurationException("Undefined constant 'APP_DIR'");
-		}
-
 		if(static::isAbsolutePath($path)) {
 			// Absolute path
-			return APP_DIR . $path;
+			return Config::get(static::CONFIG_APP_DIR, required: true) . $path;
 		} else if(str_starts_with($path, 'file://')) {
 			// Full path given
 			return '/' . ltrim(substr($path, 7), '/');

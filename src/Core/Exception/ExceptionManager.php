@@ -11,27 +11,28 @@ use ErrorException;
 use Eufony\Core\Content\ContentManager;
 use Eufony\Core\EufonyFramework;
 use Eufony\Core\Website\WebsiteManager;
-use Eufony\Utils\Classes\JsonDecoder;
-use Eufony\Utils\Classes\Normalizer;
 use Eufony\Utils\Exceptions\IOException;
 use Eufony\Utils\Exceptions\PageHierarchyException;
+use Eufony\Utils\Server\Config;
+use Eufony\Utils\Server\JsonDecoder;
+use Eufony\Utils\Server\Normalizer;
 use Eufony\Utils\Traits\ManagedObject;
 use Eufony\Utils\Traits\Singleton;
 use Throwable;
 
 final class ExceptionManager {
-	public const CONFIG_REDIRECT = 'exception.redirect';
+	public const CONFIG_REDIRECT = 'eufony.eufony.exception.redirect';
 
 	use ManagedObject;
 	use Singleton;
 
 	private array $errorPages;
 
-	public function __construct(array $config) {
+	public function __construct() {
 		$this->setAndAssertManager(EufonyFramework::class);
 		$this->assertSingleton();
 
-		$this->redirectOnException($config[ExceptionManager::CONFIG_REDIRECT] ?? true);
+		$this->redirectOnException(Config::get(ExceptionManager::CONFIG_REDIRECT) ?? true);
 	}
 
 	public function redirectOnException(bool $redirect): void {

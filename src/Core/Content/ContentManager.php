@@ -10,8 +10,9 @@ namespace Eufony\Core\Content;
 use Eufony\Core\Content\Components\Body;
 use Eufony\Core\Content\Components\Head;
 use Eufony\Core\EufonyFramework;
-use Eufony\Utils\Classes\Collections\ClassedCollection;
-use Eufony\Utils\Classes\Formatter;
+use Eufony\Utils\Collections\ClassedCollection;
+use Eufony\Utils\Formatter;
+use Eufony\Utils\Server\Config;
 use Eufony\Utils\Traits\ManagedObject;
 use Eufony\Utils\Traits\Runnable;
 use Eufony\Utils\Traits\Singleton;
@@ -27,7 +28,7 @@ final class ContentManager {
 	private ClassedCollection $dependencies;
 	private string $lang;
 
-	public function __construct(array $config) {
+	public function __construct() {
 		$this->setAndAssertManager(EufonyFramework::class);
 		$this->assertSingleton();
 
@@ -37,8 +38,8 @@ final class ContentManager {
 		new Body();
 		$this->clear();
 
-		if(isset($config[ContentManager::CONFIG_LANG])) {
-			$this->lang($config[ContentManager::CONFIG_LANG]);
+		if(Config::get(ContentManager::CONFIG_LANG) !== null) {
+			$this->lang(Config::get(ContentManager::CONFIG_LANG));
 		}
 	}
 

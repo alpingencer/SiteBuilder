@@ -20,7 +20,7 @@ final class ModuleManager {
 
 	private array $modules;
 
-	public function __construct(array $config) {
+	public function __construct() {
 		$this->setAndAssertManager(EufonyFramework::class);
 		$this->assertSingleton();
 		$this->modules = array();

@@ -7,8 +7,8 @@
 
 namespace Eufony\Core\Content;
 
-use Eufony\Utils\Classes\Collections\AttributeCollection;
-use Eufony\Utils\Classes\File;
+use Eufony\Utils\Collections\AttributeCollection;
+use Eufony\Utils\Server\File;
 use Stringable;
 
 abstract class AssetDependency implements Stringable {

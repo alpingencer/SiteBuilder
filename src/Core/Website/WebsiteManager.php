@@ -9,9 +9,9 @@ namespace Eufony\Core\Website;
 
 use Eufony\Core\EufonyFramework;
 use Eufony\Core\Exception\ExceptionManager;
-use Eufony\Utils\Classes\File;
 use Eufony\Utils\Exceptions\IOException;
 use Eufony\Utils\Exceptions\PageHierarchyException;
+use Eufony\Utils\Server\File;
 use Eufony\Utils\Traits\ManagedObject;
 use Eufony\Utils\Traits\Runnable;
 use Eufony\Utils\Traits\Singleton;
@@ -24,7 +24,7 @@ final class WebsiteManager {
 	private PageHierarchy $hierarchy;
 	private string $currentPage;
 
-	public function __construct(array $config) {
+	public function __construct() {
 		$this->setAndAssertManager(EufonyFramework::class);
 		$this->assertSingleton();
 
