@@ -1,8 +1,6 @@
 <p align="center">
-    <img alt="The Eufony Logo" src="https://raw.githubusercontent.com/eufony/eufony/master/Eufony.png">
+    <img alt="The Eufony Logo" width="128" src="https://raw.githubusercontent.com/eufony/eufony/master/Eufony.svg">
 </p>
-
-## About Eufony
 
 Eufony is a page management and HTML auto-generation framework for PHP written by Alpin Gencer.
 Currently, the framework is going through some major changes, including adding Composer support,
