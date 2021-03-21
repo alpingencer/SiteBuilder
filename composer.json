@@ -10,9 +10,21 @@
 			"email": "alpin@gencer.us"
 		}
 	],
+	"support": {
+		"email": "eufony@gencer.us",
+		"issues": "https://github.com/eufony/eufony/issues",
+		"source": "https://github.com/eufony/eufony",
+		"wiki": "https://github.com/eufony/eufony/wiki"
+	},
+	"require": {
+		"php": "^8.0"
+	},
 	"autoload": {
 		"psr-4": {
 			"Eufony\\": "src/"
 		}
-	}
+	},
+	"bin": [
+		"bin/eufony"
+	]
 }

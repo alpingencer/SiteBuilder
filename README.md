@@ -3,29 +3,22 @@
 </p>
 
 Eufony is a page management and HTML auto-generation framework for PHP written by Alpin Gencer.
-Currently, the framework is going through some major changes, including adding Composer support,
-which is why the "master" branch is empty. It is recommended to wait for Eufony v3.0.0 Lithium to be
-released. However, if you insist on getting started early, check out the installation guide below.
 
 ## Installation
 
-Currently, there are two major versions of Eufony meant for use: v2.0 Helium and v3.0 Lithium. As
-v3.0 is the first version of Eufony to add Composer support, v2.0 only has a manual installation
-process.
+* Eufony v3.0 Lithium comes with Composer support. You can find the Packagist
+  page [here](https://packagist.org/packages/eufony/eufony).
 
-### Installing Eufony v2.0 Helium
+## Project Structure
 
-In order to use v2.0, clone the "v2" branch under the "SiteBuilder" directory in your server
-document root. Please note that the name discrepancy comes from the name change that occurred during
-the development of SiteBuilder v3.0. Afterwards, you can include the file
-"SiteBuilder/SiteBuilder.inc" and get started.
-
-### Installing Eufony v3.0 Lithium
-
-As Eufony v3.0 Lithium adds Composer support, all you need to do is require the "v3.x-dev"
-branch in the package "eufony/eufony". Composer will automatically fetch the repository from
-Packagist for you and copy it to the "vendor" directory. After including the Composer autoloader
-script, you're all set!
+* '/config': Configuration files for the webserver (keep any sensitive information out of VCS!)
+* '/public': Anything publicly accessible via an HTTP request (the server document root)
+    * '/public/assets': Any CSS, JS, font, image, etc. assets that a page needs
+* '/routes': Webpage content files
+    * '/routes/routes.json': The webpage hierarchy file
+    * One directory for each subsite
+* '/src': User-defined classes and functions, according to the PSR-4 standard
+    * '/src/bootstrap.php': Bootstrap file that initializes the entire framework
 
 ## Wiki
 
