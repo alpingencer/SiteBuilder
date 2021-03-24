@@ -10,7 +10,7 @@ namespace Eufony\Config;
 use Dotenv\Dotenv;
 use Dotenv\Repository\Adapter\EnvConstAdapter;
 use Dotenv\Repository\RepositoryBuilder;
-use Eufony\Support\Traits\StaticOnly;
+use Eufony\Utils\Traits\StaticOnly;
 use UnexpectedValueException;
 
 class Config {

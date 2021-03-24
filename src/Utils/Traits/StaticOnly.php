@@ -5,7 +5,7 @@
  *      Refer to LICENSE.md for a full notice     *
  **************************************************/
 
-namespace Eufony\Support\Traits;
+namespace Eufony\Utils\Traits;
 
 use BadMethodCallException;
 
