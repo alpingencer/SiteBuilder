@@ -10,11 +10,13 @@ namespace Eufony\Config;
 use Dotenv\Dotenv;
 use Dotenv\Repository\Adapter\EnvConstAdapter;
 use Dotenv\Repository\RepositoryBuilder;
+use Eufony\Support\Traits\StaticOnly;
 use UnexpectedValueException;
 
 class Config {
+	use StaticOnly;
 
-	public function __construct(string $appDir) {
+	public static function setup(string $appDir) {
 		// Include constants.php, if it exists
 		@include_once $appDir . '/config/constants.php';
 
@@ -29,14 +31,15 @@ class Config {
 
 		// Create a mutable Dotenv repository with only an EnvConstAdapter
 		$repository = RepositoryBuilder::createWithNoAdapters()->addAdapter(EnvConstAdapter::class)->make();
+		$configDir = $appDir . '/config';
 
 		// Load the default .env file if it exists
-		$dotenv = Dotenv::create($repository, $appDir . '/config', '.env');
+		$dotenv = Dotenv::create($repository, $configDir, '.env');
 		$dotenv->safeLoad();
 
 		// If APP_ENV is defined, load the corresponding .env file
 		if(defined('APP_ENV')) {
-			$dotenv = Dotenv::create($repository, $appDir . '/config', '.env.' . APP_ENV);
+			$dotenv = Dotenv::create($repository, $configDir, '.env.' . APP_ENV);
 			$dotenv->load();
 		}
 
@@ -44,8 +47,8 @@ class Config {
 		$_ENV['APP_DIR'] = $appDir;
 	}
 
-	public function get(string $name, bool $required = false, string|array $expected = null): mixed {
-		if(isset($_ENV[$name])) {
+	public static function get(string $name, bool $required = false, string|array $expected = null): mixed {
+		if(!empty($_ENV[$name])) {
 			// Configuration parameter is found
 			$option = $_ENV[$name];
 
@@ -87,10 +90,9 @@ class Config {
 				throw new ConfigurationException("Undefined configuration parameter '$name'");
 			}
 		}
-
 	}
 
-	public function all(): array {
+	public static function all(): array {
 		return $_ENV;
 	}
 
