@@ -16,17 +16,12 @@ use UnexpectedValueException;
 class Config {
 	use StaticOnly;
 
-	public static function setup(string $appDir) {
+	public static function setup(string $appDir): void {
 		// Include constants.php, if it exists
 		@include_once $appDir . '/config/constants.php';
 
-		// Assert that APP_ENV is a non-empty string
-		if(defined('APP_ENV') && (!is_string(APP_ENV) || empty(APP_ENV))) {
-			throw new ConfigurationException("'APP_ENV' must be a non-empty string");
-		}
-
 		// Remove all other environment variables
-		// Passing environment variables through other means is deprecated
+		// Passing environment variables through other means is not allowed
 		$_ENV = [];
 
 		// Create a mutable Dotenv repository with only an EnvConstAdapter
@@ -38,8 +33,9 @@ class Config {
 		$dotenv->safeLoad();
 
 		// If APP_ENV is defined, load the corresponding .env file
-		if(defined('APP_ENV')) {
-			$dotenv = Dotenv::create($repository, $configDir, '.env.' . APP_ENV);
+		if(Config::exists('APP_ENV')) {
+			$appEnv = Config::get('APP_ENV', expected: 'string');
+			$dotenv = Dotenv::create($repository, $configDir, '.env.' . $appEnv);
 			$dotenv->load();
 		}
 
@@ -47,8 +43,12 @@ class Config {
 		$_ENV['APP_DIR'] = $appDir;
 	}
 
+	public static function exists(string $name): bool {
+		return !empty($_ENV[$name]);
+	}
+
 	public static function get(string $name, bool $required = false, string|array $expected = null): mixed {
-		if(!empty($_ENV[$name])) {
+		if(Config::exists($name)) {
 			// Configuration parameter is found
 			$option = $_ENV[$name];
 
