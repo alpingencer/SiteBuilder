@@ -31,14 +31,11 @@ class Directory {
 
 		foreach($iterator as $file_or_directory) {
 			if($file_or_directory->isFile()) {
-				array_push($files, $file_or_directory);
+				array_push($files, $file_or_directory->getPathname());
 			} else if($file_or_directory->isDir() && $recursive) {
-				array_merge($files, Directory::files('file://' . $file_or_directory));
+				$files = array_merge($files, Directory::files('file://' . $file_or_directory));
 			}
 		}
-
-		// Map file info to only the path name
-		$files = array_map(fn($file) => $file->getPathname(), $files);
 
 		// Return only the array values
 		return array_values($files);
