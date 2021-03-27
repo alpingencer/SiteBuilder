@@ -5,10 +5,10 @@
  *      Refer to LICENSE.md for a full notice     *
  **************************************************/
 
-namespace Eufony\Session\Handlers;
+namespace Eufony\Http\Session\Handlers;
 
 use Eufony\Config\Config;
-use Eufony\Session\SessionHandler;
+use Eufony\Http\Session\SessionHandler;
 
 class RedisSessionHandler extends SessionHandler {
 

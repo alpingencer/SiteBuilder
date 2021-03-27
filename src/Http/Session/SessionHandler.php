@@ -5,7 +5,7 @@
  *      Refer to LICENSE.md for a full notice     *
  **************************************************/
 
-namespace Eufony\Session;
+namespace Eufony\Http\Session;
 
 use Eufony\Utils\Traits\StaticOnly;
 

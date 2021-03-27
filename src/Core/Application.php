@@ -8,7 +8,7 @@
 namespace Eufony\Core;
 
 use Eufony\Config\Config;
-use Eufony\Session\Session;
+use Eufony\Http\Session\Session;
 
 class Application {
 

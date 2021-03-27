@@ -5,11 +5,11 @@
  *      Refer to LICENSE.md for a full notice     *
  **************************************************/
 
-namespace Eufony\Session\Handlers;
+namespace Eufony\Http\Session\Handlers;
 
 use Eufony\FileSystem\Directory;
 use Eufony\FileSystem\Path;
-use Eufony\Session\SessionHandler;
+use Eufony\Http\Session\SessionHandler;
 
 class FilesSessionHandler extends SessionHandler {
 
@@ -19,7 +19,7 @@ class FilesSessionHandler extends SessionHandler {
 		if(!Directory::exists($sessionsDir)) {
 			Directory::make($sessionsDir);
 		}
-		
+
 		return Path::full($sessionsDir);
 	}
 
