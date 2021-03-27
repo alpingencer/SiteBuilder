@@ -76,4 +76,8 @@ class Session {
 		$_SESSION[$name] = $value;
 	}
 
+	public static function unset(string $name): void {
+		unset($_SESSION[$name]);
+	}
+
 }
