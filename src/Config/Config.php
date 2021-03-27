@@ -70,7 +70,7 @@ class Config {
 						'int', 'integer' => FILTER_VALIDATE_INT,
 						'bool', 'boolean' => FILTER_VALIDATE_BOOL,
 						'float', 'double' => FILTER_VALIDATE_FLOAT,
-						default => throw new UnexpectedValueException("Unrecognized expected type for configuration parameter")
+						default => throw new UnexpectedValueException("Unrecognized expected type '$expected_type'")
 					};
 
 					$option = filter_var($option, $filter, FILTER_NULL_ON_FAILURE);
@@ -84,7 +84,7 @@ class Config {
 
 					// Assert that the configuration parameter matches the expected values
 					if(!in_array($option, $expected_values)) {
-						throw new ConfigurationException("Unexpected value for configuration parameter '$name'");
+						throw new ConfigurationException("Unexpected value '$option' for configuration parameter '$name'");
 					}
 				}
 			}
