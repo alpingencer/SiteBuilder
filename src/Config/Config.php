@@ -28,6 +28,10 @@ class Config {
 
 		// Remove all other environment variables
 		// Passing environment variables through other means is not allowed
+		if(!empty($_ENV)) {
+			trigger_error("\$_ENV should be empty: All environment variables must be set using the .env files", E_USER_WARNING);
+		}
+
 		$_ENV = [];
 
 		// Create a mutable Dotenv repository with only an EnvConstAdapter
@@ -46,7 +50,7 @@ class Config {
 		}
 
 		// Add the given application root directory as an environment variable
-		$_ENV['APP_DIR'] = $appDir;
+		$_ENV = array_merge(['APP_DIR' => $appDir], $_ENV);
 	}
 
 	public static function exists(string $name): bool {

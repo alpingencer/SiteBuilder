@@ -16,15 +16,16 @@ class Session {
 	use StaticOnly;
 
 	public static function start(): void {
-		// Assert that PHP sessions are not disabled: The framework and its modules rely on sessions
+		// Assert that PHP sessions are not disabled
 		if(session_status() === PHP_SESSION_DISABLED) {
 			throw new ConfigurationException('Server misconfiguration: PHP sessions must be enabled');
 		}
 
-		// Set session handler
+		// Get available session handlers from the Handlers directory
 		$session_handlers = Directory::files('file://' . __DIR__ . '/Handlers');
 		$session_handlers = array_map(fn($handler) => strtolower(basename($handler, 'SessionHandler.php')), $session_handlers);
 
+		// Set session handler
 		try {
 			$session_handler = Config::get('SESSION_HANDLER', expected: $session_handlers) ?? 'files';
 			$session_handler_class = __NAMESPACE__ . '\Handlers\\' . ucwords($session_handler) . 'SessionHandler';
@@ -39,43 +40,40 @@ class Session {
 		$session_timeout = Config::get('SESSION_TIMEOUT', expected: 'int');
 
 		// Set garbage collection of unused sessions
-		// Refer to: https://stackoverflow.com/a/654547
 		ini_set('session.gc_probability', 1);
 		ini_set('session.gc_divisor', 100);
-		if(Config::exists('SESSION_TIMEOUT')) {
-			ini_set('session.gc_maxlifetime', $session_timeout);
-		}
+		if($session_timeout) ini_set('session.gc_maxlifetime', $session_timeout);
 
 		// Start session
 		$cookie_params = ['samesite' => 'Lax'];
-		if(Config::exists('SESSION_TIMEOUT')) $cookie_params['lifetime'] = $session_timeout;
+		if($session_timeout) $cookie_params['lifetime'] = $session_timeout;
 		session_set_cookie_params($cookie_params);
 		session_start();
 
 		// Server-side session timeout logic
-		if(Config::exists('SESSION_TIMEOUT')) {
-			$last_activity = $_SESSION['SESSION_LAST_ACTIVITY'] ?? null;
+		if($session_timeout) {
+			$last_activity = Session::get('SESSION_LAST_ACTIVITY');
 
-			if(isset($last_activity) && (time() - $last_activity + 1) > $session_timeout) {
+			if($last_activity && (time() - $last_activity + 1) > $session_timeout) {
 				session_unset();
 				session_destroy();
 				session_start();
 			}
 		}
 
-		$_SESSION['SESSION_LAST_ACTIVITY'] = time();
+		Session::set('SESSION_LAST_ACTIVITY', time());
 	}
 
 	public static function exists(string $name): bool {
-
+		return isset($_SESSION[$name]);
 	}
 
 	public static function get(string $name, bool $required = false, string|array $expected = null): mixed {
-
+		return $_SESSION[$name] ?? null;
 	}
 
 	public static function set(string $name, mixed $value): void {
-
+		$_SESSION[$name] = $value;
 	}
 
 }
