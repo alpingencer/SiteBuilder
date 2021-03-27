@@ -68,7 +68,7 @@ class Session {
 		return isset($_SESSION[$name]);
 	}
 
-	public static function get(string $name, bool $required = false, string|array $expected = null): mixed {
+	public static function get(string $name): mixed {
 		return $_SESSION[$name] ?? null;
 	}
 
