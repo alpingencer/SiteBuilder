@@ -16,6 +16,14 @@ class File {
 		return is_file(Path::full($file));
 	}
 
+	public static function touch(string $file): bool {
+		return touch(Path::full($file));
+	}
+
+	public static function remove(string $file): bool {
+		return unlink(Path::full($file));
+	}
+
 	public static function read(string $file): string {
 		// Assert that the file exists: Cannot read if file not found
 		if(!File::exists($file)) {
