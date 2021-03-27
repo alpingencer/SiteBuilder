@@ -8,11 +8,13 @@
 namespace Eufony\Core;
 
 use Eufony\Config\Config;
+use Eufony\Session\Session;
 
 class Application {
 
-	public function __construct(string $appDir) {
-		Config::setup($appDir);
+	public function __construct() {
+		Config::setup();
+		Session::start();
 	}
 
 }

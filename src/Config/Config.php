@@ -7,16 +7,22 @@
 
 namespace Eufony\Config;
 
+use Composer\Autoload\ClassLoader;
 use Dotenv\Dotenv;
 use Dotenv\Repository\Adapter\EnvConstAdapter;
 use Dotenv\Repository\RepositoryBuilder;
 use Eufony\Utils\Traits\StaticOnly;
+use ReflectionClass;
 use UnexpectedValueException;
 
 class Config {
 	use StaticOnly;
 
-	public static function setup(string $appDir): void {
+	public static function setup(): void {
+		// Get application root from composer's autoloader class
+		$class_loader_reflection = new ReflectionClass(ClassLoader::class);
+		$appDir = dirname($class_loader_reflection->getFileName(), 3);
+
 		// Include constants.php, if it exists
 		@include_once $appDir . '/config/constants.php';
 
@@ -25,7 +31,7 @@ class Config {
 		$_ENV = [];
 
 		// Create a mutable Dotenv repository with only an EnvConstAdapter
-		$repository = RepositoryBuilder::createWithNoAdapters()->addAdapter(EnvConstAdapter::class)->make();
+		$repository = RepositoryBuilder::createWithNoAdapters()->addWriter(EnvConstAdapter::class)->make();
 		$configDir = $appDir . '/config';
 
 		// Load the default .env file if it exists
@@ -90,10 +96,6 @@ class Config {
 				throw new ConfigurationException("Undefined configuration parameter '$name'");
 			}
 		}
-	}
-
-	public static function all(): array {
-		return $_ENV;
 	}
 
 }
