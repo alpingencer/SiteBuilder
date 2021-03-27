@@ -11,14 +11,17 @@ Eufony is a page management and HTML auto-generation framework for PHP written b
 
 ## Project Structure
 
-* '/config': Configuration files for the webserver (keep any sensitive information out of VCS!)
-* '/public': Anything publicly accessible via an HTTP request (the server document root)
-    * '/public/assets': Any CSS, JS, font, image, etc. assets that a page needs
-* '/routes': Webpage content files
-    * '/routes/routes.json': The webpage hierarchy file
-    * One directory for each subsite
-* '/src': User-defined classes and functions, according to the PSR-4 standard
-    * '/src/bootstrap.php': Bootstrap file that initializes the entire framework
+* `config` Configuration files for the webserver (keep any sensitive information out of VCS!)
+    * `constants.php`
+    * `.env`
+    * `.env.*`
+* `public` Publicly accessible files via an HTTP request (the server document root)
+* `routes` Webpage content files
+    * `routes.json` The webpage hierarchy file
+* `src` User-defined classes and functions, following the PSR-4 standard
+* `storage`
+    * `chmod o+rw storage`
+* `vendor`
 
 ## Wiki
 
