@@ -29,5 +29,4 @@ As it is still very early days for Eufony, the wiki has not been set up yet.
 
 ## License
 
-The Eufony framework is open-sourced software licensed under
-the [GNU Lesser General Public License](LICENSE.md).
+The Eufony framework is open-sourced software licensed under the [GNU Lesser General Public License](LICENSE.md).
