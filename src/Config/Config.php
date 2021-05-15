@@ -26,15 +26,8 @@ class Config {
         // Include constants.php, if it exists
         @include_once $appDir . '/config/constants.php';
 
-        // Remove all other environment variables
-        // Passing environment variables through other means is not allowed
-        if (!empty($_ENV)) {
-            trigger_error(
-                "\$_ENV should be empty: All environment variables must be set using the .env files",
-                E_USER_WARNING
-            );
-        }
-
+        // Variables defined by the running process take priority
+        $old_env = $_ENV;
         $_ENV = [];
 
         // Create a mutable Dotenv repository with only an EnvConstAdapter
@@ -52,8 +45,10 @@ class Config {
             $dotenv->load();
         }
 
-        // Add the given application root directory as an environment variable
-        $_ENV = array_merge(['APP_DIR' => $appDir], $_ENV);
+        // Let process environment variables override variables in .env
+        // Given application root directory cannot be overridden as an environment variable
+        $_ENV = array_merge($_ENV, $old_env, ['APP_DIR' => $appDir]);
+        ksort($_ENV);
     }
 
     public static function exists(string $name): bool {
