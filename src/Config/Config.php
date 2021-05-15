@@ -23,9 +23,6 @@ class Config {
         $class_loader_reflection = new ReflectionClass(ClassLoader::class);
         $appDir = dirname($class_loader_reflection->getFileName(), 3);
 
-        // Include constants.php, if it exists
-        @include_once $appDir . '/config/constants.php';
-
         // Variables defined by the running process take priority
         $old_env = $_ENV;
         $_ENV = [];
