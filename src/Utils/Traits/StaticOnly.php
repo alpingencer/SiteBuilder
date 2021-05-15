@@ -11,8 +11,8 @@ use BadMethodCallException;
 
 trait StaticOnly {
 
-	public function __construct() {
-		throw new BadMethodCallException("Forbidden instantiation of the static only class '" . static::class . "'");
-	}
+    public function __construct() {
+        throw new BadMethodCallException("Forbidden instantiation of the static only class '" . static::class . "'");
+    }
 
 }

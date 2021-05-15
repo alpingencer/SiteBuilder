@@ -11,8 +11,8 @@ use Eufony\Config\Config;
 
 class Application {
 
-	public function __construct() {
-		Config::setup();
-	}
+    public function __construct() {
+        Config::setup();
+    }
 
 }
