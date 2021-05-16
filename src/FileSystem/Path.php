@@ -8,10 +8,8 @@
 namespace Eufony\FileSystem;
 
 use Eufony\Config\Config;
-use Eufony\Utils\Traits\StaticOnly;
 
 class Path {
-    use StaticOnly;
 
     public static function isAbsolute(string $path): bool {
         return str_starts_with($path, '/');
@@ -20,13 +18,10 @@ class Path {
     public static function full(string $path): string {
         if (Path::isAbsolute($path)) {
             // Absolute path
-            return Config::get('APP_DIR', required: true) . $path;
-        } elseif (str_starts_with($path, 'file://')) {
-            // Full path given
-            return '/' . ltrim(substr($path, 7), '/');
+            return $path;
         } else {
-            // Relative path
-            return dirname($_SERVER['SCRIPT_FILENAME']) . "/$path";
+            // Relative path to project root
+            return Config::get('APP_DIR', required: true) . "/$path";
         }
     }
 

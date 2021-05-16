@@ -7,38 +7,47 @@
 
 namespace Eufony\FileSystem;
 
-use Eufony\Utils\Traits\StaticOnly;
-
 class File {
-    use StaticOnly;
 
-    public static function exists(string $file): bool {
-        return is_file(Path::full($file));
+    public static function exists(string $path): bool {
+        return is_file(Path::full($path));
     }
 
-    public static function touch(string $file): bool {
-        return touch(Path::full($file));
+    public static function touch(string $path): void {
+        touch(Path::full($path)) or throw new IOException("Failed to create file '$path'");
     }
 
-    public static function remove(string $file): bool {
-        return unlink(Path::full($file));
+    public static function remove(string $path): void {
+        unlink(Path::full($path)) or throw new IOException("Failed to remove file '$path'");
     }
 
-    public static function read(string $file): string {
-        // Assert that the file exists: Cannot read if file not found
-        if (!File::exists($file)) {
-            throw new IOException("Failed to read file '$file': File not found");
+    public static function read(string $path): string {
+        // Assert that the file exists
+        if (!File::exists($path)) {
+            throw new IOException("Failed to read from file '$path': File not found");
         }
 
-        $file = Path::full($file);
-        $file_contents = @file_get_contents($file);
+        $path = Path::full($path);
+        $file_contents = @file_get_contents($path);
 
-        // Assert that the file read correctly: Cannot return on unsuccessful read
+        // Assert that the file read correctly
         if ($file_contents === false) {
-            throw new IOException("Failed to read file '$file': File is unreadable");
+            throw new IOException("Failed to read from file '$path': File is unreadable");
         }
 
         return $file_contents;
+    }
+
+    public static function write(string $path, string $content): void {
+        $file_resource = fopen("$path", "w");
+
+        // Assert that the file opened correctly
+        if ($file_resource === false) {
+            throw new IOException("Failed to write to file '$path': File is unwritable");
+        }
+
+        fwrite($file_resource, $content);
+        fclose($file_resource);
     }
 
 }

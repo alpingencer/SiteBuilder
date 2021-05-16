@@ -7,78 +7,77 @@
 
 namespace Eufony\FileSystem;
 
-use Eufony\Utils\Traits\StaticOnly;
 use FilesystemIterator;
 
 class Directory {
-    use StaticOnly;
 
-    public static function exists(string $directory): bool {
-        return is_dir(Path::full($directory));
+    public static function exists(string $path): bool {
+        return is_dir(Path::full($path));
     }
 
-    public static function make(string $directory, int $permissions = 0777): bool {
-        return mkdir(Path::full($directory), $permissions, recursive: true);
+    public static function make(string $path): void {
+        mkdir(Path::full($path), recursive: true) or throw new IOException("Failed to create directory '$path");
     }
 
-    public static function remove(string $directory, bool $recursive = false): bool {
-        if ($recursive) {
-            foreach (Directory::directories($directory) as $dir) {
-                Directory::remove('file://' . $dir);
-            }
+    public static function remove(string $path): void {
+        // Recursively remove all subdirectories
+        foreach (Directory::directories($path) as $dir) {
+            Directory::remove($dir);
         }
 
-        foreach (Directory::files($directory) as $file) {
-            File::remove('file://' . $file);
+        // Remove all files in directory
+        foreach (Directory::files($path) as $file) {
+            File::remove($file);
         }
 
-        return rmdir(Path::full($directory));
+        rmdir(Path::full($path)) or throw new IOException("Failed to remove directory '$path'");
     }
 
-    public static function walk(string $directory, bool $recursive = false): array {
-        // Assert that the directory exists: Cannot walk directory if directory is not found
-        if (!Directory::exists($directory)) {
-            throw new IOException("Failed to walk over directory: Directory not found");
+    public static function list(string $path, bool $recursive = false): array {
+        // Assert that the directory exists
+        if (!Directory::exists($path)) {
+            throw new IOException("Failed to list directory: Directory not found");
         }
 
-        $directory = Path::full($directory);
-        $iterator = new FilesystemIterator($directory);
+        $path = Path::full($path);
+        $iterator = new FilesystemIterator($path);
 
         // Push files and directories into array
-        $files_and_directories = [];
+        $files_and_dirs = [];
 
-        foreach ($iterator as $file_or_directory) {
-            array_push($files_and_directories, $file_or_directory->getPathname());
+        foreach ($iterator as $file_or_dir) {
+            array_push($files_and_dirs, $file_or_dir->getPathname());
 
-            if ($file_or_directory->isDir() && $recursive) {
-                array_push($files_and_directories, ...Directory::walk('file://' . $file_or_directory, recursive: true));
+            if ($file_or_dir->isDir() && $recursive) {
+                $dir = $file_or_dir->getPathname();
+                array_push($files_and_dirs, ...Directory::list($dir, recursive: true));
             }
         }
 
         // Return only the array values
-        return array_values($files_and_directories);
+        return array_values($files_and_dirs);
     }
 
-    public static function files(string $directory, bool $recursive = false): array {
+    public static function files(string $path, bool $recursive = false): array {
         // Get all files and directories
-        $files_and_directories = Directory::walk($directory, $recursive);
+        $files_and_dirs = Directory::list($path, $recursive);
 
         // Filter only the files in directory
-        $files = array_filter($files_and_directories, fn($file) => File::exists('file://' . $file));
+        $files = array_filter($files_and_dirs, fn($file) => File::exists($file));
 
         // Return only the array values
         return array_values($files);
     }
 
-    public static function directories(string $directory, bool $recursive = false): array {
+    public static function directories(string $path, bool $recursive = false): array {
         // Get all files and directories
-        $files_and_directories = Directory::walk($directory, $recursive);
+        $files_and_dirs = Directory::list($path, $recursive);
 
         // Filter only the subdirectories in directory
-        $directories = array_filter($files_and_directories, fn($dir) => Directory::exists('file://' . $dir));
+        $dirs = array_filter($files_and_dirs, fn($dir) => Directory::exists($dir));
 
         // Return only the array values
-        return array_values($directories);
+        return array_values($dirs);
     }
 
 }
