@@ -39,15 +39,12 @@ class File {
     }
 
     public static function write(string $path, string $content): void {
-        $file_resource = fopen("$path", "w");
+        $num_bytes = file_put_contents(Path::full($path), $content);
 
         // Assert that the file opened correctly
-        if ($file_resource === false) {
+        if ($num_bytes === false) {
             throw new IOException("Failed to write to file '$path': File is unwritable");
         }
-
-        fwrite($file_resource, $content);
-        fclose($file_resource);
     }
 
 }
