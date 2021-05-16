@@ -11,17 +11,15 @@ use Composer\Autoload\ClassLoader;
 use Dotenv\Dotenv;
 use Dotenv\Repository\Adapter\EnvConstAdapter;
 use Dotenv\Repository\RepositoryBuilder;
-use Eufony\Utils\Traits\StaticOnly;
 use ReflectionClass;
 use UnexpectedValueException;
 
 class Config {
-    use StaticOnly;
 
     public static function setup(): void {
         // Get application root from composer's autoloader class
         $class_loader_reflection = new ReflectionClass(ClassLoader::class);
-        $appDir = dirname($class_loader_reflection->getFileName(), 3);
+        $app_dir = dirname($class_loader_reflection->getFileName(), 3);
 
         // Variables defined by the running process take priority
         $old_env = $_ENV;
@@ -29,22 +27,22 @@ class Config {
 
         // Create a mutable Dotenv repository with only an EnvConstAdapter
         $repository = RepositoryBuilder::createWithNoAdapters()->addWriter(EnvConstAdapter::class)->make();
-        $configDir = $appDir . '/config';
+        $config_dir = $app_dir . '/config';
 
         // Load the default .env file if it exists
-        $dotenv = Dotenv::create($repository, $configDir, '.env');
+        $dotenv = Dotenv::create($repository, $config_dir, '.env');
         $dotenv->safeLoad();
 
         // If APP_ENV is defined, load the corresponding .env file
         if (Config::exists('APP_ENV')) {
-            $appEnv = Config::get('APP_ENV', expected: 'string');
-            $dotenv = Dotenv::create($repository, $configDir, '.env.' . $appEnv);
+            $app_env = Config::get('APP_ENV', expected: 'string');
+            $dotenv = Dotenv::create($repository, $config_dir, '.env.' . $app_env);
             $dotenv->load();
         }
 
         // Let process environment variables override variables in .env
         // Given application root directory cannot be overridden as an environment variable
-        $_ENV = array_merge($_ENV, $old_env, ['APP_DIR' => $appDir]);
+        $_ENV = array_merge($_ENV, $old_env, ['APP_DIR' => $app_dir]);
         ksort($_ENV);
     }
 
