@@ -52,6 +52,16 @@ class Directory {
     }
 
     /**
+     * Returns whether a directory is empty.
+     *
+     * @param string $path
+     * @return bool
+     */
+    public static function isEmpty(string $path): bool {
+        return empty(Directory::list($path));
+    }
+
+    /**
      * Returns an array of all files and subdirectories in the given directory path.
      * Optionally does a recursive search.
      *
