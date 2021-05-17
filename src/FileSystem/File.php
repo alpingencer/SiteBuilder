@@ -39,7 +39,7 @@ class File {
     }
 
     public static function write(string $path, string $content): void {
-        $num_bytes = file_put_contents(Path::full($path), $content);
+        $num_bytes = @file_put_contents(Path::full($path), $content);
 
         // Assert that the file opened correctly
         if ($num_bytes === false) {
