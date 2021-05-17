@@ -11,14 +11,32 @@ use FilesystemIterator;
 
 class Directory {
 
+    /**
+     * Returns whether a given path exists and is a directory.
+     *
+     * @param string $path
+     * @return bool
+     */
     public static function exists(string $path): bool {
         return is_dir(Path::full($path));
     }
 
+    /**
+     * Creates the given directory path.
+     *
+     * @param string $path
+     * @throws IOException Throws an error on failure.
+     */
     public static function make(string $path): void {
         mkdir(Path::full($path), recursive: true) or throw new IOException("Failed to create directory '$path");
     }
 
+    /**
+     * Removes the given directory path recursively.
+     *
+     * @param string $path
+     * @throws IOException Throws an error on failure.
+     */
     public static function remove(string $path): void {
         // Recursively remove all subdirectories
         foreach (Directory::subdirs($path) as $dir) {
@@ -33,6 +51,17 @@ class Directory {
         rmdir(Path::full($path)) or throw new IOException("Failed to remove directory '$path'");
     }
 
+    /**
+     * Returns an array of all files and subdirectories in the given directory path.
+     * Optionally does a recursive search.
+     *
+     * @param string $path
+     * @param bool $recursive
+     * @return array
+     * @throws IOException Throws an error if the directory was not found.
+     * @see \Eufony\FileSystem\Directory::files()
+     * @see \Eufony\FileSystem\Directory::subdirs()
+     */
     public static function list(string $path, bool $recursive = false): array {
         // Assert that the directory exists
         if (!Directory::exists($path)) {
@@ -58,6 +87,17 @@ class Directory {
         return array_values($files_and_dirs);
     }
 
+    /**
+     * Returns an array of all files in the given directory path.
+     * Optionally does a recursive search.
+     *
+     * @param string $path
+     * @param bool $recursive
+     * @return array
+     * @throws IOException Throws an error if the directory was not found.
+     * @see \Eufony\FileSystem\Directory::list()
+     * @see \Eufony\FileSystem\Directory::subdirs()
+     */
     public static function files(string $path, bool $recursive = false): array {
         // Get all files and subdirectories
         $files_and_dirs = Directory::list($path, $recursive);
@@ -69,6 +109,17 @@ class Directory {
         return array_values($files);
     }
 
+    /**
+     * Returns an array of all directories in the given directory path.
+     * Optionally does a recursive search.
+     *
+     * @param string $path
+     * @param bool $recursive
+     * @return array
+     * @throws IOException Throws an error if the directory was not found.
+     * @see \Eufony\FileSystem\Directory::list()
+     * @see \Eufony\FileSystem\Directory::files()
+     */
     public static function subdirs(string $path, bool $recursive = false): array {
         // Get all files and subdirectories
         $files_and_dirs = Directory::list($path, $recursive);

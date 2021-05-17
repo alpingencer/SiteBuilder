@@ -12,7 +12,7 @@ use Eufony\Config\Config;
 class Path {
 
     /**
-     * Returns whether a file path starts with a forward slash
+     * Returns whether a file path starts with a forward slash.
      *
      * @param string $path
      * @return bool
@@ -28,7 +28,7 @@ class Path {
      *
      * @param string $path
      * @return string
-     * @throws \Eufony\Config\ConfigurationException Throws an error if called before Config::setup()
+     * @throws \Eufony\Config\ConfigurationException Throws an error if called before Config::setup().
      */
     public static function full(string $path): string {
         if (!Path::isAbsolute($path)) {
