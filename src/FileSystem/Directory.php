@@ -21,7 +21,7 @@ class Directory {
 
     public static function remove(string $path): void {
         // Recursively remove all subdirectories
-        foreach (Directory::directories($path) as $dir) {
+        foreach (Directory::subdirs($path) as $dir) {
             Directory::remove($dir);
         }
 
@@ -42,7 +42,7 @@ class Directory {
         $path = Path::full($path);
         $iterator = new FilesystemIterator($path);
 
-        // Push files and directories into array
+        // Push files and subdirectories into array
         $files_and_dirs = [];
 
         foreach ($iterator as $file_or_dir) {
@@ -59,7 +59,7 @@ class Directory {
     }
 
     public static function files(string $path, bool $recursive = false): array {
-        // Get all files and directories
+        // Get all files and subdirectories
         $files_and_dirs = Directory::list($path, $recursive);
 
         // Filter only the files in directory
@@ -69,8 +69,8 @@ class Directory {
         return array_values($files);
     }
 
-    public static function directories(string $path, bool $recursive = false): array {
-        // Get all files and directories
+    public static function subdirs(string $path, bool $recursive = false): array {
+        // Get all files and subdirectories
         $files_and_dirs = Directory::list($path, $recursive);
 
         // Filter only the subdirectories in directory
