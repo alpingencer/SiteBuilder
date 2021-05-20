@@ -1,7 +1,7 @@
 <?php
 
-use Eufony\Config\Config;
-use Eufony\Config\ConfigurationException;
+use Eufony\Utils\Config\Config;
+use Eufony\Utils\Config\ConfigurationException;
 
 echo "\nUnit tests for the Eufony PHP framework by Alpin Gencer.\n\n";
 

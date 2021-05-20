@@ -5,9 +5,9 @@
  *      Refer to LICENSE.md for a full notice     *
  **************************************************/
 
-namespace Eufony\Config;
+namespace Eufony\Utils\FileSystem;
 
 use Exception;
 
-class ConfigurationException extends Exception {
+class IOException extends Exception {
 }

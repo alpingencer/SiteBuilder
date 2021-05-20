@@ -5,9 +5,9 @@
  *      Refer to LICENSE.md for a full notice     *
  **************************************************/
 
-namespace Eufony\FileSystem;
+namespace Eufony\Utils\FileSystem;
 
-use Eufony\Config\Config;
+use Eufony\Utils\Config\Config;
 
 class Path {
 
@@ -28,7 +28,7 @@ class Path {
      *
      * @param string $path
      * @return string
-     * @throws \Eufony\Config\ConfigurationException Throws an error if called before Config::setup().
+     * @throws \Eufony\Utils\Config\ConfigurationException Throws an error if called before Config::setup().
      */
     public static function full(string $path): string {
         if (!Path::isAbsolute($path)) {

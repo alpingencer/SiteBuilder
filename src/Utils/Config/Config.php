@@ -5,7 +5,7 @@
  *      Refer to LICENSE.md for a full notice     *
  **************************************************/
 
-namespace Eufony\Config;
+namespace Eufony\Utils\Config;
 
 use Composer\Autoload\ClassLoader;
 use Dotenv\Dotenv;

@@ -2,20 +2,20 @@
 
 namespace Eufony\Tests\FileSystem;
 
-use Eufony\FileSystem\File;
-use Eufony\FileSystem\IOException;
+use Eufony\Utils\FileSystem\File;
+use Eufony\Utils\FileSystem\IOException;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Eufony\FileSystem\File
- * @uses   \Eufony\FileSystem\Directory
- * @uses   \Eufony\FileSystem\Path
- * @uses   \Eufony\Config\Config
+ * @covers \Eufony\Utils\FileSystem\File
+ * @uses   \Eufony\Utils\FileSystem\Directory
+ * @uses   \Eufony\Utils\FileSystem\Path
+ * @uses   \Eufony\Utils\Config\Config
  */
 class FileTest extends TestCase {
 
     /**
-     * @covers \Eufony\FileSystem\File::exists
+     * @covers \Eufony\Utils\FileSystem\File::exists
      */
     public function testExists(): void {
         $this->assertTrue(File::exists('tests/assets/sample.txt'));
@@ -24,8 +24,8 @@ class FileTest extends TestCase {
     }
 
     /**
-     * @covers \Eufony\FileSystem\File::touch
-     * @covers \Eufony\FileSystem\File::remove
+     * @covers \Eufony\Utils\FileSystem\File::touch
+     * @covers \Eufony\Utils\FileSystem\File::remove
      */
     public function testTouchAndRemove(): void {
         $file = 'tests/tmp/test.txt';
@@ -37,14 +37,14 @@ class FileTest extends TestCase {
     }
 
     /**
-     * @covers \Eufony\FileSystem\File::read
+     * @covers \Eufony\Utils\FileSystem\File::read
      */
     public function testReadValid(): void {
         $this->assertEquals("Hello, world!\n", File::read('tests/assets/sample.txt'));
     }
 
     /**
-     * @covers \Eufony\FileSystem\File::read
+     * @covers \Eufony\Utils\FileSystem\File::read
      */
     public function testReadNonexistentFile(): void {
         $this->expectException(IOException::class);
@@ -53,7 +53,7 @@ class FileTest extends TestCase {
     }
 
     /**
-     * @covers \Eufony\FileSystem\File::read
+     * @covers \Eufony\Utils\FileSystem\File::read
      */
     public function testReadProtectedFile(): void {
         $this->expectException(IOException::class);
@@ -62,7 +62,7 @@ class FileTest extends TestCase {
     }
 
     /**
-     * @covers \Eufony\FileSystem\File::write
+     * @covers \Eufony\Utils\FileSystem\File::write
      */
     public function testWriteValid(): void {
         $file = 'tests/tmp/test.txt';
@@ -73,7 +73,7 @@ class FileTest extends TestCase {
     }
 
     /**
-     * @covers \Eufony\FileSystem\File::write
+     * @covers \Eufony\Utils\FileSystem\File::write
      */
     public function testWriteInvalid(): void {
         $this->expectException(IOException::class);

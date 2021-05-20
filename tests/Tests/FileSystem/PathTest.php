@@ -2,19 +2,19 @@
 
 namespace Eufony\Tests\FileSystem;
 
-use Eufony\Config\Config;
-use Eufony\FileSystem\IOException;
-use Eufony\FileSystem\Path;
+use Eufony\Utils\Config\Config;
+use Eufony\Utils\FileSystem\IOException;
+use Eufony\Utils\FileSystem\Path;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Eufony\FileSystem\Path
- * @uses   \Eufony\Config\Config
+ * @covers \Eufony\Utils\FileSystem\Path
+ * @uses   \Eufony\Utils\Config\Config
  */
 class PathTest extends TestCase {
 
     /**
-     * @covers \Eufony\FileSystem\Path::isAbsolute
+     * @covers \Eufony\Utils\FileSystem\Path::isAbsolute
      */
     public function testIsAbsolute(): void {
         $this->assertTrue(Path::isAbsolute('/foo/bar'));
@@ -22,7 +22,7 @@ class PathTest extends TestCase {
     }
 
     /**
-     * @covers \Eufony\FileSystem\Path::full
+     * @covers \Eufony\Utils\FileSystem\Path::full
      */
     public function testFull(): void {
         $app_dir = Config::get('APP_DIR');
@@ -31,7 +31,7 @@ class PathTest extends TestCase {
     }
 
     /**
-     * @covers \Eufony\FileSystem\Path::real
+     * @covers \Eufony\Utils\FileSystem\Path::real
      */
     public function testRealValid(): void {
         $app_dir = Config::get('APP_DIR');
@@ -40,7 +40,7 @@ class PathTest extends TestCase {
     }
 
     /**
-     * @covers \Eufony\FileSystem\Path::real
+     * @covers \Eufony\Utils\FileSystem\Path::real
      */
     public function testRealInvalid(): void {
         $this->expectException(IOException::class);
@@ -49,7 +49,7 @@ class PathTest extends TestCase {
     }
 
     /**
-     * @covers \Eufony\FileSystem\Path::sanitized
+     * @covers \Eufony\Utils\FileSystem\Path::sanitized
      */
     public function testSanitized(): void {
         $this->assertEquals('foo/bar', Path::sanitized('./../foo/bar//../bar/./baz/..///'));

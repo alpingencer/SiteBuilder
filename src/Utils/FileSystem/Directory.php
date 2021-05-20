@@ -5,7 +5,7 @@
  *      Refer to LICENSE.md for a full notice     *
  **************************************************/
 
-namespace Eufony\FileSystem;
+namespace Eufony\Utils\FileSystem;
 
 use FilesystemIterator;
 
@@ -69,8 +69,8 @@ class Directory {
      * @param bool $recursive
      * @return array
      * @throws IOException Throws an error if the directory was not found.
-     * @see \Eufony\FileSystem\Directory::files()
-     * @see \Eufony\FileSystem\Directory::subdirs()
+     * @see \Eufony\Utils\FileSystem\Directory::files()
+     * @see \Eufony\Utils\FileSystem\Directory::subdirs()
      */
     public static function list(string $path, bool $recursive = false): array {
         // Assert that the directory exists
@@ -105,8 +105,8 @@ class Directory {
      * @param bool $recursive
      * @return array
      * @throws IOException Throws an error if the directory was not found.
-     * @see \Eufony\FileSystem\Directory::list()
-     * @see \Eufony\FileSystem\Directory::subdirs()
+     * @see \Eufony\Utils\FileSystem\Directory::list()
+     * @see \Eufony\Utils\FileSystem\Directory::subdirs()
      */
     public static function files(string $path, bool $recursive = false): array {
         // Get all files and subdirectories
@@ -127,8 +127,8 @@ class Directory {
      * @param bool $recursive
      * @return array
      * @throws IOException Throws an error if the directory was not found.
-     * @see \Eufony\FileSystem\Directory::list()
-     * @see \Eufony\FileSystem\Directory::files()
+     * @see \Eufony\Utils\FileSystem\Directory::list()
+     * @see \Eufony\Utils\FileSystem\Directory::files()
      */
     public static function subdirs(string $path, bool $recursive = false): array {
         // Get all files and subdirectories

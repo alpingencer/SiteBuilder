@@ -7,7 +7,7 @@
 
 namespace Eufony\Core;
 
-use Eufony\Config\Config;
+use Eufony\Utils\Config\Config;
 
 class Application {
 

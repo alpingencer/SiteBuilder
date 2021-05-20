@@ -2,17 +2,17 @@
 
 namespace Eufony\Tests\FileSystem;
 
-use Eufony\Config\Config;
-use Eufony\FileSystem\Directory;
-use Eufony\FileSystem\File;
-use Eufony\FileSystem\IOException;
+use Eufony\Utils\Config\Config;
+use Eufony\Utils\FileSystem\Directory;
+use Eufony\Utils\FileSystem\File;
+use Eufony\Utils\FileSystem\IOException;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Eufony\FileSystem\Directory
- * @uses   \Eufony\FileSystem\File
- * @uses   \Eufony\FileSystem\Path
- * @uses   \Eufony\Config\Config
+ * @covers \Eufony\Utils\FileSystem\Directory
+ * @uses   \Eufony\Utils\FileSystem\File
+ * @uses   \Eufony\Utils\FileSystem\Path
+ * @uses   \Eufony\Utils\Config\Config
  */
 class DirectoryTest extends TestCase {
 
@@ -23,7 +23,7 @@ class DirectoryTest extends TestCase {
     }
 
     /**
-     * @covers \Eufony\FileSystem\Directory::exists
+     * @covers \Eufony\Utils\FileSystem\Directory::exists
      */
     public function testExists(): void {
         $this->assertTrue(Directory::exists('tests/assets'));
@@ -32,8 +32,8 @@ class DirectoryTest extends TestCase {
     }
 
     /**
-     * @covers \Eufony\FileSystem\Directory::make
-     * @covers \Eufony\FileSystem\Directory::remove
+     * @covers \Eufony\Utils\FileSystem\Directory::make
+     * @covers \Eufony\Utils\FileSystem\Directory::remove
      */
     public function testMakeAndRemove(): void {
         $this->assertFalse(Directory::exists('tests/tmp/foo'));
@@ -45,7 +45,7 @@ class DirectoryTest extends TestCase {
     }
 
     /**
-     * @covers \Eufony\FileSystem\Directory::isEmpty
+     * @covers \Eufony\Utils\FileSystem\Directory::isEmpty
      */
     public function testEmpty(): void {
         $dir = 'tests/tmp/foo';
@@ -57,7 +57,7 @@ class DirectoryTest extends TestCase {
     }
 
     /**
-     * @covers \Eufony\FileSystem\Directory::list
+     * @covers \Eufony\Utils\FileSystem\Directory::list
      */
     public function testListValidNonRecursive(): void {
         $paths = [
@@ -72,7 +72,7 @@ class DirectoryTest extends TestCase {
     }
 
     /**
-     * @covers \Eufony\FileSystem\Directory::list
+     * @covers \Eufony\Utils\FileSystem\Directory::list
      */
     public function testListValidRecursive(): void {
         $paths = [
@@ -88,7 +88,7 @@ class DirectoryTest extends TestCase {
     }
 
     /**
-     * @covers \Eufony\FileSystem\Directory::list
+     * @covers \Eufony\Utils\FileSystem\Directory::list
      */
     public function testListInvalid(): void {
         $this->expectException(IOException::class);
@@ -97,7 +97,7 @@ class DirectoryTest extends TestCase {
     }
 
     /**
-     * @covers \Eufony\FileSystem\Directory::files
+     * @covers \Eufony\Utils\FileSystem\Directory::files
      */
     public function testFiles(): void {
         $files = [
@@ -111,7 +111,7 @@ class DirectoryTest extends TestCase {
     }
 
     /**
-     * @covers \Eufony\FileSystem\Directory::subdirs
+     * @covers \Eufony\Utils\FileSystem\Directory::subdirs
      */
     public function testSubdirs(): void {
         $directories = [

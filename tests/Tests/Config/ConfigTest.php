@@ -3,16 +3,16 @@
 namespace Eufony\Tests\Config;
 
 use Composer\Autoload\ClassLoader;
-use Eufony\Config\Config;
-use Eufony\Config\ConfigurationException;
-use Eufony\FileSystem\Directory;
-use Eufony\FileSystem\File;
+use Eufony\Utils\Config\Config;
+use Eufony\Utils\Config\ConfigurationException;
+use Eufony\Utils\FileSystem\Directory;
+use Eufony\Utils\FileSystem\File;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use UnexpectedValueException;
 
 /**
- * @covers \Eufony\Config\Config
+ * @covers \Eufony\Utils\Config\Config
  */
 class ConfigTest extends TestCase {
 
@@ -52,7 +52,7 @@ class ConfigTest extends TestCase {
     }
 
     /**
-     * @covers \Eufony\Config\Config::setup
+     * @covers \Eufony\Utils\Config\Config::setup
      */
     public function testSetup(): void {
         $_ENV = [];
@@ -61,7 +61,7 @@ class ConfigTest extends TestCase {
     }
 
     /**
-     * @covers \Eufony\Config\Config::exists
+     * @covers \Eufony\Utils\Config\Config::exists
      */
     public function testExists(): void {
         $this->assertTrue(Config::exists('TEST_STRING'));
@@ -70,7 +70,7 @@ class ConfigTest extends TestCase {
     }
 
     /**
-     * @covers \Eufony\Config\Config::get
+     * @covers \Eufony\Utils\Config\Config::get
      */
     public function testGetPlain(): void {
         $this->assertEquals(dirname(__DIR__, 3), Config::get('APP_DIR'));
@@ -78,14 +78,14 @@ class ConfigTest extends TestCase {
     }
 
     /**
-     * @covers \Eufony\Config\Config::get
+     * @covers \Eufony\Utils\Config\Config::get
      */
     public function testGetNonExistingNonRequired(): void {
         $this->assertNull(Config::get('TEST_NON_EXISTING', required: false));
     }
 
     /**
-     * @covers \Eufony\Config\Config::get
+     * @covers \Eufony\Utils\Config\Config::get
      */
     public function testGetNonExistingRequired(): void {
         $this->expectException(ConfigurationException::class);
@@ -94,7 +94,7 @@ class ConfigTest extends TestCase {
     }
 
     /**
-     * @covers \Eufony\Config\Config::get
+     * @covers \Eufony\Utils\Config\Config::get
      */
     public function testGetWithExpectedValues(): void {
         $this->expectNotToPerformAssertions();
@@ -102,7 +102,7 @@ class ConfigTest extends TestCase {
     }
 
     /**
-     * @covers \Eufony\Config\Config::get
+     * @covers \Eufony\Utils\Config\Config::get
      */
     public function testGetWithUnexpectedValues(): void {
         $this->expectException(ConfigurationException::class);
@@ -111,7 +111,7 @@ class ConfigTest extends TestCase {
     }
 
     /**
-     * @covers \Eufony\Config\Config::get
+     * @covers \Eufony\Utils\Config\Config::get
      */
     public function testGetWithExpectedTypes(): void {
         $this->assertIsString(Config::get('TEST_STRING', expected: 'string'));
@@ -126,7 +126,7 @@ class ConfigTest extends TestCase {
     }
 
     /**
-     * @covers \Eufony\Config\Config::get
+     * @covers \Eufony\Utils\Config\Config::get
      */
     public function testGetWithUnexpectedTypes(): void {
         $this->expectException(ConfigurationException::class);
@@ -135,7 +135,7 @@ class ConfigTest extends TestCase {
     }
 
     /**
-     * @covers \Eufony\Config\Config::get
+     * @covers \Eufony\Utils\Config\Config::get
      */
     public function testGetWithInvalidTypes(): void {
         $this->expectException(UnexpectedValueException::class);

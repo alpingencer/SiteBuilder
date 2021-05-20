@@ -5,7 +5,7 @@
  *      Refer to LICENSE.md for a full notice     *
  **************************************************/
 
-namespace Eufony\FileSystem;
+namespace Eufony\Utils\FileSystem;
 
 class File {
 
