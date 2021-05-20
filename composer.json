@@ -20,9 +20,13 @@
     "php": "^8.0",
     "vlucas/phpdotenv": "^5.3"
   },
+  "require-dev": {
+    "phpunit/phpunit": "^9.5"
+  },
   "autoload": {
     "psr-4": {
-      "Eufony\\": "src/"
+      "Eufony\\": "src/",
+      "Eufony\\Tests\\": "tests/Tests"
     }
   }
 }
